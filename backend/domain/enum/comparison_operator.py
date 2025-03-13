@@ -1,6 +1,6 @@
-from pydantic import BaseModel
+from enum import Enum
 
-class EComparisonOperator(BaseModel):
+class EComparisonOperator(Enum):
     EQUAL = "=="
     NOT_EQUAL = "!="
     AND = "&&"
