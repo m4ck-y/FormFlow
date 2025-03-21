@@ -11,7 +11,7 @@ class ModelAnswer(BaseModel):
     text = Column(String(255), nullable=False)
     value = Column(Integer, nullable=False)
     url = Column(String(255))
-    url_type = Column(Enum(EUrlType), nullable=False)
+    url_type = Column(Enum(EUrlType))#NULLABLE
     #help_text #TODO: Add help text
 
     id_question = Column(Integer, nullable=False)
