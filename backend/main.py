@@ -13,4 +13,4 @@ if __name__ == "__main__":
     uvicorn.run("main:app", host=API_HOST, port=API_PORT, reload=True)
 
 #python main.py
-#uvicorn main:app --host 0.0.0.0 --port 8030 --reload #TODO: DEFINIR PUERTO
+#uvicorn main:app --host 0.0.0.0 --port 8005 --reload
