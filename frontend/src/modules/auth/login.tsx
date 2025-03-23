@@ -1,48 +1,61 @@
-import React from 'react';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import Stack from '@mui/material/Stack';
-import Link from '@mui/material/Link';
-import Button from '@mui/material/Button';
+import React from "react";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Stack from "@mui/material/Stack";
+import { useNavigate } from "react-router-dom";
 
-import { Space, Typography as Typography2 } from 'antd';
+import { Flex } from "antd";
+import AuthLayout from "../../layouts/auth";
 
+import { Button } from "@heroui/button";
 
+import { Link } from "@heroui/link";
 
 const Login: React.FC = () => {
-    const { Link:Link2} = Typography2;
+    const navigate = useNavigate(); // Usamos el hook para la navegación
+
     return (
+        <AuthLayout>
+            <Stack spacing={2}>
+                <Typography variant="h4" gutterBottom>
+                    Iniciar session
+                </Typography>
+                <div>Usa tu cuenta de formFLow</div>
+            </Stack>
 
-        <div style={{ padding: "20px", backgroundColor: "#f6fcff" }}>
-
-            <Paper elevation={0} style={{padding:"20px"}} >
-                <Stack spacing={2} direction="row">
-                    <Stack>
-                        <div>Logo</div>
-                        <div>Inicia Session</div>
-                        <div>Usa tu cuenta de formFLow</div>
-                    </Stack>
-
-                    <Stack spacing={2}>
-                        <TextField id="outlined-basic" label="Correo electronico" variant="outlined" />
-                        <Link href="#" underline="none">¿Olvidaste el correo electronico?</Link>
-                        <Link2 href="https://ant.design" target="_blank">
-      Ant Design (Link)
-    </Link2>
-                        <Typography variant="body1" gutterBottom>
-                            ¿Esta no es tu computadora? Usa una ventana privada para acceder.
-                        </Typography>
-                        <Stack direction="row" spacing={2}>
-                        <Button variant="text" style={{textTransform: 'none', borderRadius:"20px"}}>Crear cuenta</Button>
-                        <Button variant="contained" disableElevation style={{textTransform: 'none', borderRadius:"20px"}}>Siguiente</Button>
-                        </Stack>
-                    </Stack>
-
+            <Stack spacing={2} width={"600px"}>
+                <TextField
+                    id="outlined-basic"
+                    label="Correo electronico"
+                    variant="outlined"
+                />
+                <Link href="#" underline="none">
+                    ¿Olvidaste el correo electronico?
+                </Link>
+                <Typography variant="body1" gutterBottom>
+                    ¿Esta no es tu computadora? Usa una ventana privada para acceder.
+                    <Link
+                        isExternal
+                        href="https://support.google.com/chrome/answer/95464?hl=es-419&co=GENIE.Platform%3DDesktop"
+                    >
+                        Más información para usar el modo privado.
+                    </Link>
+                </Typography>
+                <Stack direction="row" spacing={2}>
+                    <Button
+                        color="primary"
+                        variant="light"
+                        onPress={() => navigate("/register")}
+                    >
+                        Registrarme
+                    </Button>
+                    <Button color="primary" variant="shadow" onPress={()=>navigate("/")}>
+                        Siguiente
+                    </Button>
                 </Stack>
-            </Paper>
-        </div>
-    )
-}
+            </Stack>
+        </AuthLayout>
+    );
+};
 
-export default Login
+export default Login;

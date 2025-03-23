@@ -1,7 +1,7 @@
 import React from "react";
 
 const Form: React.FC = () => {
-    return <div>Form</div>;
+    return <div>Hola, div</div>;
 };
 
 export default Form;

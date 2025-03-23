@@ -1,10 +1,11 @@
-import Form from '../../components/form';
+import Form from "../../components/form";
+import LayoutForm from "../../layouts/form";
 
 const FormAdd: React.FC = () => {
     return (
-        <div>
-        <Form />
-        </div>
+        <LayoutForm>
+            <Form />
+        </LayoutForm>
     );
 };
 
