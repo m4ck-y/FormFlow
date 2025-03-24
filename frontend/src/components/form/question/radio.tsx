@@ -8,26 +8,25 @@ const RadioInput = () => {
     const optionValue: number = 1;
     // Estado para manejar las opciones y sus valores asociados (peso)
 
-
     const [newOptionLabel_State, setNewOptionLabel_State] = useState(optionLabel); // Estado para el texto de la nueva opción
     const [newOptionValue_State, setNewOptionValue_State] = useState(optionValue); // Estado para el valor (peso) de la nueva opción
 
     // Estado para manejar las opciones y sus valores asociados (peso)
-    const [listOptions_State, setListOptions_State] = useState<{ text: string; value: number }[]>([
+    const [listOptions_State, setListOptions_State] = useState<
+        { text: string; value: number }[]
+    >([
         { text: "Opción 1", value: optionValue }, // Inicializar con una opción
     ]);
     //const [lengthOptions, setLengthOptions] = useState<number>(options.length);
 
     /* useEffect(() => {
-        setLengthOptions(options.length);
-    }, [options]); // Se ejecuta cada vez que 'options' cambia */
+          setLengthOptions(options.length);
+      }, [options]); // Se ejecuta cada vez que 'options' cambia */
 
     // Función para agregar una nueva opción
     const handleAddOption = () => {
-
         const new_option_label = `${optionLabel} ${listOptions_State.length + 1}`;
         const new_option_value = listOptions_State.length + 1; // Generar un nuevo valor (peso) para la opción
-
 
         setNewOptionLabel_State(new_option_label); // Limpiar el campo de texto
         setNewOptionValue_State(new_option_value); // Limpiar el campo de valor
@@ -51,23 +50,29 @@ const RadioInput = () => {
         console.info("listOptions_State Text Change", index, listOptions_State);
     };
 
+    // Función para eliminar una opción
+    const handleRemoveOption = (index: number) => {
+        const updatedOptions = listOptions_State.filter((_, i) => i !== index); // Filtrar la opción que se quiere eliminar
+        setListOptions_State(updatedOptions);
+    };
+
     return (
         <Flex vertical align="start">
             {/* Renderizar el grupo de opciones de radio */}
             <RadioGroup className="w-full">
                 {listOptions_State.map((option, index) => (
                     <Flex key={index} align="flex-end" style={{ gap: "10px" }}>
-                        <div className="h-full flex items-center">
+                        <div className="h-full flex">
                             <Radio value="" />
                         </div>
                         <Input
+                            isClearable
                             value={option.text.toString()}
                             onChange={(e) => handleTextChange(index, e.target.value)}
                             placeholder="Opcion"
                             variant="underlined"
                             size="lg"
                             color="primary"
-                            style={{ width: "120px" }}
                         />
                         {/* Campo de entrada para el valor de la opción */}
                         <Input
@@ -80,6 +85,15 @@ const RadioInput = () => {
                             size="lg"
                             color="primary"
                         />
+                        {listOptions_State.length > 1 && (
+                            <Button
+                                onPress={() => handleRemoveOption(index)}
+                                size="sm"
+                                color="danger"
+                            >
+                                Eliminar
+                            </Button>
+                        )}
                     </Flex>
                 ))}
                 <Flex key={"new-option"} align="flex-end" style={{ gap: "10px" }}>
@@ -88,17 +102,14 @@ const RadioInput = () => {
                     </div>
                     <Input
                         endContent={
-                            <PlusOutlined className="text-2xl text-default-400 flex-shrink-0 items-end" onClick={() => handleAddOption()} />
+                            <PlusOutlined className="text-2xl text-default-400 flex-shrink-0 items-end" />
                         }
-                        classNames={{
-                            innerWrapper: "flex justify-between",
-                        }}
+                        value=""
                         onClick={() => handleAddOption()}
                         placeholder="agregar opcion"
                         variant="underlined"
                         size="lg"
                         color="primary"
-                        style={{ width: "120px" }}
                     />
                 </Flex>
             </RadioGroup>
