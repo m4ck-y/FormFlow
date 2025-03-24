@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input con Chips y Autocompletado</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.43.0/min/vs/loader.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        
+        /* Estilos del input */
+        .autocomplete-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        #editorContainer {
+            display: inline-block;
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+            height: 40px;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 10px;
+            margin: 5px;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .chip span {
+            margin-left: 8px;
+            font-weight: bold;
+        }
+
+        .chip:hover {
+            background-color: #45a049;
+        }
+
+        .suggestions {
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+            width: 100%;
+            z-index: 999;
+        }
+
+        .suggestion {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .suggestion:hover {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Autocompletado estilo Chips</h2>
+    <div class="autocomplete-container">
+        <div id="chipContainer"></div> <!-- Aquí irán los chips -->
+        <input type="text" id="editorContainer" placeholder="Escribe 'persona.' para ver las propiedades..." />
+        <div class="suggestions" id="suggestionsBox"></div>
+    </div>
+
+    <script>
+        // Lista de propiedades para autocompletar
+        const properties = ["age", "name", "gender", "height", "weight"];
+
+        // Elementos del DOM
+        const input = document.getElementById("editorContainer");
+        const suggestionsBox = document.getElementById("suggestionsBox");
+        const chipContainer = document.getElementById("chipContainer");
+
+        // Detectar cuando el input tenga 'persona.'
+        input.addEventListener("input", function () {
+            const text = input.value;
+            const match = text.match(/persona\.(\w*)$/); // Buscar "persona."
+
+            if (match) {
+                const searchTerm = match[1].toLowerCase();
+                const filteredProps = properties.filter(prop => prop.startsWith(searchTerm));
+
+                if (filteredProps.length > 0) {
+                    suggestionsBox.innerHTML = filteredProps.map(prop => `<div class="suggestion">${prop}</div>`).join("");
+                    suggestionsBox.style.display = "block";
+                } else {
+                    suggestionsBox.style.display = "none";
+                }
+            } else {
+                suggestionsBox.style.display = "none";
+            }
+        });
+
+        // Al hacer clic en una sugerencia
+        suggestionsBox.addEventListener("click", function (e) {
+            if (e.target.classList.contains("suggestion")) {
+                const selectedProperty = e.target.textContent;
+                addChip(selectedProperty);
+                input.value = ""; // Limpiar el input
+                suggestionsBox.style.display = "none";
+            }
+        });
+
+        // Función para añadir un chip
+        function addChip(property) {
+            const chip = document.createElement("div");
+            chip.classList.add("chip");
+            chip.innerHTML = `persona.${property} <span>x</span>`; // El texto del chip
+            chip.onclick = function () {
+                chipContainer.removeChild(chip); // Eliminar el chip al hacer clic
+            };
+            chipContainer.appendChild(chip);
+        }
+
+        // Cerrar sugerencias si el usuario hace clic fuera
+        document.addEventListener("click", function (e) {
+            if (!input.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                suggestionsBox.style.display = "none";
+            }
+        });
+    </script>
+
+</body>
+</html>

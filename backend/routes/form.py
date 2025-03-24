@@ -17,8 +17,10 @@ def FormRouter(api_server: FastAPI):
 
 
 @api_router.get('/')
-def Get(id:int):
-    return "helloworld" + id
+def Get(id:int, full:bool, db: Session = Depends(get_db)):
+    if full:
+        return db.query(ModelForm).get(id)
+
 
 @api_router.get("/list", response_model=List[SchemaForm])
 def List(db: Session = Depends(get_db)):

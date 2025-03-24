@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autocompletado como en VS Code</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.43.0/min/vs/loader.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #editor { width: 600px; height: 300px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+
+    <h2>Autocompletado de "persona" al estilo VS Code</h2>
+    <div id="editor"></div>
+
+    <script>
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.43.0/min/vs' } });
+
+        require(["vs/editor/editor.main"], function () {
+            // Inicializar el editor
+            var editor = monaco.editor.create(document.getElementById("editor"), {
+                value: "persona.",
+                language: "javascript",
+                theme: "vs-dark", // Cambia a "vs" para tema claro
+                fontSize: 16
+            });
+
+            // Definir autocompletado para "persona"
+            monaco.languages.registerCompletionItemProvider('javascript', {
+                provideCompletionItems: function (model, position) {
+                    var textUntilPosition = model.getValueInRange({ startLineNumber: 1, startColumn: 1, endLineNumber: position.lineNumber, endColumn: position.column });
+
+                    // Si el usuario ha escrito "persona."
+                    if (textUntilPosition.endsWith("persona.")) {
+                        return {
+                            suggestions: [
+                                {
+                                    label: "age",
+                                    kind: monaco.languages.CompletionItemKind.Property,
+                                    insertText: "age",
+                                    documentation: "La edad de la persona"
+                                },
+                                {
+                                    label: "name",
+                                    kind: monaco.languages.CompletionItemKind.Property,
+                                    insertText: "name",
+                                    documentation: "El nombre de la persona"
+                                },
+                                {
+                                    label: "gender",
+                                    kind: monaco.languages.CompletionItemKind.Property,
+                                    insertText: "gender",
+                                    documentation: "El género de la persona"
+                                },
+                                {
+                                    label: "getAge",
+                                    kind: monaco.languages.CompletionItemKind.Method,
+                                    insertText: "getAge()",
+                                    documentation: "Devuelve la edad de la persona"
+                                }
+                            ]
+                        };
+                    }
+                    return { suggestions: [] };
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
