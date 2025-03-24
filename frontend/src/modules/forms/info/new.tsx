@@ -11,7 +11,8 @@ const FormNew: React.FC = () => {
   return (
     <Flex
       className="h-screen"
-      style={{ backgroundColor: "gray" }}
+      style={{ backgroundColor: "rgb(222,209,255)",
+        background: "radial-gradient(circle, rgba(222,209,255,1) 0%, rgba(218,255,252,1) 100%)" }}
       align="center"
       vertical={false}
     >
