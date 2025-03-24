@@ -4,9 +4,15 @@ import CardEditable from "../../../components/form/CardEditable";
 import { Input } from "@heroui/react";
 import { Select, SelectSection, SelectItem } from "@heroui/select";
 import React from "react";
+import {
+    NodeIndexOutlined
+  } from '@ant-design/icons';
+import { QuestionType } from "../../../domain/enum/question/types";
+import { questionTypeLabels } from "../../../domain/maps/question/types";
 
 const FormNew: React.FC = () => {
-  const [selected, setSelected] = React.useState<undefined|string>(undefined);
+  //const [selected, setSelected] = React.useState<undefined|string>(undefined);
+  const [selectedType, setSelectedType] = React.useState<QuestionType>(QuestionType.TEXT);
 
   return (
     <Flex
@@ -23,7 +29,13 @@ const FormNew: React.FC = () => {
           variant="underlined"
           size="lg"
           color="primary"
+          startContent={
+            <div className="pointer-events-none flex items-center">
+              <NodeIndexOutlined />
+            </div>
+          }
         />
+        
 
         <Input placeholder="Descripcion" variant="underlined" isClearable color="primary" />
       </Card>
@@ -37,14 +49,18 @@ const FormNew: React.FC = () => {
         />
         <Select
           placeholder="Tipo de pregunta"
-          selectedKeys={selected ? [selected] : []}
-          onSelectionChange={(keys) => setSelected(keys.currentKey)}
+          value={questionTypeLabels[selectedType]}
+          selectedKeys={selectedType ? [selectedType] : []}
+          onSelectionChange={(keys) => {console.log(keys.currentKey);setSelectedType(keys.currentKey as any)}}
           variant="underlined"
           color="primary"
         >
-          <SelectItem key="cat">Cat</SelectItem>
-          <SelectItem key="dog">Dog</SelectItem>
-          <SelectItem key="bird">Bird</SelectItem>
+            
+        {Object.values(QuestionType).map((type) => (
+            <SelectItem key={type}>
+              {questionTypeLabels[type]} {/* Aquí mostramos la etiqueta amigable */}
+            </SelectItem>
+          ))}
         </Select>
       </CardEditable>
     </Flex>
