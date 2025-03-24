@@ -21,17 +21,17 @@ export default function HHeader() {
             <NavbarContent className="sm:flex gap-4" justify="center">
                 <NavbarItem>
                     <Link color="foreground" href="#">
-                        Features
+                        A
                     </Link>
                 </NavbarItem>
                 <NavbarItem isActive>
                     <Link aria-current="page" color="secondary" href="#">
-                        Customers
+                        B
                     </Link>
                 </NavbarItem>
                 <NavbarItem>
                     <Link color="foreground" href="#">
-                        Integrations
+                        C
                     </Link>
                 </NavbarItem>
             </NavbarContent>

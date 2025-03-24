@@ -6,7 +6,7 @@ import HHeader from "../components/hheader";
 
 const LayoutForm: React.FC<PropsWithChildren> = ({ children }) => {
   return (
-    <Flex vertical>
+    <Flex vertical={true}>
       <HHeader />
         {children}
     </Flex>
