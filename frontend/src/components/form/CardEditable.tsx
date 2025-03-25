@@ -17,19 +17,12 @@ import {
 } from "@ant-design/icons";
 import {Switch} from "@heroui/switch";
 import { PropsWithChildren } from "react";
+import styles from "./CardEditable.module.css"
 
 const CardEditable: React.FC<PropsWithChildren> = ({ children }) => {
     return (
         <Card
-            className="max-w-[400px]"
-            style={{
-                maxWidth: "600px",
-                marginTop: "20px",
-                minWidth: "300px",
-                width: "100%",
-                paddingInline: "10px",
-                paddingBottom: "10px",
-            }}
+            className={styles.card_editable}
         >
             <header className="flex gap-3">
                 <div className="flex gap-0 justify-end w-full pt-1  ">
