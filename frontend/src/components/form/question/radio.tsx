@@ -1,15 +1,12 @@
 import { Button, Input, Radio, RadioGroup } from "@heroui/react";
 import { Flex } from "antd";
-import { useEffect, useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
+import { useState } from "react";
+import SVGPlusIcon from "../../../assets/icons/plus";
+import SVGTrashIcon from "../../../assets/icons/trash";
 const RadioInput = () => {
     const optionLabel: string = "Opcion";
     const optionValueLabel: string = "Valor de la respuesta";
     const optionValue: number = 1;
-    // Estado para manejar las opciones y sus valores asociados (peso)
-
-    const [newOptionLabel_State, setNewOptionLabel_State] = useState(optionLabel); // Estado para el texto de la nueva opción
-    const [newOptionValue_State, setNewOptionValue_State] = useState(optionValue); // Estado para el valor (peso) de la nueva opción
 
     // Estado para manejar las opciones y sus valores asociados (peso)
     const [listOptions_State, setListOptions_State] = useState<
@@ -17,26 +14,20 @@ const RadioInput = () => {
     >([
         { text: "Opción 1", value: optionValue }, // Inicializar con una opción
     ]);
-    //const [lengthOptions, setLengthOptions] = useState<number>(options.length);
-
-    /* useEffect(() => {
-          setLengthOptions(options.length);
-      }, [options]); // Se ejecuta cada vez que 'options' cambia */
 
     // Función para agregar una nueva opción
     const handleAddOption = () => {
         const new_option_label = `${optionLabel} ${listOptions_State.length + 1}`;
         const new_option_value = listOptions_State.length + 1; // Generar un nuevo valor (peso) para la opción
 
-        setNewOptionLabel_State(new_option_label); // Limpiar el campo de texto
-        setNewOptionValue_State(new_option_value); // Limpiar el campo de valor
         setListOptions_State([
             ...listOptions_State,
-            { text: new_option_label, value: new_option_value }, // Añadir la nueva opción con su valor
+            { text: "", value: new_option_value }, // Añadir la nueva opción con su valor
         ]);
     };
     // Función para actualizar el valor de una opción
     const handleValueChange = (index: number, newValue: number) => {
+        newValue = newValue || 0;
         const updatedOptions = [...listOptions_State];
         updatedOptions[index].value = newValue; // Actualizar el valor de la opción seleccionada
         setListOptions_State(updatedOptions);
@@ -50,6 +41,14 @@ const RadioInput = () => {
         console.info("listOptions_State Text Change", index, listOptions_State);
     };
 
+    const handleTextFocusChange = (index: number) => {
+        let optionItem = listOptions_State[index];
+        if (optionItem.text.length < 1) {
+            let newText = `${optionLabel} ${index + 1}`;
+            handleTextChange(index, newText);
+        }
+    };
+
     // Función para eliminar una opción
     const handleRemoveOption = (index: number) => {
         const updatedOptions = listOptions_State.filter((_, i) => i !== index); // Filtrar la opción que se quiere eliminar
@@ -61,14 +60,22 @@ const RadioInput = () => {
             {/* Renderizar el grupo de opciones de radio */}
             <RadioGroup className="w-full">
                 {listOptions_State.map((option, index) => (
-                    <Flex key={index} align="flex-end" style={{ gap: "10px" }}>
-                        <div className="h-full flex">
-                            <Radio value="" />
+                    <Flex
+                        key={index}
+                        align="flex-end"
+                        style={{ gap: "10px", height: "60px" }}
+                    >
+                        <div className="h-full flex bg-red-500">
+                            <Radio disabled value="" />
                         </div>
                         <Input
-                            isClearable
+                            //isClearable
+                            autoFocus
                             value={option.text.toString()}
                             onChange={(e) => handleTextChange(index, e.target.value)}
+                            onFocusChange={(isFocused) => {
+                                if (isFocused == false) handleTextFocusChange(index);
+                            }}
                             placeholder="Opcion"
                             variant="underlined"
                             size="lg"
@@ -84,33 +91,55 @@ const RadioInput = () => {
                             variant="underlined"
                             size="lg"
                             color="primary"
+                        /* #TODO: GRID? FLEX?
+                                      classNames={{
+                                          base: "max-w-sm"
+                                      }} */
                         />
                         {listOptions_State.length > 1 && (
-                            <Button
-                                onPress={() => handleRemoveOption(index)}
-                                size="sm"
-                                color="danger"
-                            >
-                                Eliminar
-                            </Button>
+                            <Flex vertical={false} align="center" className="h-full">
+                                <Button
+                                    onPress={() => handleRemoveOption(index)}
+                                    size="sm"
+                                    color="danger"
+                                    isIconOnly
+                                    aria-label="Like"
+                                    variant="light"
+                                    radius="full"
+                                >
+                                    <SVGTrashIcon />
+                                </Button>
+                            </Flex>
                         )}
                     </Flex>
                 ))}
-                <Flex key={"new-option"} align="flex-end" style={{ gap: "10px" }}>
+                <Flex
+                    key={"new-option"}
+                    align="flex-end"
+                    style={{ gap: "10px", height: "60px" }}
+                >
                     <div className="h-full flex items-center">
-                        <Radio value="" />
+                        <Radio disabled value="" />
                     </div>
                     <Input
-                        endContent={
-                            <PlusOutlined className="text-2xl text-default-400 flex-shrink-0 items-end" />
-                        }
-                        value=""
-                        onClick={() => handleAddOption()}
+                        onFocus={() => handleAddOption()}
                         placeholder="agregar opcion"
                         variant="underlined"
                         size="lg"
                         color="primary"
                     />
+                    <Flex vertical={false} align="center" className="h-full">
+                        <Button
+                            onPress={() => handleAddOption()}
+                            size="sm"
+                            color="primary"
+                            isIconOnly
+                            variant="light"
+                            radius="full"
+                        >
+                            <SVGPlusIcon />
+                        </Button>
+                    </Flex>
                 </Flex>
             </RadioGroup>
         </Flex>

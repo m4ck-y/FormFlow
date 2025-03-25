@@ -19,7 +19,7 @@ const ViewForm: React.FC = () => {
           icon={<PlusOutlined />}
           shape="circle"
           type="primary"
-          onClick={()=>navigate("/form/info")}
+          onClick={()=>navigate("/form/design")}
          />
       </Flex>
       <ListForm />

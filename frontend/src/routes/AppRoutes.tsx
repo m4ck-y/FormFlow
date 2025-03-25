@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "../modules/auth/login"
 import Register from "../modules/auth/register"
 import ViewForm from '../modules/forms/index'
-import FormInfo from "../modules/forms/info/index"
+import FormInfo from "../modules/forms/design/index"
 import TestUI from "../modules/test";
 
 export const AppRoutes: React.FC = () => {
@@ -13,7 +13,7 @@ export const AppRoutes: React.FC = () => {
                 <Route path="/" element={<ViewForm/>} />
                 <Route path="/login" element={<Login/>} />
                 <Route path="/register" element={<Register/>} />
-                <Route path="/form/info" element={<FormInfo/>} />
+                <Route path="/form/design" element={<FormInfo/>} />
                 <Route path="/test" element={<TestUI/>} />
             </Routes>
         </BrowserRouter>

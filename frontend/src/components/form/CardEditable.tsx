@@ -107,8 +107,8 @@ const CardEditable: React.FC<PropsWithChildren> = ({ children }) => {
                         </DropdownItem>
                     </DropdownMenu>
                 </Dropdown>
-                <Switch defaultSelected aria-label="Automatic updates">Varias respuestas</Switch>
-                <Switch defaultSelected aria-label="Automatic updates">Obligatoria</Switch>
+                <Switch defaultSelected={false} aria-label="Automatic updates" isDisabled>Varias respuestas</Switch>
+                <Switch defaultSelected={true} aria-label="Automatic updates" isDisabled>Obligatoria</Switch>
                 <Dropdown placement="bottom-end">
                     <DropdownTrigger>
                         <Button
