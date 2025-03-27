@@ -1,15 +1,17 @@
 import React from "react";
 import { Flex } from "antd";
 import { PropsWithChildren } from "react";
-
-import Header from "../components/form/header/header";
+import FullSize from "@/layouts/full_size";
 
 const LayoutForm: React.FC<PropsWithChildren> = ({ children }) => {
   return (
+    <FullSize>
+
     <Flex vertical={true}>
-      <Header />
+      {/* <Header /> */}
         {children}
     </Flex>
+    </FullSize>
   );
 };
 

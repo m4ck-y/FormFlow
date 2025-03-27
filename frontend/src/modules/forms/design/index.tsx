@@ -2,11 +2,12 @@ import React from "react";
 import LayoutForm from "../../../layouts/form";
 import { Tab, Tabs } from "@heroui/react";
 import FormNew from "./new";
+import Header from "@/components/form/design/header";
 
 const FormInfo: React.FC = () => {
     return (
         <LayoutForm>
-
+        <Header/>
         <Tabs
             aria-label="Tabs variants"
             variant="underlined"
@@ -19,6 +20,7 @@ const FormInfo: React.FC = () => {
             <Tab key="preguntas" title="Preguntas" className="p-0">
                 <FormNew/>
             </Tab>
+            <Tab key="configuracion" title="Configuracion" />
             <Tab key="respuestas" title="Respuestas" />
         </Tabs>
         </LayoutForm>
