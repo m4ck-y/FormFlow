@@ -8,15 +8,15 @@ import {
 } from "@heroui/react";
 import {Tooltip} from "@heroui/tooltip";
 
-import MenuProfile from "./header/MenuProfile";
-import flow from "../assets/flow.png";
+import MenuProfile from "./MenuProfile";
+import flow from "@/assets/flow.png";
 import { useNavigate } from "react-router-dom";
-import SVG_Theme from "../assets/icons/theme";
-import SVG_Eye from "../assets/icons/eye";
-import SVG_Save from "../assets/icons/save";
-import SVG_Options from "../assets/icons/options";
+import SVG_Theme from "../../../assets/icons/theme";
+import SVG_Eye from "../../../assets/icons/eye";
+import SVG_Save from "../../../assets/icons/save";
+import SVG_Options from "../../../assets/icons/options";
 
-export default function HHeader() {
+export default function Header() {
     const navigate = useNavigate();
     return (
         <Navbar>
