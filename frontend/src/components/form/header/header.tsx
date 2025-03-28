@@ -1,54 +1,30 @@
 import {
-    Navbar,
-    NavbarBrand,
-    NavbarContent,
+    
+    Input,
 } from "@heroui/react";
+import HeaderBase from "@/components/form/header/header_base";
+import SVG_Search from "@/assets/icons/search";
 
-
-import MenuProfile from "@/components/form/header/MenuProfile";
-import flow from "@/assets/flow.png";
-import { useNavigate } from "react-router-dom";
-
-import React, { ReactNode } from "react";
-
-interface IProps {
-    start?: ReactNode;
-    center?: ReactNode;
-    end?: ReactNode;
+const Header: React.FC = () => {
+    return (
+        <HeaderBase
+        center={
+        <Input
+        radius="full"
+          classNames={{
+            base: "max-w-full sm:max-w-[10rem] h-10",
+            mainWrapper: "h-full",
+            input: "text-small",
+            inputWrapper:
+              "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+          }}
+          placeholder="Búsqueda"
+          size="sm"
+          startContent={<SVG_Search />}
+          type="search"
+        />
+        }/>
+    )
 }
 
-const Header: React.FC<IProps> = ({ start, center, end }) => {
-    const navigate = useNavigate();
-    return (
-        <Navbar classNames={{ wrapper: "w-full --------" }}>
-            <NavbarBrand onClick={() => navigate("/")}>
-                <img src={flow} alt="" height="50px" width="50px" />
-            </NavbarBrand>
-
-            {start ? (
-                <NavbarContent as="div" justify="start">
-                    {start}
-                </NavbarContent>
-            ) : (
-                ""
-            )}
-
-            {center ? (
-                <NavbarContent className="sm:flex gap-4" justify="center">
-                    {center}
-                </NavbarContent>
-            ) : (
-                ""
-            )}
-
-            <NavbarContent as="div" justify="end">
-                {end}
-                <MenuProfile />
-            </NavbarContent>
-        </Navbar>
-    );
-};
-
 export default Header;
-
-//#TODO: investigar: https://floating-ui.com/docs/platform

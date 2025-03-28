@@ -8,7 +8,7 @@ import {
     Link,
     Button,
 } from "@heroui/react";
-import HeaderBase from "@/components/form/header/header";
+import HeaderBase from "@/components/form/header/header_base";
 
 const Header: React.FC = () => {
     return (

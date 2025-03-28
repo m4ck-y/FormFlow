@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Avatar, Button, List, Skeleton } from 'antd';
-import { http } from '../../api/http';
+import { http } from '../../../api/http';
 
 interface TypeForm {
     key: string;

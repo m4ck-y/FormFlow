@@ -1,30 +1,17 @@
 import React from "react";
-import ListForm from "./list";
-import { Button, Flex, FloatButton } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
-import SearchCard from "../../components/search";
-import { useNavigate } from "react-router-dom";
+import LayoutForm from "@/layouts/form";
+import Header from "@/components/form/header/header";
+import Recent from "@/modules/forms/main/recent";
+import Body from "@/modules/forms/main/body/index";
 
-const ViewForm: React.FC = () => {
+const FormIndex: React.FC = () => {
+    return (
+        <LayoutForm>
+            <Header/>
+            <Recent/>
+            <Body/>
+        </LayoutForm>
+    );
+}
 
-  const navigate = useNavigate();
-
-
-  return (
-    <div>
-      <Flex gap="small" vertical={false}>
-        <SearchCard />
-        <Button type="default" icon={<PlusOutlined />} color="cyan" variant="solid"/>
-        <FloatButton
-          icon={<PlusOutlined />}
-          shape="circle"
-          type="primary"
-          onClick={()=>navigate("/form/design")}
-         />
-      </Flex>
-      <ListForm />
-    </div>
-  );
-};
-
-export default ViewForm;
+export default FormIndex;
