@@ -49,7 +49,7 @@ const Login: React.FC = () => {
                     >
                         Registrarme
                     </Button>
-                    <Button color="primary" variant="shadow" onPress={()=>navigate("/")}>
+                    <Button color="primary" variant="shadow" onPress={()=>navigate("/form")}>
                         Siguiente
                     </Button>
                 </Stack>

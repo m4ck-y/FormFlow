@@ -43,7 +43,8 @@ const processResponse = async <T>(response: Response): Promise<ApiResponse<T>> =
     
     return {
         error: response.status !== 200 ? new Error(`${response.status}: ${response.statusText}`) : null,
-        value: data
+        value: data,
+        status: response.status
     };
 };
 
@@ -89,7 +90,8 @@ async function fetchApi<T>(
     } catch (error) {
         return {
             error: error instanceof Error ? error : new Error('Unknown error'),
-            value: null
+            value: null,
+            status: null
         };
     }
 }

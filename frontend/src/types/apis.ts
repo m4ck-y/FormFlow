@@ -7,4 +7,5 @@ export interface RequestOptions {
 export interface ApiResponse<T> {
     error: Error | null;
     value: T | null;
+    status: number | null;
 } 
