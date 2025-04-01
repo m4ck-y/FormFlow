@@ -31,6 +31,10 @@ export class UserBase implements IUserBase {
     self_considers_indigenous: EAnswerGeneral | null;
     self_considers_migrant: EAnswerMigrant | null;
 
+    national_id: string | null;
+    fiscal_id: string | null;
+    social_security_id: string | null;
+
 
     constructor(username : string, first_name : string, last_name : string, second_last_name : string) {
         this.username = username;
@@ -40,22 +44,31 @@ export class UserBase implements IUserBase {
         this.folio = null;
         this.type_blood = null;
         this.type_civil_status = null;
+
+        this.national_id = null;
+        this.fiscal_id = null;
+        this.social_security_id = null;
+
         this.birthdate = null;
         this.key_country_origin = null;
         this.key_birth_country = null;
         this.key_nationality = null;
         this.key_state_birth = null;
+
         this.occupation = null;
         this.known_as = null;
         this.about_me = null;
         this.website = null;
+
         this.id_religion = null;
         this.id_indigenous_language = null;
         this.type_gender = null;
         this.type_biological_sex = null;
         this.type_national_id_sex = null;
+    
         this.self_considers_indigenous = null;
         this.self_considers_migrant = null;
     }
+    
 
 }

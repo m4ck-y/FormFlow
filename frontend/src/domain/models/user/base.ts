@@ -16,6 +16,10 @@ export interface IUserBase{
     type_blood:         EBloodType | null
     type_civil_status:  ECivilStatus | null
 
+    national_id:        string | null
+    fiscal_id:          string | null
+    social_security_id:    string | null
+
     birthdate:          string | null
     key_country_origin: string | null
     key_birth_country:  string | null
