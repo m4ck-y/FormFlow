@@ -3,6 +3,7 @@ from infrastructure.models.form import ModelForm
 from infrastructure.models.question import ModelQuestion
 from infrastructure.models.answer import ModelAnswer
 from infrastructure.models.conditional_logic import ModelConditionalLogic
+from infrastructure.models.auth.otp import ModelOTP
 
 # Crea todas las tablas
 Base.metadata.create_all(bind=engine)

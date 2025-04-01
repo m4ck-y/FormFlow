@@ -28,5 +28,6 @@ Base = declarative_base()
 
 
 def datetime_now(t_zone = timezone.utc) -> datetime:
-    
-    return datetime.now(t_zone)
+
+    #return datetime.now(t_zone)
+    return datetime.now()

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column, Integer, String, Enum
+from sqlalchemy import Column, Integer, String, Enum, ForeignKey
 from infrastructure.models import BaseModel
 from domain.enum.question_type import EQuestionType
 
@@ -12,7 +12,7 @@ class ModelQuestion(BaseModel):
 
 
     # FOREGIN KEY
-    id_form = Column(Integer, nullable=False)
+    id_form = Column(Integer, ForeignKey('form.id'), nullable=False)
     # Relación con la tabla Form (un formulario tiene muchas preguntas)
     form = relationship("ModelForm", back_populates="list_questions")
 

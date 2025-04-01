@@ -4,8 +4,13 @@ from dotenv import load_dotenv
 # Cargar variables de entorno desde un archivo .env
 load_dotenv()
 
+
 API_HOST = os.getenv("API_HOST")
 API_PORT = int(os.getenv("API_PORT"))
+
+API_EMAIL_HOST = os.getenv("API_EMAIL_HOST")
+API_EMAIL_PORT = int(os.getenv("API_EMAIL_PORT"))
+APP_NAME = os.getenv("APP_NAME")
 
 SQLALCHEMY_DB_URL = os.getenv("SQLALCHEMY_DB_URL")
 
