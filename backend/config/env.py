@@ -12,6 +12,9 @@ API_EMAIL_HOST = os.getenv("API_EMAIL_HOST")
 API_EMAIL_PORT = int(os.getenv("API_EMAIL_PORT"))
 APP_NAME = os.getenv("APP_NAME")
 
+API_USER_HOST = os.getenv("API_USER_HOST")
+API_USER_PORT = int(os.getenv("API_USER_PORT"))
+
 SQLALCHEMY_DB_URL = os.getenv("SQLALCHEMY_DB_URL")
 
 
