@@ -7,8 +7,10 @@ import { Flex } from "antd";
 import AuthLayout from "../../layouts/auth";
 import { useNavigate } from "react-router-dom"; // Importamos el hook useNavigate
 
-import {OtpService} from "@/api/otp";
-import {addToast, Button} from "@heroui/react";
+import { OtpService } from "@/api/otp";
+import { addToast, Button } from "@heroui/react";
+import { ToastProps } from "@heroui/toast";
+import { color } from "framer-motion";
 
 const Register: React.FC = () => {
     const navigate = useNavigate(); // Usamos el hook para la navegación
@@ -53,43 +55,62 @@ const Register: React.FC = () => {
                     >
                         Iniciar sesion
                     </Button>
-                    <Button color="primary" variant="shadow" onPress={
-                        ()=>{
-                            console.log("emailValue", emailValue)
-                            api.sendOtp(emailValue).then((res)=>{
-                                console.log("res", res)
-                                console.log("res", res.error)
-                                console.log("res error type", typeof res.error)
-                                if (res.status == null)
-                                    return
+                    <Button
+                        color="primary"
+                        variant="shadow"
+                        onPress={() => {
+                            console.log("emailValue", emailValue);
+                            api.sendOtp(emailValue).then((res) => {
+                                console.log("res", res);
+                                console.log("res", res.error);
+                                console.log("res error type", typeof res.error);
+                                if (res.status == null) return;
 
-                                console.log("error --addin toast", res.error)
-
-                                let description = ""
+                                let toast_settings: {
+                                    description: string;
+                                    endContent: React.ReactNode; // Corregido de "endContend" a "endContent"
+                                    color: ToastProps["color"]; // Usa el tipo específico de color del Toast
+                                    variant: ToastProps["variant"];
+                                } = {
+                                    description: "",
+                                    endContent: null, // Corregido de "endContend" a "endContent"
+                                    color: "success",
+                                    variant: "solid",
+                                };
 
                                 switch (res.status) {
                                     case 422:
-                                        description = "Formato de correo incorrecto"
+                                        toast_settings.description = "Formato de correo incorrecto";
+                                        toast_settings.color = "danger";
+                                        break;
+                                    case 409:
+                                        toast_settings.description = "Correo ya registrado";
+                                        toast_settings.color = "warning";
+                                        toast_settings.variant = "bordered";
+                                        toast_settings.endContent = (
+                                            <Button color="warning" onPress={() => navigate("/login")}>
+                                                Iniciar sesion
+                                            </Button>
+                                        );
                                         break;
                                     case 200:
-                                        description = emailValue
-                                        navigate("/otp?email=" + emailValue)
+                                        toast_settings.description = emailValue;
+                                        navigate("/otp?email=" + emailValue);
                                         break;
                                     default:
-                                        description = "Error desconocido"
+                                        toast_settings.description = "Error desconocido";
                                         break;
                                 }
                                 addToast({
-                                        title: res.status == 200 ? "Codigo enviado" : "Error",
-                                        description: description,
-                                        variant: "solid",
-                                        color: res.status == 200 ? "success" : "danger",
-                                    });
-                        
-                                    
-                            })
-                        }
-                    }>
+                                    title: res.status == 200 ? "Codigo enviado" : "Error",
+                                    description: toast_settings.description,
+                                    variant: toast_settings.variant,
+                                    color: toast_settings.color,
+                                    endContent: toast_settings.endContent,
+                                });
+                            });
+                        }}
+                    >
                         Siguiente
                     </Button>
                 </Flex>
