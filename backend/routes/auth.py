@@ -10,6 +10,8 @@ def AuthRouter(api_server: FastAPI):
     api_server.include_router(api_router)
 
 
+
+
 @api_router.get("/")
 async def Get():
     return {"message": "Hello World"}

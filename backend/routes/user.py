@@ -25,3 +25,18 @@ async def Register(data: dict):
             print(response.json())
             raise HTTPException(status_code=response.status_code, detail="Error al registrar usuario")
         return response.json()    
+
+@api_router.get("/exists")
+async def Exists(username: str) -> bool:
+
+    if not API_USER_HOST or not API_USER_PORT:
+        print("No se ha configurado la URL del microservicio de usuarios")
+        raise HTTPException(status_code=500, detail="Error al registrar usuario")
+    
+    url = f"http://{API_USER_HOST}:{API_USER_PORT}/user/exists"
+
+    async with httpx.AsyncClient(follow_redirects=True) as client:
+        response = await client.get(url, params={"username": username})
+        if response.status_code != 200:
+            print("Error al llamar al microservicio de usuarios", url, response)
+        return response.json()
