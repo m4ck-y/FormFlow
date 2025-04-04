@@ -11,4 +11,8 @@ export class UserService {
         newUser.password = password;
         return http.post('/user/register', newUser);
     }
+
+    async Exists(username: string) {
+        return http.get('/user/exists', { username });
+    }
 }

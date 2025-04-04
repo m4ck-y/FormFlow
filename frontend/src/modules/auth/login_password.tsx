@@ -13,7 +13,7 @@ import { Link } from "@heroui/link";
 import { UserService } from "@/api/user";
 import { addToast } from "@heroui/react";
 
-const Login: React.FC = () => {
+const LoginPassword: React.FC = () => {
     const navigate = useNavigate(); // Usamos el hook para la navegación
 
     const [emailValue, setEmailValue] = React.useState("");
@@ -25,9 +25,9 @@ const Login: React.FC = () => {
         <AuthLayout>
             <Stack spacing={2}>
                 <Typography variant="h4" gutterBottom>
-                    Iniciar session
+                    Ingresa tu Contraseña
                 </Typography>
-                <div>Usa tu cuenta de formFLow</div>
+                <div>Por favor, ingresa la contraseña que creaste al registrarte para acceder a tu cuenta.</div>
             </Stack>
 
             <Stack spacing={2} width={"600px"}>
@@ -41,7 +41,7 @@ const Login: React.FC = () => {
                     helperText={errorEmail}
                 />
                 <Link href="#" underline="none">
-                    ¿Olvidaste el correo electronico?
+                    ¿Olvidaste tu contraseña?
                 </Link>
                 <Typography variant="body1" gutterBottom>
                     ¿Esta no es tu computadora? Usa una ventana privada para acceder.

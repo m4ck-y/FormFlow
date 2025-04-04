@@ -9,7 +9,7 @@ import { Button } from "@heroui/button";
 
 import { Link } from "@heroui/link";
 import { InputOtp } from "@heroui/input-otp";
-import {OtpService} from "@/api/otp";
+import { OtpService } from "@/api/otp";
 import { addToast } from "@heroui/react";
 
 const OTP: React.FC = () => {
@@ -36,9 +36,9 @@ const OTP: React.FC = () => {
 
             <Flex vertical gap="middle" style={{ width: "600px" }}>
                 <Flex vertical={false} justify="center">
-                <InputOtp classNames={{
-                    segmentWrapper: "gap-4"
-                }} length={6} value={codeValue} onValueChange={setCodeValue} size="lg" />
+                    <InputOtp classNames={{
+                        segmentWrapper: "gap-4"
+                    }} length={6} value={codeValue} onValueChange={setCodeValue} size="lg" />
                 </Flex>
                 <div>
                     Si no encuentras el correo, revisa la carpeta de spam.
@@ -52,47 +52,54 @@ const OTP: React.FC = () => {
                         Más información para usar el modo privado.
                     </Link>
                 </Typography>
-                <Flex justify="end">
+                <Flex justify="end" gap="middle" align="end">
+                        <Typography variant="body1" gutterBottom>
+                            ¿No recibiste el correo? <Link onPress={() => api.sendOtp(email!)}>Reenviar</Link>
+                        </Typography>
+                        
+
                     <Button
-                        color="primary"
-                        variant="shadow"
-                        onPress={() => {
-                            
-                            console.log("verificando email:", email, "code:", codeValue);
-                            api.verifyOtp(email!, codeValue).then((res) => {
+                    color="primary"
+                    variant="shadow"
+                    onPress={() => {
 
-                                let description = "";
+                        console.log("verificando email:", email, "code:", codeValue);
+                        api.verifyOtp(email!, codeValue).then((res) => {
 
-                                switch (res.status) {
-                                    case 200:
-                                        description = "Correo verificado con exito";
-                                        navigate("/register/personal_info?email=" + email);
-                                        break;
-                                    case 400:
-                                        description = "El codigo no es valido";
-                                        break;
-                                    case 422:
-                                        description = "El codigo no es valido";
-                                        break;
-                                    default:
-                                        description = "Error desconocido";
-                                        break;
-                                }
+                            let description = "";
 
-                                addToast({
-                                    title: res.status == 200 ? "Validado" : "Error",
-                                        description: description,
-                                        variant: "solid",
-                                        color: res.status == 200 ? "success" : "danger",
-                                })
+                            switch (res.status) {
+                                case 200:
+                                    description = "Correo verificado con exito";
+                                    navigate("/register/personal_info?email=" + email);
+                                    break;
+                                case 400:
+                                    description = "El codigo no es valido";
+                                    break;
+                                case 422:
+                                    description = "El codigo no es valido";
+                                    break;
+                                default:
+                                    description = "Error desconocido";
+                                    break;
+                            }
+
+                            addToast({
+                                title: res.status == 200 ? "Validado" : "Error",
+                                description: description,
+                                variant: "solid",
+                                color: res.status == 200 ? "success" : "danger",
                             })
-                        }}
-                    >
-                        Verificar
-                    </Button>
+                        })
+                    }}
+                >
+                    Verificar
+                </Button>
+
                 </Flex>
+
             </Flex>
-        </AuthLayout>
+        </AuthLayout >
     );
 };
 

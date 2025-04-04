@@ -8,7 +8,7 @@ import AuthLayout from "../../layouts/auth";
 import { useNavigate } from "react-router-dom"; // Importamos el hook useNavigate
 import {  Button } from "@heroui/react";
 
-const RegisterPersonalInfo: React.FC = () => {
+const ProfileSetup: React.FC = () => {
     const navigate = useNavigate(); // Usamos el hook para la navegación
 
     const params = new URLSearchParams(window.location.search);
@@ -80,4 +80,4 @@ const RegisterPersonalInfo: React.FC = () => {
     );
 };
 
-export default RegisterPersonalInfo;
+export default ProfileSetup;

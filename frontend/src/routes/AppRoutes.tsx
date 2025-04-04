@@ -2,8 +2,8 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "../modules/auth/login"
 import Register from "../modules/auth/register"
-import RegisterPersonalInfo from "@/modules/auth/register_personal_info";
-import CreatePassword from "@/modules/auth/create_password";
+import ProfileSetup from "@/modules/auth/profile_setup";
+import PsswordSetup from "@/modules/auth/password_setup";
 //import ViewForm from '../modules/forms/test/index'
 import FormInfo from "../modules/forms/design/index"
 import TestUI from "../modules/test";
@@ -19,8 +19,8 @@ export const AppRoutes: React.FC = () => {
                 <Route path="/login" element={<Login/>} />
                 <Route path="/otp" element={<OTP/>} />
                 <Route path="/register" element={<Register/>} />
-                <Route path="/register/personal_info" element={<RegisterPersonalInfo/>} />
-                <Route path="/register/create_password" element={<CreatePassword/>} />
+                <Route path="/register/personal_info" element={<ProfileSetup/>} />
+                <Route path="/register/create_password" element={<PsswordSetup/>} />
                 <Route path="/form/design" element={<FormInfo/>} />
                 <Route path="/test" element={<TestUI/>} />
             </Routes>

@@ -9,10 +9,11 @@ import { useNavigate } from "react-router-dom"; // Importamos el hook useNavigat
 
 import { UserService } from "@/api/user";
 import { addToast, Button } from "@heroui/react";
+import { IToastSettings } from "@/components/types/toast";
 
 const MIN_PASSWORD_LENGTH = 8;
 
-const CreatePassword: React.FC = () => {
+const PsswordSetup: React.FC = () => {
     const navigate = useNavigate(); // Usamos el hook para la navegación
 
     const params = new URLSearchParams(window.location.search);
@@ -20,8 +21,6 @@ const CreatePassword: React.FC = () => {
     const firstName = params.get("first_name") || "";
     const lastName = params.get("last_name") || "";
     const secondLastName = params.get("second_last_name") || "";
-    
-
 
     const [password, setPasswordValue] = React.useState("");
     const [password2, setPasswordValue2] = React.useState("");
@@ -50,7 +49,8 @@ const CreatePassword: React.FC = () => {
         }
     };
 
-    const isFormValid = password.length >= MIN_PASSWORD_LENGTH && password === password2;
+    const isFormValid =
+        password.length >= MIN_PASSWORD_LENGTH && password === password2;
 
     const api = new UserService();
 
@@ -106,10 +106,41 @@ const CreatePassword: React.FC = () => {
                         variant="shadow"
                         isDisabled={!isFormValid}
                         onPress={() => {
-                           console.log("email", email, firstName, lastName, secondLastName, password, password2);
-                           api.Register(firstName, lastName, secondLastName, email, password).then((response) => {
-                               console.log("response", response);
-                           })
+                            let toast_settings: IToastSettings = {
+                                description: "",
+                                endContent: null,
+                                color: "success",
+                                variant: "solid",
+                            };
+                            console.log(
+                                "email",
+                                email,
+                                firstName,
+                                lastName,
+                                secondLastName,
+                                password,
+                                password2
+                            );
+                            api
+                                .Register(firstName, lastName, secondLastName, email, password)
+                                .then((response) => {
+                                    console.log("response", response);
+
+                                    if (response.status === 200) {
+                                        navigate("/login");
+                                    }else{
+                                        toast_settings.description = response.error?.message || "Error desconocido";
+                                        toast_settings.color = "danger";
+                                    }
+
+                                    addToast({
+                                        title:response.status === 200 ? "Registro exitoso" : "Error",
+                                        description: toast_settings.description,
+                                        variant: toast_settings.variant,
+                                        color: toast_settings.color,
+                                        endContent: toast_settings.endContent,
+                                    });
+                                });
                         }}
                     >
                         Crear cuenta
@@ -120,4 +151,4 @@ const CreatePassword: React.FC = () => {
     );
 };
 
-export default CreatePassword;
+export default PsswordSetup;
