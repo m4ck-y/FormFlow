@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom"; // Importamos el hook useNavigat
 import { OtpService } from "@/api/otp";
 import { addToast, Button } from "@heroui/react";
 import { ToastProps } from "@heroui/toast";
-import { color } from "framer-motion";
 
 const Register: React.FC = () => {
     const navigate = useNavigate(); // Usamos el hook para la navegación

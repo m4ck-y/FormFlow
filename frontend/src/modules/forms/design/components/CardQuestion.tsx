@@ -1,5 +1,5 @@
 import { Flex } from "antd";
-import Card from "../../../../components/form/card";
+import Card from "../../../../components/card";
 import CardEditable from "../../../../components/form/CardEditable";
 import { Input } from "@heroui/react";
 import { Select, SelectSection, SelectItem } from "@heroui/select";

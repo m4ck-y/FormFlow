@@ -1,25 +1,76 @@
 import React from "react";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import Stack from "@mui/material/Stack";
 import { useNavigate } from "react-router-dom";
-
-import { Flex } from "antd";
-import AuthLayout from "../../layouts/auth";
-
+import { Stack, Typography, TextField } from "@mui/material";
 import { Button } from "@heroui/button";
-
 import { Link } from "@heroui/link";
-import { UserService } from "@/api/user";
 import { addToast } from "@heroui/react";
+import { UserService } from "@/api/user";
+import { ROUTES } from "../../routes/AppRoutes";
+import AuthLayout from "../../layouts/auth";
+import { useUsername } from "@/context/login/username";
+
+// Interfaz para el estado del formulario
+interface LoginFormState {
+    email: string;
+    error: string;
+}
 
 const Login: React.FC = () => {
-    const navigate = useNavigate(); // Usamos el hook para la navegación
 
-    const [emailValue, setEmailValue] = React.useState("");
-    const [errorEmail, setErrorEmail] = React.useState("");
+    const { setUsername: setUserNameInContext  } = useUsername(); // Usamos el hook para acceder al contexto
 
-    const api = new UserService();
+    const navigate = useNavigate();
+    const [formState, setFormState] = React.useState<LoginFormState>({
+        email: "",
+        error: ""
+    });
+
+    const userService = new UserService();
+
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormState(prev => ({
+            ...prev,
+            email: e.target.value,
+            error: ""
+        }));
+    };
+
+    const handleRegisterClick = () => navigate(ROUTES.REGISTER);
+
+    const handleSubmit = async () => {
+        try {
+            const response = await userService.Exists(formState.email);
+
+            if (response.status !== 200) {
+
+                addToast({
+                    title: "Error",
+                    description: response.error?.message || "Error desconocido",
+                    color: "danger",
+                    variant: "solid",
+                });
+                return;
+            }
+
+            if (response.value) {
+                setUserNameInContext(formState.email); // Guardamos el username en el contexto
+                navigate(ROUTES.LOGIN_PASSWORD);
+                //navigate(ROUTES.LOGIN_PASSWORD, {state: { username: formState.email }});
+            } else {
+                setFormState(prev => ({
+                    ...prev,
+                    error: "El correo no esta registrado"
+                }));
+            }
+        } catch (error) {
+            addToast({
+                title: "Error",
+                description: "Error al verificar el correo",
+                color: "danger",
+                variant: "solid",
+            });
+        }
+    };
 
     return (
         <AuthLayout>
@@ -32,17 +83,20 @@ const Login: React.FC = () => {
 
             <Stack spacing={2} width={"600px"}>
                 <TextField
-                    id="outlined-basic"
+                    id="email-input"
                     label="Correo electronico"
                     variant="outlined"
-                    onChange={(e) => setEmailValue(e.target.value)}
                     type="email"
-                    error={!!errorEmail}
-                    helperText={errorEmail}
+                    value={formState.email}
+                    onChange={handleEmailChange}
+                    error={!!formState.error}
+                    helperText={formState.error}
                 />
+
                 <Link href="#" underline="none">
                     ¿Olvidaste el correo electronico?
                 </Link>
+
                 <Typography variant="body1" gutterBottom>
                     ¿Esta no es tu computadora? Usa una ventana privada para acceder.
                     <Link
@@ -52,40 +106,20 @@ const Login: React.FC = () => {
                         Más información para usar el modo privado.
                     </Link>
                 </Typography>
+
                 <Stack direction="row" spacing={2}>
                     <Button
                         color="primary"
                         variant="light"
-                        onPress={() => navigate("/register")}
+                        onPress={handleRegisterClick}
                     >
                         Registrarme
                     </Button>
-                    <Button color="primary" variant="shadow" onPress={()=>{
-                        console.log("login",emailValue);
-                        api.Exists(emailValue).then((res) => {
-                            if (res.status != 200) {
-                                addToast({
-                                        title: "Error",
-                                        description: res.error?.message || "Error desconocido",
-                                        color: "danger",
-                                        variant: "solid",
-                                    })
-                                    return;
-                                }
-                            if (res.status == 200) {
-
-                                switch (res.value) {
-                                    case true:
-                                        navigate("/form");
-                                        break;
-                                    case false:
-                                        setErrorEmail("El correo no esta registrado");
-                                        break;
-
-                            }}
-                        });
-
-                    }}>
+                    <Button
+                        color="primary"
+                        variant="shadow"
+                        onPress={handleSubmit}
+                    >
                         Siguiente
                     </Button>
                 </Stack>

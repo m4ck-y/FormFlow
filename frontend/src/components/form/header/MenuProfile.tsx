@@ -1,3 +1,4 @@
+import { ITokenPayload } from "@/domain/models/auth/auth";
 import {
     DropdownItem,
     DropdownTrigger,
@@ -6,8 +7,19 @@ import {
     Avatar,
     User,
 } from "@heroui/react";
+import { nav } from "framer-motion/client";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/routes/AppRoutes";
+
 const MenuProfile: React.FC = () => {
+
+    const navigate = useNavigate();
+
+    const basic_info:ITokenPayload = JSON.parse(
+        localStorage.getItem("basic_info") || "{}"
+    );
+
     return (
         <Dropdown placement="bottom-end" showArrow>
             <DropdownTrigger>
@@ -16,16 +28,16 @@ const MenuProfile: React.FC = () => {
                     as="button"
                     className="transition-transform"
                     color="secondary"
-                    name="Jason Hughes"
+                    name={basic_info.name}
                     getInitials={(name) => name.charAt(0)}
                     showFallback
                     size="sm"
-                    src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+                    src={basic_info.url_photo}
                 />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
                 <DropdownItem key="profile" className="h-14 gap-2">
-                    <p className="font-semibold">zoey@example.com</p>
+                    <p className="font-semibold">{basic_info.username}</p>
                 </DropdownItem>
                 <DropdownItem
                     key="profile"
@@ -36,22 +48,21 @@ const MenuProfile: React.FC = () => {
                         avatarProps={{
                             size: "lg",
                             className:"w-14 h-14 text-large",
-                            src: "https://avatars.githubusercontent.com/u/30373425?v=4",
+                            src: basic_info.url_photo,
                         }}
                         classNames={{
                             name: "text-default-600",
                             description: "text-default-500",
                         }}
-                        description="@jrgarciadev"
-                        name="Junior Garcia"
+                        description={basic_info.username}
+                        name={basic_info.name}
                     />
                 </DropdownItem>
-                <DropdownItem key="settings">My Settings</DropdownItem>
-                <DropdownItem key="team_settings">Team Settings</DropdownItem>
-                <DropdownItem key="configurations">Configurations</DropdownItem>
+                <DropdownItem key="settings" onPress={() => navigate(ROUTES.ACCOUNT)}>Mi Cuenta</DropdownItem>
+                <DropdownItem key="configurations">Configuraciones</DropdownItem>
                 <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
                 <DropdownItem key="logout" color="danger">
-                    Log Out
+                    Salir
                 </DropdownItem>
             </DropdownMenu>
         </Dropdown>

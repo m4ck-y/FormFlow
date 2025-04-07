@@ -1,4 +1,4 @@
-@import url("./card.module.css");
+@import url("@/components/card.module.css");
 
 .card_editable{
     @apply card;
