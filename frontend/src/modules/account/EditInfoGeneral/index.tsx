@@ -5,7 +5,6 @@ import {
     ModalBody,
     ModalFooter,
     Button,
-    useDisclosure,
   } from "@heroui/react";
 import InfoGeneral from "./info_general";
 
@@ -19,12 +18,6 @@ const EditInfoGeneral: React.FC<IProps> = ({
     isOpen,
     onOpenChange,
   }: IProps) => {
-
-    /* 
-    <Button color="primary" onPress={onOpen}>
-          Open Modal
-        </Button>
-     */
   
     return (
         <Modal isOpen={isOpen} placement="top-center" onOpenChange={onOpenChange} size="xl" scrollBehavior="inside">
