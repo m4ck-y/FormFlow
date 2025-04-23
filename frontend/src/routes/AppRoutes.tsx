@@ -13,6 +13,7 @@ import LoginPassword from "@/modules/auth/login_password";
 import { UserNameProvider } from "@/context/login/username";
 import ProtectedRoute from "./ProptectedUsername";
 import Account from "@/modules/account";
+import { NewsFeedPage } from "@/modules/news";
 
 export enum ROUTES {
     FORM = "/form",
@@ -25,6 +26,8 @@ export enum ROUTES {
     FORM_DESIGN = "/form/design",
 
     ACCOUNT = "/account",
+
+    NEWS = "/news",
 
     TEST = "/test",
 }
@@ -49,6 +52,8 @@ export const AppRoutes: React.FC = () => {
                 <Route path={ROUTES.TEST} element={<TestUI />} />
 
                 <Route path={ROUTES.ACCOUNT} element={<Account />} />
+                
+                <Route path={ROUTES.NEWS} element={<NewsFeedPage />} />
 
                 <Route
                     path={ROUTES.LOGIN}

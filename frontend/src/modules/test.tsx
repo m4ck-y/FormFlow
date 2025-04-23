@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
 import Profile from "./account/profile";
 import Suggest from "./account/suggest";
+import PostsIndex from "./posts/index";
+import {NewsFeedPage} from "./news/index";
 const TestUI = () => {
   return (
     <div>
@@ -18,6 +19,8 @@ const TestUI = () => {
         <Profile />
         <Suggest />
       </div>
+      {/* <PostsIndex /> */}
+      <NewsFeedPage />
     </div>
   );
 };
