@@ -1,16 +1,23 @@
 import {
-    
-    Input,
+
+  Button,
+  Input,
 } from "@heroui/react";
 import HeaderBase from "@/components/form/header/header_base";
 import SVG_Search from "@/assets/icons/search";
+import SVG_New from "@/assets/icons/new";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/routes/AppRoutes";
 
 const Header: React.FC = () => {
-    return (
-        <HeaderBase
-        center={
+
+  const navigate = useNavigate();
+
+  return (
+    <HeaderBase
+      center={
         <Input
-        radius="full"
+          radius="full"
           classNames={{
             base: "max-w-full sm:max-w-[10rem] h-10",
             mainWrapper: "h-full",
@@ -23,8 +30,14 @@ const Header: React.FC = () => {
           startContent={<SVG_Search />}
           type="search"
         />
-        }/>
-    )
+      }
+      end={
+        <Button isIconOnly radius="full" color="secondary" variant="light" onPress={() => navigate(ROUTES.NEWS)}>
+          <SVG_New />
+        </Button>
+      }
+    />
+  )
 }
 
 export default Header;

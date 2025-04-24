@@ -3,7 +3,7 @@ import mockNews from "./news.mook.data";
 import LayoutForm from "@/layouts/form";
 import Header from "@/components/form/header/header";
 import { Flex } from "antd";
-import { Card, CardBody } from "@heroui/card";
+import NewAdd from "./components/NewAdd";
 
 export const NewsFeedPage = () => {
   return (
@@ -14,7 +14,7 @@ export const NewsFeedPage = () => {
         gap={20}
         align="center"
         style={{
-          backgroundColor: "rgb(222,209,255)",
+          //backgroundColor: "rgb(222,209,255)",
           /* background:
             "radial-gradient(circle, rgba(222,209,255,1) 0%, rgba(218,255,252,1) 100%)", */
           paddingBottom: "20px",
@@ -22,20 +22,21 @@ export const NewsFeedPage = () => {
           paddingTop: "20px",
         }}
       >
-        <Card
+        {/* <Card
           >
-            <CardBody>
+            <CardBody> */}
         <main className="p-6 max-w-4xl mx-auto">
           <h1
             className="text-2xl font-bold mb-6"
             style={{ paddingBottom: "1.5rem" }}
           >
-            Ultimas noticias
           </h1>
+          <NewAdd />
+          <div style={{padding: "20px"}}></div>
           <NewsList posts={mockNews} />
         </main>
-            </CardBody>
-        </Card>
+            {/* </CardBody>
+        </Card> */}
       </Flex>
     </LayoutForm>
   );

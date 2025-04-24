@@ -7,16 +7,14 @@ import {
     Avatar,
     User,
 } from "@heroui/react";
-import { nav } from "framer-motion/client";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/routes/AppRoutes";
 
 const MenuProfile: React.FC = () => {
-
     const navigate = useNavigate();
 
-    const basic_info:ITokenPayload = JSON.parse(
+    const basic_info: ITokenPayload = JSON.parse(
         localStorage.getItem("basic_info") || "{}"
     );
 
@@ -39,15 +37,11 @@ const MenuProfile: React.FC = () => {
                 <DropdownItem key="profile" className="h-14 gap-2">
                     <p className="font-semibold">{basic_info.username}</p>
                 </DropdownItem>
-                <DropdownItem
-                    key="profile"
-                    isReadOnly
-                    className=" gap-2 opacity-100"
-                >
+                <DropdownItem key="profile" isReadOnly className=" gap-2 opacity-100">
                     <User
                         avatarProps={{
                             size: "lg",
-                            className:"w-14 h-14 text-large",
+                            className: "w-14 h-14 text-large",
                             src: basic_info.url_photo,
                         }}
                         classNames={{
@@ -58,7 +52,9 @@ const MenuProfile: React.FC = () => {
                         name={basic_info.name}
                     />
                 </DropdownItem>
-                <DropdownItem key="settings" onPress={() => navigate(ROUTES.ACCOUNT)}>Mi Cuenta</DropdownItem>
+                <DropdownItem key="settings" onPress={() => navigate(ROUTES.ACCOUNT)}>
+                    Mi Cuenta
+                </DropdownItem>
                 <DropdownItem key="configurations">Configuraciones</DropdownItem>
                 <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
                 <DropdownItem key="logout" color="danger">

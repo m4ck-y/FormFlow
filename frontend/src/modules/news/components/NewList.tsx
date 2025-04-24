@@ -1,7 +1,7 @@
 // src/features/news/components/NewsList.tsx
 
 import React from "react";
-import { NewsPost } from "../new.type";
+import { NewsPost } from "../../../domain/data/new.source";
 import { NewsCard } from "./NewCard";
 
 type Props = {
