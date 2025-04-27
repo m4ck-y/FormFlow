@@ -8,6 +8,8 @@ import SVG_Search from "@/assets/icons/search";
 import SVG_New from "@/assets/icons/new";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/routes/AppRoutes";
+import SVG_Heart from "@/assets/icons/heart";
+import SVG_Fruit from "@/assets/icons/fruit";
 
 const Header: React.FC = () => {
 
@@ -32,9 +34,17 @@ const Header: React.FC = () => {
         />
       }
       end={
+        <>
         <Button isIconOnly radius="full" color="secondary" variant="light" onPress={() => navigate(ROUTES.NEWS)}>
           <SVG_New />
         </Button>
+        <Button isIconOnly radius="full" color="secondary" variant="light" onPress={() => navigate(ROUTES.NEWS)}>
+          <SVG_Heart />
+        </Button>
+        <Button isIconOnly radius="full" color="secondary" variant="light" onPress={() => navigate(ROUTES.NEWS)}>
+          <SVG_Fruit />
+        </Button>
+        </>
       }
     />
   )

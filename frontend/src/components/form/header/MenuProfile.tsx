@@ -10,6 +10,10 @@ import {
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/routes/AppRoutes";
+import SVG_Settings from "@/assets/icons/settings";
+import SVG_UserSettings from "@/assets/icons/user_settings";
+import SVG_HelpFeedBack from "@/assets/icons/help_feedback";
+import SVG_Power from "@/assets/icons/power";
 
 const MenuProfile: React.FC = () => {
     const navigate = useNavigate();
@@ -52,12 +56,12 @@ const MenuProfile: React.FC = () => {
                         name={basic_info.name}
                     />
                 </DropdownItem>
-                <DropdownItem key="settings" onPress={() => navigate(ROUTES.ACCOUNT)}>
+                <DropdownItem startContent={<SVG_UserSettings/>} key="settings" onPress={() => navigate(ROUTES.ACCOUNT)}>
                     Mi Cuenta
                 </DropdownItem>
-                <DropdownItem key="configurations">Configuraciones</DropdownItem>
-                <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
-                <DropdownItem key="logout" color="danger">
+                <DropdownItem startContent={<SVG_Settings/>} key="configurations">Configuraciones</DropdownItem>
+                <DropdownItem startContent={<SVG_HelpFeedBack/>} key="help_and_feedback">Help & Feedback</DropdownItem>
+                <DropdownItem startContent={<SVG_Power/>} key="logout" color="danger">
                     Salir
                 </DropdownItem>
             </DropdownMenu>
