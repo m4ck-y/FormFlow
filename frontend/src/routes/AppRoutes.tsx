@@ -14,6 +14,7 @@ import { UserNameProvider } from "@/context/login/username";
 import ProtectedRoute from "./ProptectedUsername";
 import Account from "@/modules/account";
 import { NewsFeedPage } from "@/modules/news";
+import { NewDetailPage } from "@/modules/news/Detail";
 
 export enum ROUTES {
     FORM = "/form",
@@ -28,6 +29,8 @@ export enum ROUTES {
     ACCOUNT = "/account",
 
     NEWS = "/news",
+
+    NEW_DETAIL = "/new",
 
     TEST = "/test",
 }
@@ -52,6 +55,8 @@ export const AppRoutes: React.FC = () => {
                 <Route path={ROUTES.TEST} element={<TestUI />} />
 
                 <Route path={ROUTES.ACCOUNT} element={<Account />} />
+
+                <Route path={ROUTES.NEW_DETAIL} element={<NewDetailPage />} />
                 
                 <Route path={ROUTES.NEWS} element={<NewsFeedPage />} />
 

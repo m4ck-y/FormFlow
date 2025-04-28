@@ -5,4 +5,5 @@ export type NewSource = {
   name: string;
   logoUrl: string;
   link: string;
+  has_author: boolean;
 }

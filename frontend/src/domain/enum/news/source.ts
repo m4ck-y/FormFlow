@@ -1,5 +1,7 @@
 export enum ENewsSource {
-  MEXICO_AEROSPACE = "MEXICO_AEROESPACIAL",
-  MILENIO = "MILENIO",
-  SECRETARIA_SALUD_MX = "SECRETARIA_SALUD_MX",
+  MEXICO_AEROSPACE = "mexicoaeroespacial.mx",
+  SECRETARIA_SALUD_MX = "gob.mx/salud",
+  INSP = "insp",
+  OPS = "paho.org",
+  MILENIO = "www.milenio.com",
 }

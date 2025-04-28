@@ -8,24 +8,25 @@ import SVG_New from "@/assets/icons/new";
 import NewFooter from "./NewFooter";
 import SVG_Options from "@/assets/icons/options";
 import { NewPost } from "@/domain/entity/NewPost";
+//import { NewPost_to_TNewDetail } from "@/domain/dto/news/new";
 
 type Props = {
   post: NewPost;
 };
 
 export const NewsCard: React.FC<Props> = ({ post }) => {
-  const navigate = useNavigate();
-  const handleClick = () => navigate(`/news/${post.id}`);
   return <NewCard2 post={post} />;
 };
 
 const NewCard2: React.FC<Props> = ({ post }) => {
+  const navigate = useNavigate();
+  const handleClick = () => navigate("/new" + "?id=" + post.id);
   return (
-    <Card style={{maxWidth: "700px"}} isPressable>
+    <Card style={{maxWidth: "700px"}} isPressable onPress={handleClick}>
       <CardHeader className="flex items-center gap-2 justify-between">
         <Flex gap={5} align="center">
-          <Avatar name={post.author.name} src={post.author_photo} />
-          <h3 className="font-semibold">{post.author.name}</h3>
+          <Avatar name={post.source.name} src={post.source.logoUrl} />
+          <h3 className="font-semibold">{post.source.name}</h3>
           <span>&#183;</span>
           <span className="text-sm text-gray-500">
             {new Date(post.date).toLocaleDateString()}
@@ -38,7 +39,7 @@ const NewCard2: React.FC<Props> = ({ post }) => {
       <img
         className="w-full object-cover"
         src={post.mainImageUrl}
-        alt={post.title}
+        alt={post.tittle}
         style={{ height: "300px" }}
       />
       <Flex vertical className="p-3" align="start">
@@ -48,7 +49,7 @@ const NewCard2: React.FC<Props> = ({ post }) => {
             {post.link}
           </span>
         </Flex>
-        <h3 className="font-semibold">{post.title}</h3>
+        <h3 className="font-semibold">{post.tittle}</h3>
       </Flex>
       <CardFooter>
         <NewFooter />

@@ -1,11 +1,11 @@
 // src/features/news/components/NewsList.tsx
 
 import React from "react";
-import { NewsPost } from "../../../domain/data/new.source";
 import { NewsCard } from "./NewCard";
+import { NewPost } from "@/domain/entity/NewPost";
 
 type Props = {
-  posts: NewsPost[];
+  posts: NewPost[];
 };
 
 export const NewsList: React.FC<Props> = ({ posts }) => {

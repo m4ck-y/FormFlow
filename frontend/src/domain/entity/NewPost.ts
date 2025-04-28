@@ -1,4 +1,3 @@
-
 import { NewSource } from "@/domain/entity/NewSource";
 
 export type NewsAuthor = {
@@ -10,8 +9,8 @@ export type NewsAuthor = {
 
 export interface NewPostApi {
     id: string;
-    title: string;
-    author: string;
+    titulo: string;
+    autor: string;
     fecha: string; // ISO 8601
     contenido: string;
     imagenPrincipal: string;
@@ -20,8 +19,8 @@ export interface NewPostApi {
 
 export interface NewPost {
   id: string;
-  title: string;
-  author: NewsAuthor;
+  tittle: string;
+  person_author: NewsAuthor | null;
   link: string;
   mainImageUrl: string;
   date: string; // ISO 8601
