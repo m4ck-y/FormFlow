@@ -11,6 +11,7 @@ import { Link } from "@heroui/link";
 import new_mook_data from "./new.mook.data";
 import { Button } from "@heroui/react";
 import SVG_Link from "@/assets/icons/link";
+import "./Detail.module.css"
 
 export const NewDetailPage = () => {
   const { search } = useLocation();
@@ -26,7 +27,15 @@ export const NewDetailPage = () => {
     const fetchNews = async () => {
       const response = await fetch(
         "http://192.168.100.100:6616/getNewData/" + id
-      );
+      ).catch((error) => {
+        console.log("error", error);
+        setNewDetail(mockNews[0]);
+        setContentHTML(new_mook_data);
+      });
+
+      console.warn("response", response);
+
+
 
       if (!response.ok) {
         //throw new Error("Network response was not ok");
@@ -115,7 +124,7 @@ export const NewDetailPage = () => {
               {newDetail?.date && <span>{newDetail.date}</span>}
             </Flex>
 
-            <div dangerouslySetInnerHTML={{ __html: contentHTML }}></div>
+            <div className="new_detail_content" dangerouslySetInnerHTML={{ __html: contentHTML }}></div>
 
             <span>
             Fuente: &nbsp;
