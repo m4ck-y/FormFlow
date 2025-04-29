@@ -1,0 +1,17 @@
+.NewList{
+
+}
+
+
+/* TODO: Pasarlo a card general COMPONENT */
+
+.NewListItem{
+    box-shadow: none !important;
+}
+
+@media screen and (max-width: 700px) {
+    .NewListItem{
+        border-radius: 0px !important;
+        border: 0px;
+    }
+}

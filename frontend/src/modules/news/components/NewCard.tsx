@@ -12,20 +12,23 @@ import { NewPost } from "@/domain/entity/NewPost";
 
 type Props = {
   post: NewPost;
+  className?: string;
 };
 
-export const NewsCard: React.FC<Props> = ({ post }) => {
-  return <NewCard2 post={post} />;
+export const NewsCard: React.FC<Props> = ({ post, className }) => {
+  return <NewCard2 post={post} className={className} />;
 };
 
-const NewCard2: React.FC<Props> = ({ post }) => {
+const NewCard2: React.FC<Props> = ({ post, className }) => {
   const navigate = useNavigate();
   const handleClick = () => navigate("/new" + "?id=" + post.id);
   return (
-    <Card style={{maxWidth: "700px"}} isPressable onPress={handleClick}>
+    <Card className={" " + className} style={{maxWidth: "700px"}} isPressable onPress={handleClick}>
       <CardHeader className="flex items-center gap-2 justify-between">
         <Flex gap={5} align="center">
-          <Avatar name={post.source.name} src={post.source.logoUrl} />
+          <div>
+            <Avatar name={post.source.name} src={post.source.logoUrl} />
+          </div>
           <h3 className="font-semibold">{post.source.name}</h3>
           <span>&#183;</span>
           <span className="text-sm text-gray-500">
@@ -42,14 +45,14 @@ const NewCard2: React.FC<Props> = ({ post }) => {
         alt={post.tittle}
         style={{ height: "300px" }}
       />
-      <Flex vertical className="p-3" align="start">
-        <Flex gap={5} align="center" justify="start">
+      <Flex vertical className="p-3" align="start" justify="start">
+        <Flex gap={5} align="center" justify="start" className="w-full">
           <SVG_New />
-          <span className="text-sm" style={{ color: "gray" }}>
+          <span className="text-sm" style={{ color: "gray", overflow: "hidden", textAlign: "start", textOverflow: "ellipsis" }}>
             {post.link}
           </span>
         </Flex>
-        <h3 className="font-semibold">{post.tittle}</h3>
+        <h3 className="font-semibold" style={{textAlign: "start"}}>{post.tittle}</h3>
       </Flex>
       <CardFooter>
         <NewFooter />

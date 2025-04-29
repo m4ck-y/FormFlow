@@ -3,6 +3,7 @@
 import React from "react";
 import { NewsCard } from "./NewCard";
 import { NewPost } from "@/domain/entity/NewPost";
+import styles from "./NewList.module.css"
 
 type Props = {
   posts: NewPost[];
@@ -14,7 +15,7 @@ export const NewsList: React.FC<Props> = ({ posts }) => {
       gap: "1.5rem",
     }}>
       {posts.map((post) => (
-        <NewsCard key={post.id} post={post} />
+        <NewsCard key={post.id} post={post} className={styles.NewListItem + " ----------------------- ****************"} />
       ))}
     </section>
   );

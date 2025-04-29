@@ -14,7 +14,7 @@ import { UserNameProvider } from "@/context/login/username";
 import ProtectedRoute from "./ProptectedUsername";
 import Account from "@/modules/account";
 import { NewsFeedPage } from "@/modules/news";
-import { NewDetailPage } from "@/modules/news/Detail";
+import { NewDetailPage } from "@/modules/news/detail";
 
 export enum ROUTES {
     FORM = "/form",
