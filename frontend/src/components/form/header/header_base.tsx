@@ -10,6 +10,7 @@ import flow from "@/assets/flow.png";
 import { useNavigate } from "react-router-dom";
 
 import React, { ReactNode } from "react";
+import MenuProduct from "./MenuProducts";
 
 interface IProps {
     start?: ReactNode;
@@ -43,6 +44,7 @@ const Header: React.FC<IProps> = ({ start, center, end }) => {
 
             <NavbarContent as="div" justify="end">
                 {end}
+                <MenuProduct />
                 <MenuProfile />
             </NavbarContent>
         </Navbar>

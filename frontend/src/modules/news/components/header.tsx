@@ -7,6 +7,10 @@ import SVG_Search from "@/assets/icons/search";
 import SVG_New from "@/assets/icons/new";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/routes/AppRoutes";
+import SVG_Home from "@/assets/icons/home";
+import SVG_Friends from "@/assets/icons/friends";
+import SVG_Message from "@/assets/icons/message";
+import SVG_Notification from "@/assets/icons/notification";
 
 const Header: React.FC = () => {
 
@@ -33,7 +37,19 @@ const Header: React.FC = () => {
       end={
         <>
         <Button isIconOnly radius="full" color="secondary" variant="light" onPress={() => navigate(ROUTES.NEWS)}>
-          <SVG_New />
+          <SVG_Home />
+        </Button>
+
+        <Button isIconOnly radius="full" color="secondary" variant="light" onPress={() => navigate(ROUTES.NEWS)}>
+          <SVG_Friends />
+        </Button>
+
+        <Button isIconOnly radius="full" color="secondary" variant="light" onPress={() => navigate(ROUTES.NEWS)}>
+          <SVG_Message />
+        </Button>
+
+        <Button isIconOnly radius="full" color="secondary" variant="light" onPress={() => navigate(ROUTES.NEWS)}>
+          <SVG_Notification />
         </Button>
         </>
       }

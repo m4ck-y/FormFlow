@@ -1,8 +1,6 @@
 import { Flex } from "antd";
 import LayoutAccount from "@/layouts/account";
 import Header from "@/components/form/header/header";
-//import { CardBody} from "@heroui/card";
-import React, { useState } from "react";
 import Profile from "./profile";
 import Suggest from "./suggest";
 

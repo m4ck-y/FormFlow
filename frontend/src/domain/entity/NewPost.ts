@@ -15,7 +15,7 @@ export interface NewPostApi {
     contenido: string;
     imagenPrincipal: string;
     link: string;
-}
+} 
 
 export interface NewPost {
   id: string;
