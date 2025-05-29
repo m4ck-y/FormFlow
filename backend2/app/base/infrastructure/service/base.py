@@ -38,11 +38,11 @@ class BaseLayerService(Generic[TCreateSchema, TItemSchema, TDetailSchema, TUpdat
     def __init__(
             self,
             api_server: FastAPI,
-            application_layer: BaseLayerApplication[TCreateSchema, TUpdateSchema, TDetailSchema],
+            application_layer: BaseLayerApplication[TCreateSchema, TItemSchema, TDetailSchema, TUpdateSchema],
             schema_create: TCreateSchema,
-            schema_update: TUpdateSchema, 
             schema_item: TItemSchema,
             schema_detail: TDetailSchema,
+            schema_update: TUpdateSchema, 
             route_name: str, 
             route_parent: str = None):
         
