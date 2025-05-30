@@ -4,7 +4,7 @@ from sqlalchemy import and_
 from sqlalchemy.orm import joinedload
 from sqlalchemy.orm import Session
 from app.config.db import datetime_now
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError, OperationalError
 from pydantic import BaseModel
 
 from app.utils.enum.str_color import StrColor
@@ -21,6 +21,7 @@ from app.base.domain.schemas.types import (
     TUpdateSchema,
 )
 from app.base.infrastructure.database.model_type import TModelType
+from app.base.domain.exception import UniqueConstraintException
 str_color = StrColor()
 
 
@@ -116,12 +117,19 @@ class BaseRepository(IBaseRepository, Generic[TModelType, TCreateSchema, TItemSc
             db.commit()
             db.refresh(new_entity)
             return new_entity.id
-
+        
         except IntegrityError as e:
-            # Manejo de excepciones en caso de errores de integridad (por ejemplo, unicidad)
-            db.rollback()  # Revertir cambios en caso de error
-            print(f"Error de unicidad: {e.orig}")
-            return None
+            db.rollback()
+            
+            print(f"base/infrastructure/database/implementation.py: {str_color.RED('>>>> Create.IntegrityError')} : {e}")
+            if "unique constraint" in str(e.orig).lower():
+                raise UniqueConstraintException(self.model.__name__, str(e.orig))
+            return e
+
+        except Exception as e:
+            db.rollback()
+            print(f"base/infrastructure/database/implementation.py: {str_color.RED('>>>> Create.Exception')} : {e}")
+            return e  # Retorna None si ocurre un error inesperado
 
     def Get(self, id: int, db: Session) -> Optional[TDetailSchema]:
         print(str_color.RED(">>>> BaseRepository GET"), str_color.YELLOW(self.model.__name__))

@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from app.config.db import GetSession
 from app.base.application.base import BaseLayerApplication
 from app.base.domain.schemas.types import TCreateSchema, TItemSchema, TDetailSchema, TUpdateSchema
+from app.base.domain.exception import UniqueConstraintException
 
 class BaseLayerService(Generic[TCreateSchema, TItemSchema, TDetailSchema, TUpdateSchema]):
     """
@@ -104,7 +105,21 @@ class BaseLayerService(Generic[TCreateSchema, TItemSchema, TDetailSchema, TUpdat
         Returns:
             int: ID de la nueva entidad.
         """
-        return self.application_layer.Create(data, db)
+        try:
+            print("\n---------------------------------------------------, Data:", data)
+            r = self.application_layer.Create(data, db)
+            print("\n---------------------------------------------------, R:", r)
+            return r
+        except UniqueConstraintException as e:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=str(e.orig)
+            )
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=str(e)
+            )
 
     def List(self, db: Session = Depends(GetSession)) -> List[TItemSchema]:
         """
