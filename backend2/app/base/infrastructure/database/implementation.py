@@ -49,7 +49,7 @@ class BaseRepository(IBaseRepository, Generic[TModelType, TCreateSchema, TItemSc
         item_schema: TItemSchema,
         detail_schema: TDetailSchema,
         update_schema: TUpdateSchema,
-        column_list_models: Optional[List[any]] = None,
+        column_list_models: List[any] = [],
     ):
         """
         Inicializa una instancia del repositorio base con los modelos y esquemas necesarios.
@@ -152,13 +152,19 @@ class BaseRepository(IBaseRepository, Generic[TModelType, TCreateSchema, TItemSc
             self.model.id == id, self.model.deleted_at.is_(None)).first() """
         
         record = query.first()
-        #columns of record
-        record_structure = json.dumps(record.__dict__, default=str, indent=4)
-        print("\t", str_color.MAGENTA(self.model.__name__).YELLOW(" Record Structure: ").RESET(record_structure).CYAN(str(self.detail_schema)))
+
+        print(str_color.YELLOW(">>>> Record"), record)
         
         if record:
+            print(str_color.GREEN(">>>> Record Found"), record)
             # Si la entidad existe, se devuelve utilizando el esquema de respuesta
+
+            #columns of record
+            record_structure = json.dumps(record.__dict__, default=str, indent=4)
+            print("\t", str_color.MAGENTA(self.model.__name__).YELLOW(" Record Structure: ").RESET(record_structure).CYAN(str(self.detail_schema)))
+        
             return self.detail_schema.model_validate(record)
+        print(str_color.RED(">>>> Record Not Found"))
         return None  # Si no se encuentra la entidad, se retorna None
 
     def List(self, db: Session) -> List[TItemSchema]:

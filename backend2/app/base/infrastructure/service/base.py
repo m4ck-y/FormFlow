@@ -129,7 +129,12 @@ class BaseLayerService(Generic[TCreateSchema, TItemSchema, TDetailSchema, TUpdat
         Returns:
             Optional: La entidad encontrada, o None si no existe.
         """
-        return self.application_layer.Get(id, db)
+        r = self.application_layer.Get(id, db)
+
+        if r is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entity not found")
+        
+        return r
 
     def Update(self, data: TUpdateSchema, db: Session = Depends(GetSession)) -> bool:
         """
