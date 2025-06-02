@@ -78,10 +78,10 @@ class BaseLayerService(Generic[TCreateSchema, TItemSchema, TDetailSchema, TUpdat
         schema_update = self.schema_update
 
         def Create(data: schema_create, db: Session = Depends(GetSession)) -> int: # type: ignore
-            return self.application_layer.Create(data, db)
+            return self.Create(data, db)
         
         def Update(data: schema_update, db: Session = Depends(GetSession)) -> bool: # type: ignore
-            return self.application_layer.Update(data, db)
+            return self.Update(data, db)
 
         self.api_router.post("", response_model=int)(Create)
         self.api_router.get("/list", response_model=List[self.schema_item])(self.List)
@@ -94,7 +94,7 @@ class BaseLayerService(Generic[TCreateSchema, TItemSchema, TDetailSchema, TUpdat
         # Incluye el router en la API principal
         api_server.include_router(self.api_router)
 
-    def Create(self, data: TCreateSchema, db: Session = Depends(GetSession)) -> int:
+    def Create(self, data: TCreateSchema, db: Session) -> int:
         """
         Crea una nueva entidad en la base de datos.
 
@@ -151,7 +151,7 @@ class BaseLayerService(Generic[TCreateSchema, TItemSchema, TDetailSchema, TUpdat
         
         return r
 
-    def Update(self, data: TUpdateSchema, db: Session = Depends(GetSession)) -> bool:
+    def Update(self, data: TUpdateSchema, db: Session) -> bool:
         """
         Actualiza una entidad existente en la base de datos.
 
