@@ -106,9 +106,7 @@ class BaseLayerService(Generic[TCreateSchema, TItemSchema, TDetailSchema, TUpdat
             int: ID de la nueva entidad.
         """
         try:
-            print("\n---------------------------------------------------, Data:", data)
             r = self.application_layer.Create(data, db)
-            print("\n---------------------------------------------------, R:", r)
             return r
         except UniqueConstraintException as e:
             raise HTTPException(
