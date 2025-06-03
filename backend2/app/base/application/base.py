@@ -45,18 +45,19 @@ class BaseLayerApplication(Generic[TCreateSchema, TItemSchema, TDetailSchema, TU
                 .RED(str(self.repository))
         )
 
-    def Create(self, value: TCreateSchema, db: TSession) -> int:
+    def Create(self, value: TCreateSchema, db: TSession, auto_commit: bool = True) -> int:
         """
         Crea una nueva entidad en la base de datos utilizando el repositorio.
 
         Args:
             value (TCreateSchema): Los datos de la entidad que se van a crear.
             db (TSession): La sesión activa de la base de datos, que se pasa desde el controlador o el entorno de ejecución.
+            auto_commit (bool): Si se debe hacer commit de la transacción.
 
         Returns:
             int: El ID de la nueva entidad creada.
         """
-        return self.repository.Create(value, db)
+        return self.repository.Create(value, db, auto_commit=auto_commit)
 
     def Get(self, id: int, db: TSession) -> Optional[TDetailSchema]:
         """
@@ -83,29 +84,31 @@ class BaseLayerApplication(Generic[TCreateSchema, TItemSchema, TDetailSchema, TU
         """
         return self.repository.List(db)
 
-    def Update(self, entity: TUpdateSchema, db: TSession) -> bool:
+    def Update(self, entity: TUpdateSchema, db: TSession, auto_commit: bool = True) -> bool:
         """
         Actualiza una entidad existente en la base de datos.
 
         Args:
             entity (TUpdateSchema): Los nuevos datos de la entidad que se van a actualizar.
             db (TSession): La sesión activa de la base de datos.
+            auto_commit (bool): Si se debe hacer commit de la transacción.
 
         Returns:
             bool: `True` si la actualización fue exitosa, `False` si la entidad no fue encontrada.
         """
-        return self.repository.Update(entity, db)
+        return self.repository.Update(entity, db, auto_commit=auto_commit)
 
-    def Delete(self, id: int, db: TSession) -> bool:
+    def Delete(self, id: int, db: TSession, auto_commit: bool = True) -> bool:
         """
         Elimina una entidad por su ID de la base de datos.
 
         Args:
             id (int): El ID de la entidad que se desea eliminar.
             db (TSession): La sesión activa de la base de datos.
+            auto_commit (bool): Si se debe hacer commit de la transacción.
 
         Returns:
             bool: `True` si la entidad fue eliminada correctamente, `False` si no se encontró.
         """
         print(str_color.MAGENTA("BaseLayerApplication >>> Delete"), ", repo:", type(self.repository), self.repository)
-        return self.repository.Delete(id, db)
+        return self.repository.Delete(id, db, auto_commit=auto_commit)

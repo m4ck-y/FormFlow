@@ -24,7 +24,7 @@ class IBaseRepository(ABC, Generic[TCreateSchema, TItemSchema, TDetailSchema, TU
     """
 
     @abstractmethod
-    def Create(self, value: TCreateSchema, session: TSession) -> int:
+    def Create(self, value: TCreateSchema, session: TSession, auto_commit: bool = True) -> int:
         """
         Crea una nueva entidad en la base de datos.
 
@@ -32,6 +32,7 @@ class IBaseRepository(ABC, Generic[TCreateSchema, TItemSchema, TDetailSchema, TU
             value (TCreateSchema): Esquema de creación de la entidad, que contiene los datos necesarios
             para crear una nueva instancia de la entidad (sin incluir identificadores generados automáticamente).
             session (TSession): Sesión activa de la base de datos.
+            auto_commit (bool): Si se debe hacer commit de la transacción.
 
         Returns:
             int: ID de la entidad recién creada en la base de datos.
@@ -70,7 +71,7 @@ class IBaseRepository(ABC, Generic[TCreateSchema, TItemSchema, TDetailSchema, TU
         raise NotImplementedError
 
     @abstractmethod
-    def Update(self, value: TUpdateSchema, session: TSession) -> bool:
+    def Update(self, value: TUpdateSchema, session: TSession, auto_commit: bool = True) -> bool:
         """
         Actualiza una entidad existente.
 
@@ -80,6 +81,7 @@ class IBaseRepository(ABC, Generic[TCreateSchema, TItemSchema, TDetailSchema, TU
         Args:
             value (TUpdateSchema): Esquema que contiene los campos a actualizar. El campo `id` es requerido.
             session (TSession): Sesión activa de la base de datos.
+            auto_commit (bool): Si se debe hacer commit de la transacción.
 
         Returns:
             bool: `True` si la actualización fue exitosa, `False` si la entidad no fue encontrada o no pudo ser actualizada.
@@ -87,7 +89,7 @@ class IBaseRepository(ABC, Generic[TCreateSchema, TItemSchema, TDetailSchema, TU
         raise NotImplementedError
 
     @abstractmethod
-    def Delete(self, id: int, session: TSession) -> bool:
+    def Delete(self, id: int, session: TSession, auto_commit: bool = True) -> bool:
         """
         Elimina una entidad por su ID.
 
@@ -97,6 +99,7 @@ class IBaseRepository(ABC, Generic[TCreateSchema, TItemSchema, TDetailSchema, TU
         Args:
             id (int): Identificador único de la entidad a eliminar.
             session (TSession): Sesión activa de la base de datos.
+            auto_commit (bool): Si se debe hacer commit de la transacción.
 
         Returns:
             bool: `True` si la eliminación fue exitosa, `False` si la entidad no fue encontrada.

@@ -99,23 +99,28 @@ class BaseRepository(IBaseRepository, Generic[TModelType, TCreateSchema, TItemSc
         self.update_schema = update_schema
         self.column_list_models = column_list_models
 
-    def Create(self, entity: TCreateSchema, db: Session) -> Optional[int]:
+    def Create(self, entity: TCreateSchema, db: Session, auto_commit: bool = True) -> Optional[int]:
         """
         Crea una nueva entidad en la base de datos.
 
         Args:
             entity (TCreateSchema): Datos validados para la nueva entidad.
             db (Session): Sesión activa de SQLAlchemy.
+            auto_commit (bool): Si se debe hacer commit de la transacción.
 
         Returns:
             Optional[int]: ID de la nueva entidad, o None si ocurre un error(como un error de unicidad).
         """
         try:
             # Se crea una nueva instancia del modelo utilizando los datos del esquema
+            print(str_color.RED(">>>> BaseRepository CREATE")," ",str_color.YELLOW(self.model.__name__), str_color.GREEN(json.dumps(entity.model_dump(), default=str, indent=4)))
             new_entity: TModelType = self.model(**entity.model_dump())
             db.add(new_entity)
-            db.commit()
-            db.refresh(new_entity)
+            if auto_commit:
+                db.commit()
+                db.refresh(new_entity)
+            else:
+                db.flush()
             return new_entity.id
         
         except IntegrityError as e:
@@ -203,13 +208,14 @@ class BaseRepository(IBaseRepository, Generic[TModelType, TCreateSchema, TItemSc
         # Se transforma cada entidad utilizando el esquema de respuesta
         return [self.item_schema.model_validate(unit) for unit in records]
 
-    def Update(self, value: TUpdateSchema, db: Session) -> bool:
+    def Update(self, value: TUpdateSchema, db: Session, auto_commit: bool = True) -> bool:
         """
         Actualiza una entidad existente en la base de datos.
 
         Args:
             value (TUpdateSchema): Esquema con los campos a modificar.
             db (Session): Sesión activa de SQLAlchemy.
+            auto_commit (bool): Si se debe hacer commit de la transacción.
 
         Returns:
             bool: True si la actualización fue exitosa, False si no se encontró la entidad.
@@ -222,17 +228,21 @@ class BaseRepository(IBaseRepository, Generic[TModelType, TCreateSchema, TItemSc
         # Se actualizan los atributos de la entidad con los valores proporcionados
         for k, v in value.model_dump(exclude_unset=True).items():
             setattr(record, k, v)
-        db.commit()  # Se guarda la entidad actualizada
-        db.refresh(record)  # Se refresca para obtener los cambios recientes
+        if auto_commit:
+            db.commit()  # Se guarda la entidad actualizada
+            db.refresh(record)  # Se refresca para obtener los cambios recientes
+        else:
+            db.flush()
         return True  # Se retorna True indicando que la actualización fue exitosa
 
-    def Delete(self, id: int, db: Session) -> bool:
+    def Delete(self, id: int, db: Session, auto_commit: bool = True) -> bool:
         """
         Elimina (marcando como eliminada) una entidad por su ID.
 
         Args:
             id (int): ID de la entidad a eliminar.
             db (Session): Sesión activa de la base de datos.
+            auto_commit (bool): Si se debe hacer commit de la transacción.
 
         Returns:
             bool: True si la eliminación fue exitosa, False si no se encontró la entidad.
@@ -246,5 +256,8 @@ class BaseRepository(IBaseRepository, Generic[TModelType, TCreateSchema, TItemSc
             return False  # Si no se encuentra la entidad, se retorna False
         # Se marca la entidad como eliminada (soft delete) sin borrarla realmente
         record.deleted_at = datetime_now()  # Asigna la fecha de eliminación #
-        db.commit()  # Se guarda el cambio en la base de datos
+        if auto_commit:
+            db.commit()  # Se guarda el cambio en la base de datos
+        else:
+            db.flush()
         return True  # Se retorna True indicando que la eliminación fue exitosa
