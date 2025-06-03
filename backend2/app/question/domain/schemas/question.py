@@ -15,7 +15,7 @@ class SchemaCreateQuestion(SchemaBaseQuestion):
     # list_anwsers: List[SchemaCreateAnswer]
     pass
 
-class SchemaItemQuestion(SchemaCreateQuestion):
+class SchemaItemQuestion(SchemaBaseQuestion):
     id: int
 
 class SchemaDetailQuestion(SchemaItemQuestion):
@@ -23,5 +23,5 @@ class SchemaDetailQuestion(SchemaItemQuestion):
     # list_answers: List[SchemaDetailAnswer]
     pass
 
-class SchemaUpdateQuestion(SchemaCreateQuestion):
+class SchemaUpdateQuestion(SchemaBaseQuestion):
     id: int

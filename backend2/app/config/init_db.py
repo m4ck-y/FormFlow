@@ -1,9 +1,13 @@
 from app.form.infrastructure.database.init import init as init_form
+from app.question.infrastructure.database.init import init as init_question
+from app.section.infrastructure.database.init import init as init_section
 from app.config.db import Base, engine
 
 def init_db():
     print("init >>> db ... ")
     init_form()
+    init_question()
+    init_section()
     #...
     Base.metadata.create_all(bind=engine)
     #SeederHealth()
