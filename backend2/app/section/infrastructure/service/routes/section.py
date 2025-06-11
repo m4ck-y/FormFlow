@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from app.section.domain.schemas.section import (
     SchemaItemSection as I,
     SchemaDetailSection as E,
-    SchemaCreateSection as C,
+    SchemaCreateAPISection as C,
     SchemaUpdateSection as U,
 )
 from app.base.application.base import BaseLayerApplication

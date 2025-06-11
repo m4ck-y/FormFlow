@@ -4,13 +4,14 @@ from typing import TypeVar, Generic, List, Optional
 from pydantic import BaseModel
 from app.config.db import GetSession
 from app.base.application.base import BaseLayerApplication
-from app.base.domain.schemas.types import TCreateSchema, TItemSchema, TDetailSchema, TUpdateSchema
+from app.base.domain.schemas.types import TItemSchema, TDetailSchema, TUpdateSchema
+from app.base.domain.schemas.create_api import TCreateAPISchema
 from app.base.domain.exception import UniqueConstraintException
 
-class BaseLayerService(Generic[TCreateSchema, TItemSchema, TDetailSchema, TUpdateSchema]):
+class BaseLayerService(Generic[TCreateAPISchema, TItemSchema, TDetailSchema, TUpdateSchema]):
     """
     **Parámetros genéricos:**
-    - `TCreateSchema`: Tipo que representa el esquema de creación de la entidad (ejemplo: `UserCreate`).
+    - `TCreateAPISchema`: Tipo que representa el esquema de creación de la entidad (ejemplo: `UserCreate`).
     - `TItemSchema`: Tipo que representa el esquema de los ítems individuales de la entidad en listados (ejemplo: `UserListItem`).
     - `TDetailSchema`: Tipo que representa el esquema de la entidad devuelta en detalle (ejemplo: `UserDetail`).
     - `TUpdateSchema`: Tipo que representa el esquema de actualización de la entidad (ejemplo: `UserUpdate`).
@@ -39,8 +40,8 @@ class BaseLayerService(Generic[TCreateSchema, TItemSchema, TDetailSchema, TUpdat
     def __init__(
             self,
             api_server: FastAPI,
-            application_layer: BaseLayerApplication[TCreateSchema, TItemSchema, TDetailSchema, TUpdateSchema],
-            schema_create: TCreateSchema,
+            application_layer: BaseLayerApplication[TCreateAPISchema, TItemSchema, TDetailSchema, TUpdateSchema],
+            schema_create: TCreateAPISchema,
             schema_item: TItemSchema,
             schema_detail: TDetailSchema,
             schema_update: TUpdateSchema, 
@@ -94,7 +95,7 @@ class BaseLayerService(Generic[TCreateSchema, TItemSchema, TDetailSchema, TUpdat
         # Incluye el router en la API principal
         api_server.include_router(self.api_router)
 
-    def Create(self, data: TCreateSchema, db: Session) -> int:
+    def Create(self, data: TCreateAPISchema, db: Session) -> int:
         """
         Crea una nueva entidad en la base de datos.
 

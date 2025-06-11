@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from app.form.domain.schemas.form import (
     SchemaItemForm as I,
     SchemaDetailForm as E,
-    SchemaCreateForm as C,
+    SchemaCreateAPIForm as C,
     SchemaUpdateForm as U,
 )
 from app.base.application.base import BaseLayerApplication

@@ -1,22 +1,34 @@
-from app.base.domain.schemas.base import ORMModel
-from app.question.domain.schemas.question import SchemaCreateQuestion
-from app.section.domain.schemas.section import SchemaDetailSection, SchemaCreateSection
+from app.base.domain.schemas.base import BaseORMModel
+from app.base.domain.schemas.create_api import BaseCreateAPISchema
+from app.question.domain.schemas.question import SchemaCreateAPIQuestion
+from app.section.domain.schemas.section import SchemaDetailSection, SchemaCreateAPISection
 from typing import List, Text, Optional
 from pydantic import Field, model_validator
 
-class SchemaBaseForm(ORMModel):
+class SchemaBaseForm(BaseORMModel):
     key: Optional[str] = Field(None, examples=["ENCUESTA123", "FOLIO12345"]) #FOLIO
     name: str = Field(..., examples=["Encuesta de Satisfacción"])
     description: Text = Field(..., examples=["Formulario para evaluar el servicio ofrecido"])
 
-class SchemaCreateForm(SchemaBaseForm):
+
+class SchemaCreateDB(SchemaBaseForm):
+    pass
+
+class SchemaCreateAPIForm(BaseCreateAPISchema, SchemaBaseForm):
     """
     Representa un formulario que puede contener una lista de secciones o
     una lista de preguntas, pero no ambas a la vez. A través de este esquema,
     definimos la estructura para crear un formulario.
     """
-    list_sections: List[SchemaCreateSection]
-    list_questions: List[SchemaCreateQuestion]
+    list_sections: Optional[List[SchemaCreateAPISection]]
+    list_questions: Optional[List[SchemaCreateAPIQuestion]]
+
+    def to_db_schema(self) -> SchemaCreateDB:
+        return SchemaCreateDB(
+            key=self.key,
+            name=self.name,
+            description=self.description
+        )
 
     @model_validator(mode="before")
     def check_only_one_of_lists(cls, values):

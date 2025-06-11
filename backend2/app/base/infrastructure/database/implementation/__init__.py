@@ -3,6 +3,8 @@ from typing import TypeVar, Generic, Optional, List
 from sqlalchemy import and_
 from sqlalchemy.orm import joinedload
 from sqlalchemy.orm import Session
+from app.base.domain.schemas.str_schema_json import str_schema_json
+from app.base.infrastructure.database.implementation.create import BaseCreate
 from app.config.db import datetime_now
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError, OperationalError
 from pydantic import BaseModel
@@ -14,22 +16,23 @@ from app.base.domain.repository.base import IBaseRepository
 # Tipos genéricos para los modelos, esquemas y la respuesta
 
 
+from app.base.domain.schemas.create_api import TCreateAPISchema
 from app.base.domain.schemas.types import (
-    TCreateSchema,
     TItemSchema,
     TDetailSchema,
     TUpdateSchema,
 )
 from app.base.infrastructure.database.model_type import TModelType
 from app.base.domain.exception import UniqueConstraintException
+from app.utils.log import log_error, log_info
 str_color = StrColor()
 
 
-class BaseRepository(IBaseRepository, Generic[TModelType, TCreateSchema, TItemSchema, TDetailSchema, TUpdateSchema]):
+class BaseRepository(IBaseRepository, Generic[TModelType, TCreateAPISchema, TItemSchema, TDetailSchema, TUpdateSchema]):
     """
     **Parámetros genéricos:**
     - `TModelType`: Tipo que representa el Modelo de SQLAlchemy que representa la tabla de la base de datos.
-    - `TCreateSchema`: Tipo que representa el esquema de creación de la entidad (ejemplo: `UserCreate`).
+    - `TCreateAPISchema`: Tipo que representa el esquema de creación de la entidad (ejemplo: `UserCreate`).
     - `TItemSchema`: Tipo que representa el esquema de los ítems individuales de la entidad en listados (ejemplo: `UserListItem`).
     - `TDetailSchema`: Tipo que representa el esquema de la entidad devuelta en detalle (ejemplo: `UserDetail`).
     - `TUpdateSchema`: Tipo que representa el esquema de actualización de la entidad (ejemplo: `UserUpdate`).
@@ -46,7 +49,7 @@ class BaseRepository(IBaseRepository, Generic[TModelType, TCreateSchema, TItemSc
     def __init__(
         self,
         model: TModelType,
-        create_schema: TCreateSchema,
+        create_schema: TCreateAPISchema,
         item_schema: TItemSchema,
         detail_schema: TDetailSchema,
         update_schema: TUpdateSchema,
@@ -99,42 +102,19 @@ class BaseRepository(IBaseRepository, Generic[TModelType, TCreateSchema, TItemSc
         self.update_schema = update_schema
         self.column_list_models = column_list_models
 
-    def Create(self, entity: TCreateSchema, db: Session, auto_commit: bool = True) -> Optional[int]:
+    def Create(self, entity: TCreateAPISchema, db: Session, auto_commit: bool = True) -> Optional[int]:
         """
         Crea una nueva entidad en la base de datos.
 
         Args:
-            entity (TCreateSchema): Datos validados para la nueva entidad.
+            entity (TCreateAPISchema): Datos validados para la nueva entidad.
             db (Session): Sesión activa de SQLAlchemy.
             auto_commit (bool): Si se debe hacer commit de la transacción.
 
         Returns:
             Optional[int]: ID de la nueva entidad, o None si ocurre un error(como un error de unicidad).
         """
-        try:
-            # Se crea una nueva instancia del modelo utilizando los datos del esquema
-            print(str_color.RED(">>>> BaseRepository CREATE")," ",str_color.YELLOW(self.model.__name__), str_color.GREEN(json.dumps(entity.model_dump(), default=str, indent=4)))
-            new_entity: TModelType = self.model(**entity.model_dump())
-            db.add(new_entity)
-            if auto_commit:
-                db.commit()
-                db.refresh(new_entity)
-            else:
-                db.flush()
-            return new_entity.id
-        
-        except IntegrityError as e:
-            db.rollback()
-            
-            print(f"base/infrastructure/database/implementation.py: {str_color.RED('>>>> Create.IntegrityError')} : {e}")
-            if "unique constraint" in str(e.orig).lower():
-                raise UniqueConstraintException(self.model.__name__, str(e.orig))
-            return e
-
-        except Exception as e:
-            db.rollback()
-            print(f"base/infrastructure/database/implementation.py: {str_color.RED('>>>> Create.Exception')} : {e}")
-            return e  # Retorna None si ocurre un error inesperado
+        return BaseCreate(self.model, entity, db, auto_commit)
 
     def Get(self, id: int, db: Session) -> Optional[TDetailSchema]:
         print(str_color.RED(">>>> BaseRepository GET"), str_color.YELLOW(self.model.__name__))

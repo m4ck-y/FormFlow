@@ -2,7 +2,8 @@ from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import Optional
 
-class ORMModel(BaseModel):
+
+class BaseORMModel(BaseModel):
 
     """
     Modelo base para objetos ORM que extiende `BaseModel` de Pydantic, diseñado para facilitar la conversión de 
@@ -21,14 +22,13 @@ class ORMModel(BaseModel):
     y serialización.
     """
 
-class ORMTimeSeries(ORMModel):
+class BaseORMTimeSeries(BaseORMModel):
     """
     Base para cualquier evento con marca de tiempo.
     """
     event_at: datetime  # Fecha y hora real del evento (no cuándo fue creado el registro)
 
-class AuditModel(ORMModel):
-
+class BaseAuditModel(BaseORMModel):
     """
     🧩 Campos de auditoría:
     - `created_at`: Fecha de creación.
@@ -98,7 +98,7 @@ class AuditModel(ORMModel):
     103 (ID de un rol de empleado)
     """
 
-class AuditModelWithTimeSeries(AuditModel, ORMTimeSeries):
+class BaseAuditModelWithTimeSeries(BaseAuditModel, BaseORMTimeSeries):
     """
     Modelo de auditoría que incluye una serie temporal.
     """

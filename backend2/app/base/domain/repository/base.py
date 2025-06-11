@@ -1,14 +1,15 @@
 from abc import ABC, abstractmethod
 from typing import Generic, List, Optional
 from app.base.domain.repository.session import TSession  # Solo se usa como tipado
-from app.base.domain.schemas.types import TCreateSchema, TItemSchema, TDetailSchema, TUpdateSchema # Importe los tipos genéricos
+from app.base.domain.schemas.types import TItemSchema, TDetailSchema, TUpdateSchema # Importe los tipos genéricos
+from app.base.domain.schemas.create_api import TCreateAPISchema
 
-class IBaseRepository(ABC, Generic[TCreateSchema, TItemSchema, TDetailSchema, TUpdateSchema]):
+class IBaseRepository(ABC, Generic[TCreateAPISchema, TItemSchema, TDetailSchema, TUpdateSchema]):
     """
     Interfaz genérica de repositorio para operaciones CRUD sobre cualquier entidad del dominio.
 
     **Parámetros genéricos:**
-    - `TCreateSchema`: Tipo que representa el esquema de creación de la entidad (ejemplo: `UserCreate`).
+    - `TCreateAPISchema`: Tipo que representa el esquema de creación de la entidad (ejemplo: `UserCreate`).
     - `TItemSchema`: Tipo que representa el esquema de los ítems individuales de la entidad en listados (ejemplo: `UserListItem`).
     - `TDetailSchema`: Tipo que representa el esquema de la entidad devuelta en detalle (ejemplo: `UserDetail`).
     - `TUpdateSchema`: Tipo que representa el esquema de actualización de la entidad (ejemplo: `UserUpdate`).
@@ -24,12 +25,12 @@ class IBaseRepository(ABC, Generic[TCreateSchema, TItemSchema, TDetailSchema, TU
     """
 
     @abstractmethod
-    def Create(self, value: TCreateSchema, session: TSession, auto_commit: bool = True) -> int:
+    def Create(self, value: TCreateAPISchema, session: TSession, auto_commit: bool = True) -> int:
         """
         Crea una nueva entidad en la base de datos.
 
         Args:
-            value (TCreateSchema): Esquema de creación de la entidad, que contiene los datos necesarios
+            value (TCreateAPISchema): Esquema de creación de la entidad, que contiene los datos necesarios
             para crear una nueva instancia de la entidad (sin incluir identificadores generados automáticamente).
             session (TSession): Sesión activa de la base de datos.
             auto_commit (bool): Si se debe hacer commit de la transacción.

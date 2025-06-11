@@ -3,7 +3,7 @@ from app.base.domain.repository.base import IBaseRepository
 from app.form.domain.schemas.form import (
     SchemaItemForm as I,
     SchemaDetailForm as E,
-    SchemaCreateForm as C,
+    SchemaCreateAPIForm as C,
     SchemaUpdateForm as U,
 )
 

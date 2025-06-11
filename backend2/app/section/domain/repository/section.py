@@ -3,7 +3,7 @@ from app.base.domain.repository.base import IBaseRepository
 from app.section.domain.schemas.section import (
     SchemaItemSection as I,
     SchemaDetailSection as E,
-    SchemaCreateSection as C,
+    SchemaCreateAPISection as C,
     SchemaUpdateSection as U,
 )
 

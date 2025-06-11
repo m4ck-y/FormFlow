@@ -1,5 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
+from app.base.domain.exception import BusinessValidationException
 from app.config.env import API_HOST, API_PORT
 from app.config.init_db import init_db
 from app.config.init_api import init_api
@@ -14,6 +16,14 @@ app.add_middleware(
     allow_methods=["*"],  # Permite todos los métodos HTTP (GET, POST, PUT, DELETE, etc.)
     allow_headers=["*"],  # Permite todos los encabezados
 )
+
+
+@app.exception_handler(BusinessValidationException)
+async def business_validation_exception_handler(request: Request, exc: BusinessValidationException):
+    return JSONResponse(
+        status_code=400,
+        content={"detail": exc.message}
+    )
 
 init_db()
 init_api(app) #No registrar dentro de main
