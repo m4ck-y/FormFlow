@@ -5,6 +5,7 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy.orm import Session
 from app.base.domain.schemas.str_schema_json import str_schema_json
 from app.base.infrastructure.database.implementation.create import BaseCreate
+from app.base.infrastructure.utils.str_model_json import str_record_model_json
 from app.config.db import datetime_now
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError, OperationalError
 from pydantic import BaseModel
@@ -138,7 +139,8 @@ class BaseRepository(IBaseRepository, Generic[TModelType, TCreateAPISchema, TIte
         for column_list_relation in self.column_list_models:
 
             query = query.options(
-                joinedload(column_list_relation)
+                #joinedload(column_list_relation)
+                column_list_relation
             )
 
         """ record = db.query(self.model).filter(
@@ -152,11 +154,12 @@ class BaseRepository(IBaseRepository, Generic[TModelType, TCreateAPISchema, TIte
             print(str_color.GREEN(">>>> Record Found"), record)
             # Si la entidad existe, se devuelve utilizando el esquema de respuesta
 
-            #columns of record
-            record_structure = json.dumps(record.__dict__, default=str, indent=4)
-            print("\t", str_color.MAGENTA(self.model.__name__).YELLOW(" Record Structure: ").RESET(record_structure).CYAN(str(self.detail_schema)))
+            log_info(str_record_model_json(record))
+            
+            log_info(str_schema_json(self.detail_schema))
         
-            return self.detail_schema.model_validate(record)
+            return self.detail_schema.model_validate(record, from_attributes=True)
+        
         print(str_color.RED(">>>> Record Not Found"))
         return None  # Si no se encuentra la entidad, se retorna None
 

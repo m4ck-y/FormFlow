@@ -7,7 +7,7 @@ str_color = StrColor()
 
 def str_record_model_json(record_model: TModelType) -> str:
     return str_color\
-        .MAGENTA(record_model.__name__)\
+        .MAGENTA(str(record_model))\
         .YELLOW(
             json.dumps(
                 record_model.__dict__,

@@ -14,3 +14,14 @@ class ModelForm(BaseModel):
     list_sections = relationship("ModelSection", back_populates="form")
     # 1:N | 1 form -> N questions
     list_questions = relationship("ModelQuestion", secondary=questions_form, back_populates="form")
+
+    # OPTIONALS
+
+    # 1:1 | 1 form -> 1 estimated duration
+    estimated_duration = relationship("ModelEstimatedDuration", back_populates="form", uselist=False)
+
+    # 1:1 | 1 form -> 1 target age group
+    target_age_group = relationship("ModelTargetAgeGroup", back_populates="form", uselist=False)
+
+    # 1:1 | 1 form -> 1 target sex
+    target_sex = relationship("ModelTargetSex", back_populates="form", uselist=False)

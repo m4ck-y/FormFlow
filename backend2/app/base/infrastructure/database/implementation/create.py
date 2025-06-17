@@ -36,6 +36,7 @@ def BaseCreate(model: TModelType, entity: TCreateAPISchema, db: TSession, auto_c
     
     except IntegrityError as e:
         db.rollback()
+        log_error(">>>>>>>>>>>>>>>>>>>>>>>>>> No se")
         log_error(e)
         if "unique constraint" in str(e.orig).lower():
             raise UniqueConstraintException(model.__name__, str(e.orig))

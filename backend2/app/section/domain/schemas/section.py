@@ -38,7 +38,7 @@ class SchemaCreateAPISection(SchemaBaseSection, BaseCreateAPISchema):
 
     def to_db_schema(self):
         return SchemaCreateDBSection(
-            id_form=0,
+            id_form=self.id_form,
             name=self.name,
             description=self.description,
             order=self.order
@@ -48,7 +48,7 @@ class SchemaItemSection(SchemaBaseSection):
     id: int
 
 class SchemaDetailSection(SchemaItemSection):
-    list_questions: Optional[SchemaDetailQuestion]
+    list_questions: List[SchemaDetailQuestion]
 
 class SchemaUpdateSection(SchemaBaseSection):
     id: int

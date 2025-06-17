@@ -1,12 +1,12 @@
 from app.base.domain.schemas.base import BaseORMModel
 from app.base.domain.schemas.create_api import BaseCreateAPISchema
-from app.question.domain.schemas.question import SchemaCreateAPIQuestion
+from app.question.domain.schemas.question import SchemaCreateAPIQuestion, SchemaDetailQuestion
 from app.section.domain.schemas.section import SchemaDetailSection, SchemaCreateAPISection
 from typing import List, Text, Optional
 from pydantic import Field, model_validator
 
 class SchemaBaseForm(BaseORMModel):
-    key: Optional[str] = Field(None, examples=["ENCUESTA123", "FOLIO12345"]) #FOLIO
+    key: Optional[str] = Field(None, description="Código único del formulario",examples=["ENCUESTA123", "FOLIO12345"]) #FOLIO
     name: str = Field(..., examples=["Encuesta de Satisfacción"])
     description: Text = Field(..., examples=["Formulario para evaluar el servicio ofrecido"])
 
@@ -67,6 +67,7 @@ class SchemaItemForm(SchemaBaseForm):
     id: int
 
 class SchemaDetailForm(SchemaItemForm):
+    list_questions:  List[SchemaDetailQuestion]  # Preguntas del formulario
     list_sections: List[SchemaDetailSection]
 
 class SchemaUpdateForm(SchemaBaseForm):

@@ -11,20 +11,13 @@ from app.form.domain.schemas.form import (
 from app.section.domain.schemas.section import SchemaCreateAPISection
 from app.base.domain.exception import UniqueConstraintException
 from app.section.infrastructure.database.implementation.create import SectionCreate
+from app.section.infrastructure.database.model.section import ModelSection
+from app.question.infrastructure.database.model.question import ModelQuestion
+
+from sqlalchemy.orm import joinedload
 class FormRepository(BaseRepository[Table, C, I, E, U]):
     def __init__(self):
         super().__init__(Table, C, I, E, U)
-
-    """     
-    def Create(self, entity, db) -> Optional[int]:
-        try:
-            print(f"Creating entity: {entity}, in FormRepository")
-            return super().Create(entity, db)
-        except Exception as e:
-            print(f"Error creating entity: {entity}, in FormRepository: {e}")
-            error:str = str(e).lower()
-            if "unique constraint" in error:
-                raise UniqueConstraintException(f"key", entity.key) """
 
     def Create(self, entity, db, auto_commit = True) -> int:
 
