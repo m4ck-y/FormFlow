@@ -11,7 +11,7 @@ class ModelEstimatedDuration(BaseModel):
     # 1:1 | 1 estimated duration -> 1 form
     form = relationship("ModelForm", back_populates="estimated_duration")
 
-    min_minutes = Column(Integer)
-    max_minutes = Column(Integer)
+    min_minutes = Column(Integer, nullable=False)
+    max_minutes = Column(Integer, nullable=False)
 
     description = Column(String(255))
