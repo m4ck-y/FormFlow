@@ -56,3 +56,9 @@ class ModelQuestion(BaseModel):
         back_populates="list_questions",  # Relación inversa en ModelSection
         uselist=False  # Esto asegura que la relación es 1:1, no 1:N
     )
+
+    # 1:N | 1 question -> N answers
+    list_answers = relationship(
+        "ModelAnswer",  # Modelo relacionado (Respuesta)
+        back_populates="question",  # Relación inversa en ModelAnswer
+        )
