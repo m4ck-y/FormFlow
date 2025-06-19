@@ -1,0 +1,7 @@
+@import url("@/components/card.module.css");
+
+.card_editable{
+    @apply card;
+    padding-inline: "10px";
+    padding-bottom: "10px";
+}

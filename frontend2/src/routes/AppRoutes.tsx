@@ -2,7 +2,8 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "../modules/auth/login";
 import { UserNameProvider } from "@/context/login/username";
-
+import FormDesign from "@/modules/forms/design/index";
+import FormIndex from "@/modules/forms";
 
 export enum ROUTES {
     FORM = "/form",
@@ -27,6 +28,10 @@ export const AppRoutes: React.FC = () => {
     return (
         <BrowserRouter>
             <Routes>
+
+                <Route path={ROUTES.FORM} element={<FormIndex />} />
+
+                <Route path={ROUTES.FORM_DESIGN} element={<FormDesign />} />
 
                 <Route
                     path={ROUTES.LOGIN}
