@@ -9,6 +9,12 @@ export enum EBackgroundGradient {
     BluePurple = "radial-gradient(at 90% 13%, rgb(195, 194, 255) 0px, transparent 50%), radial-gradient(at 11% 88%, rgb(229, 204, 255) 0px, transparent 50%), radial-gradient(at 82% 82%, rgb(230, 240, 255) 0px, transparent 50%), radial-gradient(at 12% 7%, rgb(230, 240, 255) 0px, transparent 50%), rgb(255, 255, 255)",
 }
 
+export function getRandomBackground(): EBackgroundGradient {
+  const values = Object.values(EBackgroundGradient);
+  const randomIndex = Math.floor(Math.random() * values.length);
+  return values[randomIndex];
+}
+
 interface IProps {
     tittle?: string;
     uploaded_by?: string;
@@ -17,7 +23,9 @@ interface IProps {
 }
 
 const Card: React.FC<IProps> = ({ tittle, uploaded_by, responses, date }) => {
-    console.warn("ColorStyle, ", EBackgroundGradient.BluePurple);
+
+    const randomBackground: EBackgroundGradient = getRandomBackground();
+    console.warn("ColorStyle, ", randomBackground);
     return (
         <HCard
             isPressable
@@ -27,7 +35,7 @@ const Card: React.FC<IProps> = ({ tittle, uploaded_by, responses, date }) => {
                 //width: "200px",
                 minWidth: "200px",
                 maxWidth: "300px",
-                background: EBackgroundGradient.OrangeYellow,
+                background: randomBackground,
             }}
         >
             <CardBody className="overflow-visible p-0"></CardBody>
