@@ -1,0 +1,11 @@
+import type { ILogin } from "@/domain/models/auth/login"
+
+export class Login implements ILogin {
+    username: string
+    password: string
+
+    constructor(username: string, password: string) {
+        this.username = username
+        this.password = password
+    }
+}
