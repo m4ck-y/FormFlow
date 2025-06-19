@@ -1,8 +1,10 @@
 from app.base.domain.schemas.base import BaseORMModel
-from typing import Text, Optional
+from typing import List, Text, Optional
 from app.base.domain.schemas.create_api import BaseCreateAPISchema
 from app.question.domain.enum.question_type import EQuestionType
 from pydantic import Field
+
+from app.question.domain.schemas.answer import SchemaCreateAPIAnswer, SchemaDetailAnswer
 
 class SchemaBaseQuestion(BaseORMModel):
     type: EQuestionType
@@ -17,7 +19,7 @@ class SchemaCreateDBQuestion(SchemaBaseQuestion):
     pass
 
 class SchemaCreateAPIQuestion(SchemaBaseQuestion, BaseCreateAPISchema):
-    # list_anwsers: List[SchemaCreateAnswer]
+    list_anwsers: List[SchemaCreateAPIAnswer]
     
     def to_db_schema(self):
         return SchemaCreateDBQuestion(
@@ -31,9 +33,7 @@ class SchemaItemQuestion(SchemaBaseQuestion):
     id: int
 
 class SchemaDetailQuestion(SchemaItemQuestion):
-    # NOT list_questions_section
-    # list_answers: List[SchemaDetailAnswer]
-    pass
+    list_answers: List[SchemaDetailAnswer]
 
 class SchemaUpdateQuestion(SchemaBaseQuestion):
     id: int

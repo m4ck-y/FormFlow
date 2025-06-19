@@ -16,6 +16,7 @@ class SchemaCreateDBSection(SchemaBaseSection):
 
 
 class SchemaCreateDetail(SchemaBaseSection, BaseCreateAPISchema):
+    #id_form: int # mi pregunta es aqui, porque este schema podria usarlo para crear una pregunta ya con el form definifo, pero si lo uso como obj anidado para la creacion de un nuevo form no vendria con un id, por que eso se generaria
     list_questions: List[SchemaDetailQuestion]
 
     def to_db_schema(self):
