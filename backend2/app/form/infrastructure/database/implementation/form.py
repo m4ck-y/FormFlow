@@ -8,9 +8,12 @@ from app.form.domain.schemas.form import (
     SchemaCreateAPIForm as C,
     SchemaUpdateForm as U,
 )
+from app.question.domain.schemas.questions_form import SchemaCreateDBQuestionsForm
 from app.section.domain.schemas.section import SchemaCreateAPISection
 from app.base.domain.exception import UniqueConstraintException
 from app.section.infrastructure.database.implementation.create import SectionCreate
+from app.question.infrastructure.database.implementation.question_create import QuestionCreate
+from app.question.infrastructure.database.implementation.questions_form import CreateQuestionsForm
 from app.section.infrastructure.database.model.section import ModelSection
 from app.question.infrastructure.database.model.question import ModelQuestion
 
@@ -39,7 +42,13 @@ class FormRepository(BaseRepository[Table, C, I, E, U]):
         # Paso 2: Si hay preguntas, asociarlas al formulario
         if has_questions:
             #self.question_repo.bulk_create(entity.list_questions, db, id_form=id_form)
-            raise NotImplementedError
+            #raise NotImplementedError
+            for question in entity.list_questions:
+                question_db_schema = question.to_db_schema()
+                id_question = QuestionCreate(question_db_schema, db, auto_commit)
+
+                question_form_db_schema = SchemaCreateDBQuestionsForm(id_form=id_form, id_question=id_question)
+                CreateQuestionsForm(db, question_form_db_schema)
 
         # Paso 3: Si hay secciones, asociarlas al formulario
         if has_sections:
