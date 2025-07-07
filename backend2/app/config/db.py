@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from typing import Generator
 import pytz
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm.session import sessionmaker, Session as TSession
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -32,3 +32,9 @@ Base = declarative_base()
 
 def is_db_postgres():
     return "postgresql" in SQLALCHEMY_DB_URL
+
+def CreateSchema(*names):
+    with engine.connect() as connection:
+        for name in names:
+            connection.execute(text(f"CREATE SCHEMA IF NOT EXISTS {name}"))
+        connection.commit()

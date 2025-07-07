@@ -36,3 +36,6 @@ class ModelForm(BaseModel):
 
     # 1:1 | 1 form -> 1 target sex
     target_sex = relationship("ModelTargetSex", back_populates="form", uselist=False)
+
+    # 1:1 | 1 form -> 1 condition
+    condition = relationship("ModelFormCondition", back_populates="form", uselist=False)

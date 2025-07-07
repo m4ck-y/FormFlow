@@ -5,6 +5,7 @@ from app.form.infrastructure.database.model.target_sex import ModelTargetSex
 from app.form.infrastructure.database.model.reference import ModelReference
 from app.form.infrastructure.database.model.what_it_evaluate import ModelWhatItEvaluate
 from app.form.infrastructure.database.model.category import form_category, ModelCategory
+from app.form.infrastructure.database.model.condition import ModelFormCondition
 
 def init():
     print("init >>> form ... ")
