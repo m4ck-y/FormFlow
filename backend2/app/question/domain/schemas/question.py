@@ -7,7 +7,7 @@ from pydantic import Field
 from app.question.domain.schemas.answer import SchemaCreateAPIAnswer, SchemaDetailAnswer
 
 class SchemaBaseQuestion(BaseORMModel):
-    type: EQuestionType
+    type: EQuestionType = Field(..., examples=[EQuestionType.SINGLE_CHOICE])
     text: str = Field(..., examples=["¿Cómo calificaría la atención recibida?"])
     order: int = Field(..., examples=[1])
     #list_answers
