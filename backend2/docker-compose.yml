@@ -1,17 +1,25 @@
 #3.14-rc-alpine
-
 services:
   db:
     image: postgres:17.5
+    container_name: postgres_preregistro
+    ports:
+      - ${DB_POSTGRES_PORT}:5432
     environment:
-      POSTGRES_USER=
-      POSTGRES_PASSWORD=
+      POSTGRES_USER: ${DB_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${DB_POSTGRES_PASS}
+      POSTGRES_DB: ${DB_POSTGRES_NAME}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: no
+volumes:
+  pgdata:
 
-
---name postgres_preregistro
--e POSTGRES_USER=admin
--e POSTGRES_PASSWORD=admin123
--e POSTGRES_DB=preregistro
--p 5435:5432
--v pgdata:/var/lib/postgresql/data_preregistro
--d postgres:latest
+# docker run \ 
+#--name postgres_preregistro
+#-e POSTGRES_USER=admin
+#-e POSTGRES_PASSWORD=admin123
+#-e POSTGRES_DB=preregistro
+#-p 5435:5432
+#-v pgdata:/var/lib/postgresql/data_preregistro
+#-d postgres:latest
