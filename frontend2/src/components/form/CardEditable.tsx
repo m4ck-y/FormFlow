@@ -18,6 +18,7 @@ import {
 import {Switch} from "@heroui/switch";
 import type { PropsWithChildren } from "react";
 import styles from "./CardEditable.module.css"
+import SVG_Formula from "@/assets/icons/formula";
 
 const CardEditable: React.FC<PropsWithChildren> = ({ children }) => {
     return (
@@ -87,6 +88,13 @@ const CardEditable: React.FC<PropsWithChildren> = ({ children }) => {
                         <DropdownItem
                             key="new"
                             shortcut="⌘P"
+                            startContent={<SVG_Formula />}
+                        >
+                            Condicion
+                        </DropdownItem>
+                        <DropdownItem
+                            key="new"
+                            shortcut="⌘P"
                             startContent={<QuestionOutlined />}
                         >
                             Pregunta
@@ -121,7 +129,7 @@ const CardEditable: React.FC<PropsWithChildren> = ({ children }) => {
                             shortcut="⌘P"
                             startContent={<QuestionOutlined />}
                         >
-                            Pregunta
+                            Condicion
                         </DropdownItem>
                         <DropdownItem
                             key="copy"

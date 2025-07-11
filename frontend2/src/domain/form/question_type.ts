@@ -1,17 +1,17 @@
-import { QuestionType } from "@/domain/enum/question/types";
+import { EQuestionType } from "@/domain/enum/question/types";
 
 interface IQuestionTypeDetails {
-    id: QuestionType;
+    id: EQuestionType;
     label: string;
 }
 
 export const ListQuestionTextLabels: IQuestionTypeDetails[] = [
-    { id: QuestionType.TEXT, label: "Respuesta corta" }
+    { id: EQuestionType.TEXT, label: "Respuesta corta" }
 ]
 
 export const ListQuestionObtionsLabels: IQuestionTypeDetails[] = [
-    { id: QuestionType.CHECKBOX, label: "Selección múltiple" },
-    { id: QuestionType.RADIO, label: "Selección única" }
+    { id: EQuestionType.MULTIPLE_CHOICE, label: "Selección múltiple" },
+    { id: EQuestionType.SINGLE_CHOICE, label: "Selección única" }
 ]
 
 export const ListQuestionTypesLabels: IQuestionTypeDetails[] = [

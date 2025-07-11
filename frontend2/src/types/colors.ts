@@ -1,0 +1,1 @@
+export type THUIColor = "primary" | "default" | "secondary" | "success" | "warning" | "danger" | undefined

@@ -32,6 +32,7 @@ export const AppRoutes: React.FC = () => {
                 <Route path={ROUTES.FORM} element={<FormIndex />} />
 
                 <Route path={ROUTES.FORM_DESIGN} element={<FormDesign />} />
+                <Route path={ROUTES.FORM_DESIGN + "/:id"} element={<FormDesign />} />
 
                 <Route
                     path={ROUTES.LOGIN}

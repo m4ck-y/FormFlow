@@ -1,9 +1,29 @@
 import { Flex } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import CardForm from "./components/CardForm";
 import CardQuestion from "./components/CardQuestion";
+import type { IDetailForm } from "@/domain/models/form";
 
-const FormNew: React.FC = () => {
+const COMPONENT = "forms/design/new.tsx"
+
+interface IProps {
+  data?: IDetailForm
+  setData?: React.Dispatch<React.SetStateAction<IDetailForm | undefined>>
+}
+
+const FormNew: React.FC<IProps> = ({ data, setData }) => {
+
+  const [listQuestions, setListQuestions] = React.useState<IDetailForm["list_questions"]>([]);
+
+  useEffect(() => {
+    console.log(">>>", COMPONENT, "FormNew component mounted", data);
+    if (data?.list_questions) {
+      console.log(">>>", COMPONENT, "data.list_questions", data?.list_questions); //data?.list_questions
+      setListQuestions(data.list_questions);
+    } else {
+      console.warn(">>>", COMPONENT, "No list_questions found in data");
+    }
+  }, [data]);
 
   return (
     <Flex
@@ -17,13 +37,12 @@ const FormNew: React.FC = () => {
       align="center"
       vertical={true}
     >
-      <CardForm/>
+      <CardForm title={data?.name} description={data?.description} form={data} setForm={setData} />
 
-      <CardQuestion/>
 
-      <CardQuestion/>
-
-      <CardQuestion/>
+      {        listQuestions.map((question, index) => (
+        <CardQuestion key={index} data={question} /* question={question} */ />
+      ))}
 
     </Flex>
   );

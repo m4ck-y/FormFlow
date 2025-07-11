@@ -1,4 +1,5 @@
 import SVG_Options from "@/assets/icons/options";
+import { useNavigate } from "react-router-dom";
 import { Button, Card as HCard, CardBody, CardFooter } from "@heroui/react";
 import {Avatar, AvatarGroup, AvatarIcon} from "@heroui/avatar";
 import { Flex } from "antd";
@@ -20,12 +21,15 @@ interface IProps {
     uploaded_by?: string;
     date?: string;
     responses?: number;
+    id: number;
 }
 
-const Card: React.FC<IProps> = ({ tittle, uploaded_by, responses, date }) => {
+const Card: React.FC<IProps> = ({ tittle, uploaded_by, responses, date, id }) => {
+
+    const navigate = useNavigate();
 
     const randomBackground: EBackgroundGradient = getRandomBackground();
-    console.warn("ColorStyle, ", randomBackground);
+    console.warn(">>> ColorStyle, ", randomBackground);
     return (
         <HCard
             isPressable
@@ -36,6 +40,9 @@ const Card: React.FC<IProps> = ({ tittle, uploaded_by, responses, date }) => {
                 minWidth: "200px",
                 maxWidth: "300px",
                 background: randomBackground,
+            }}
+            onPress={() => {
+                navigate(`/form/design/${id}`);
             }}
         >
             <CardBody className="overflow-visible p-0"></CardBody>

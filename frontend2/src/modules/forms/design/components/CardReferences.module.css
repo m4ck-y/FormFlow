@@ -1,0 +1,13 @@
+.references_container{
+    /* border: 1px solid red; */
+}
+
+.reference_item{
+    /* border: 1px solid green; */
+    margin : 10px;
+}
+
+.reference_item_detail{
+    /* border: 1px solid blue; */
+    margin: 10px;
+}

@@ -40,6 +40,7 @@ const Grid: React.FC = () => {
         <Flex gap={27} wrap justify="center" style={{padding:"20px"}}>
             {forms.map((form, index) => (
                 <Card
+                    id={form.id}
                     key={index}
                     tittle={form.name}
                     uploaded_by="Macari"
