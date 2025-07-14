@@ -12,6 +12,11 @@ import {
     DrawerFooter,
     DrawerHeader,
     Input,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
     Select,
     SelectItem,
     Tooltip,
@@ -25,6 +30,10 @@ import SVG_Plus from "@/assets/icons/plus";
 import type { THUIColor } from "@/types/colors";
 import SVG_Trash from "@/assets/icons/trash";
 import SVG_Search from "@/assets/icons/search";
+import SVG_Pencil from "@/assets/icons/pencil";
+import SVG_Options from "@/assets/icons/options";
+import type { IItemCategory } from "@/domain/models/form/category";
+import { CategoryService } from "@/api/form/category";
 
 const COMPONENT = "forms/design/components/CardForm.tsx";
 
@@ -41,38 +50,49 @@ interface IProps {
     setForm: React.Dispatch<React.SetStateAction<IDetailForm>>;
 }
 
-const CardMetadata: React.FC<IProps> = ({ title, description }) => {
-    const [formTitle, setFormTitle] = React.useState(title);
-    const [formDescription, setFormDescription] = React.useState(description);
+const CardMetadata: React.FC<IProps> = ({ }) => {
+    //const [formTitle, setFormTitle] = React.useState(title);
+    //const [formDescription, setFormDescription] = React.useState(description);
 
 
     const [tmpListWhatItEvaluates, setTmpListWhatItEvaluates] = React.useState<string[]>([]);
     const [selectedWhatItEvaluates, setSelectedWhatItEvaluates] = React.useState<string[]>([]);
-    const [tmpListCategory, setTmpCategory] = React.useState<string[]>([]);
+    const [tmpListCategory, setTmpListCategory] = React.useState<IItemCategory[]>([]);
     const [selectedCategory, setSelectedCategory] = React.useState<string[]>([]);
     const [tmpTargetAgeGroup, setTmpTargetAgeGroup] = React.useState<string>("");
     const [tmpTargetSex, setTmpTargetSex] = React.useState<string>("");
+
+    const catService = new CategoryService()
+
+    const [tmpNewNameCategory, setTmpNewNameCategory] = React.useState<string>("");
 
     const { isOpen: isOpenWhatItEvaluates, onOpen: onOpenWhatItEvaluates, onOpenChange: onOpenChangeWhatItEvaluates } = useDisclosure();
 
     const { isOpen: isOpenCategory, onOpen: onOpenCategory, onOpenChange: onOpenChangeCategory } = useDisclosure();
 
+    const { isOpen: isOpenModalCategory, onOpen: onOpenModalCategory, onOpenChange: onOpenChangeModalCategory } = useDisclosure();
+
 
     useEffect(() => {
         setTmpListWhatItEvaluates(["Reflujo gastrointestinal", "Discapacidad para la Lumbalgia", "Severidad de la enfermedad de crohn"]);
-        setTmpCategory(["Bienestar físico", "Bienestar social", "Bienestar mental"]);
+        catService.List().then((response) => {
+            console.log(">>>", COMPONENT, "Fetched categories:", response);
+            if (response.value) {
+                setTmpListCategory(response.value);
+            } else if (response.error) {
+                console.error(">>>", COMPONENT, "Error fetching categories:", response.error);
+                setTmpListCategory([{
+                    id: 1,
+                    name: "Error de conexxion, :(",
+                    key_industry: 1
+                }]);
+            }
+        })
+
+
     }, []);
 
-    console.error(
-        ">>>",
-        COMPONENT,
-        "CardForm rendered with title:",
-        title,
-        "and description:",
-        description
-    );
-
-    useEffect(() => {
+    /* useEffect(() => {
         console.log(
             ">>>",
             COMPONENT,
@@ -81,21 +101,21 @@ const CardMetadata: React.FC<IProps> = ({ title, description }) => {
             "and description:",
             description
         );
-        setFormTitle(title || "");
-        setFormDescription(description || "");
-    }, [title, description]);
+        //setFormTitle(title || "");
+        //setFormDescription(description || "");
+    }, [title, description]); */
 
-    const titleHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    /* const titleHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormTitle(e.target.value);
     };
 
     const descriptionHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormDescription(e.target.value);
-    };
+    }; */
 
-    const handleUnSelectCategory = (categoryToRemove: any) => {
+    const handleUnSelectCategory = (categoryToRemove: string) => {
         //setTmpCategory(tmpListCategory.filter((value) => value !== categoryToRemove));
-        setSelectedCategory(selectedCategory.filter((value) => value !== categoryToRemove));
+        setSelectedCategory(selectedCategory.filter((value, index) => String(index) !== categoryToRemove));
         console.warn(">>>", COMPONENT, "handleUnSelectCategory called with categoryToRemove:", categoryToRemove, selectedCategory);
         if (tmpListCategory.length === 1) {
             //setTmpCategory([]); // Clear the list if it was the last item
@@ -108,7 +128,7 @@ const CardMetadata: React.FC<IProps> = ({ title, description }) => {
             <Flex vertical gap={10}>
                 <Input
                     placeholder="Clave"
-                    value={formTitle}
+                    //value={formTitle}
                     //isClearable
                     //onClear={() => setFormTitle("")}
                     variant="underlined"
@@ -119,7 +139,7 @@ const CardMetadata: React.FC<IProps> = ({ title, description }) => {
                             <NodeIndexOutlined />
                         </div>
                     }
-                    onChange={titleHandler}
+                //onChange={titleHandler}
                 />
 
                 <Flex align="center" gap={5}>
@@ -194,40 +214,7 @@ const CardMetadata: React.FC<IProps> = ({ title, description }) => {
                             }
                         </Flex>
                     </AccordionItem>
-                </Accordion>
-                <Drawer isOpen={isOpenWhatItEvaluates} onOpenChange={onOpenChangeWhatItEvaluates} backdrop="blur" size="sm">
-                    <DrawerContent>
-                        {(onClose) => (
-                            <>
-                                <DrawerHeader className="flex flex-col gap-1">¿Que evalua?</DrawerHeader>
-                                <DrawerBody>
-                                    <Input
-                                        radius="full"
-                                        classNames={{
-                                            base: "max-w-full sm:max-w-[10rem] h-10",
-                                            mainWrapper: "h-full",
-                                            input: "text-small",
-                                            inputWrapper:
-                                                "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
-                                        }}
-                                        placeholder="Búsqueda"
-                                        size="sm"
-                                        startContent={<SVG_Search />}
-                                        type="search"
-                                    />
 
-                                </DrawerBody>
-                                <DrawerFooter>
-                                    <Button color="danger" variant="flat" onPress={onClose}>
-                                        Cancelar
-                                    </Button>
-                                </DrawerFooter>
-                            </>
-                        )}
-                    </DrawerContent>
-                </Drawer>
-
-                <Accordion>
                     <AccordionItem title="Categorias">
                         <Flex className="w-full" vertical gap={10}>
                             <Button
@@ -261,7 +248,7 @@ const CardMetadata: React.FC<IProps> = ({ title, description }) => {
 
                                         <Chip
                                             key={index} variant="shadow" color="success"
-                                            onClose={() => handleUnSelectCategory(item)}>
+                                            onClose={() => handleUnSelectCategory(String(index))}>
                                             {item}
                                         </Chip>
                                     ))
@@ -269,12 +256,14 @@ const CardMetadata: React.FC<IProps> = ({ title, description }) => {
                             </div>
                         </Flex>
                     </AccordionItem>
+
                 </Accordion>
-                <Drawer isOpen={isOpenCategory} onOpenChange={onOpenChangeCategory} backdrop="blur" size="sm">
+
+                <Drawer isOpen={isOpenWhatItEvaluates} onOpenChange={onOpenChangeWhatItEvaluates} backdrop="blur" size="sm">
                     <DrawerContent>
                         {(onClose) => (
                             <>
-                                <DrawerHeader className="flex flex-col gap-1">Categorias</DrawerHeader>
+                                <DrawerHeader className="flex flex-col gap-1">¿Que evalua?</DrawerHeader>
                                 <DrawerBody>
                                     <Input
                                         radius="full"
@@ -291,16 +280,6 @@ const CardMetadata: React.FC<IProps> = ({ title, description }) => {
                                         type="search"
                                     />
 
-                                    <CheckboxGroup defaultValue={selectedCategory} onChange={setSelectedCategory}>
-                                        {tmpListCategory.map((item, index) => (
-                                            <Checkbox key={index} value={item}>
-                                                {item}
-                                            </Checkbox>
-                                            
-                                        ))}
-                                    </CheckboxGroup>
-
-                                    <Button color="primary" variant="shadow" isIconOnly radius="full" onPress={()=> setSelectedCategory(tmpListCategory, )} ><SVG_Plus /></Button>
                                 </DrawerBody>
                                 <DrawerFooter>
                                     <Button color="danger" variant="flat" onPress={onClose}>
@@ -311,13 +290,102 @@ const CardMetadata: React.FC<IProps> = ({ title, description }) => {
                         )}
                     </DrawerContent>
                 </Drawer>
+
+                <Drawer isOpen={isOpenCategory} onOpenChange={onOpenChangeCategory} backdrop="blur" size="sm">
+                    <DrawerContent>
+                        {(onClose) => (
+                            <>
+                                <DrawerHeader className="flex flex-col gap-1">Categorias, <Button color="primary" variant="shadow" isIconOnly radius="full" onPress={onOpenModalCategory} ><SVG_Plus /></Button></DrawerHeader>
+                                <DrawerBody>
+                                    <Input
+                                        radius="full"
+                                        classNames={{
+                                            base: "max-w-full sm:max-w-[10rem] h-10",
+                                            mainWrapper: "h-full",
+                                            input: "text-small",
+                                            inputWrapper:
+                                                "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                                        }}
+                                        placeholder="Búsqueda"
+                                        size="sm"
+                                        startContent={<SVG_Search />}
+                                        type="search"
+                                    />
+
+                                    <CheckboxGroup defaultValue={selectedCategory} onChange={setSelectedCategory} classNames={{
+                                        wrapper: "gap-4" // Aplica un gap de 1rem entre los hijos
+                                    }}>
+                                        {tmpListCategory.map((item, index) => (
+                                            <div className="flex justify-between items-center">
+                                                <Checkbox key={item.id} value={item.name}>
+
+                                                    {item.name}
+
+
+                                                </Checkbox>
+
+                                                <Button isIconOnly color="primary" variant="light" radius="full">
+                                                    <SVG_Options />
+
+                                                </Button>
+                                            </div>
+
+                                        ))}
+                                    </CheckboxGroup>
+                                </DrawerBody>
+                                <DrawerFooter>
+                                    <Button color="danger" variant="flat" onPress={onClose}>
+                                        Cancelar
+                                    </Button>
+                                </DrawerFooter>
+                            </>
+                        )}
+                    </DrawerContent>
+                </Drawer>
+
+                <Modal isOpen={isOpenModalCategory} onOpenChange={onOpenChangeModalCategory}>
+                    <ModalContent>
+                        {(onClose) => (
+                            <>
+                                <ModalHeader className="flex flex-col gap-1">Categoria nueva</ModalHeader>
+                                <ModalBody>
+                                    <Input label="Nombre de la categoria" value={tmpNewNameCategory} onChange={(e) => setTmpNewNameCategory(e.target.value)} />
+                                </ModalBody>
+                                <ModalFooter>
+                                    <Button color="danger" variant="light" onPress={() => { onClose(); setTmpNewNameCategory(""); }}>
+                                        Cancelar
+                                    </Button>
+                                    <Button color="primary" onPress={() => {
+                                        if (tmpNewNameCategory.trim()) {
+                                            //  setTmpCategory([...tmpListCategory, tmpNewNameCategory]);
+                                            catService.Create(tmpNewNameCategory, 1).then((response) => {
+
+                                                if (response.value) {
+                                                    catService.List().then((response) => {
+                                                        if (response.value){
+                                                            setTmpListCategory(response.value);
+                                                        }
+                                                    })
+                                                }
+                                            });
+                                        }
+                                        onClose();
+                                        setTmpNewNameCategory(""); // Clear the input after adding
+                                    }}>
+                                        Aceptar
+                                    </Button>
+                                </ModalFooter>
+                            </>
+                        )}
+                    </ModalContent>
+                </Modal>
                 <Input
                     placeholder="Poblacion en especifico"
-                    value={formDescription}
+                    //value={formDescription}
                     variant="underlined"
                     //isClearable
                     color="primary"
-                    onChange={descriptionHandler}
+                //onChange={descriptionHandler}
                 />
             </Flex>
         </Card>
