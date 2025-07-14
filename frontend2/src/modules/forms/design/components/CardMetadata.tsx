@@ -3,6 +3,9 @@ import {
     Accordion,
     AccordionItem,
     Button,
+    Checkbox,
+    CheckboxGroup,
+    Chip,
     Drawer,
     DrawerBody,
     DrawerContent,
@@ -44,11 +47,15 @@ const CardMetadata: React.FC<IProps> = ({ title, description }) => {
 
 
     const [tmpListWhatItEvaluates, setTmpListWhatItEvaluates] = React.useState<string[]>([]);
+    const [selectedWhatItEvaluates, setSelectedWhatItEvaluates] = React.useState<string[]>([]);
     const [tmpListCategory, setTmpCategory] = React.useState<string[]>([]);
+    const [selectedCategory, setSelectedCategory] = React.useState<string[]>([]);
     const [tmpTargetAgeGroup, setTmpTargetAgeGroup] = React.useState<string>("");
     const [tmpTargetSex, setTmpTargetSex] = React.useState<string>("");
 
     const { isOpen: isOpenWhatItEvaluates, onOpen: onOpenWhatItEvaluates, onOpenChange: onOpenChangeWhatItEvaluates } = useDisclosure();
+
+    const { isOpen: isOpenCategory, onOpen: onOpenCategory, onOpenChange: onOpenChangeCategory } = useDisclosure();
 
 
     useEffect(() => {
@@ -85,6 +92,16 @@ const CardMetadata: React.FC<IProps> = ({ title, description }) => {
     const descriptionHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormDescription(e.target.value);
     };
+
+    const handleUnSelectCategory = (categoryToRemove: any) => {
+        //setTmpCategory(tmpListCategory.filter((value) => value !== categoryToRemove));
+        setSelectedCategory(selectedCategory.filter((value) => value !== categoryToRemove));
+        console.warn(">>>", COMPONENT, "handleUnSelectCategory called with categoryToRemove:", categoryToRemove, selectedCategory);
+        if (tmpListCategory.length === 1) {
+            //setTmpCategory([]); // Clear the list if it was the last item
+            setSelectedCategory([]); // Clear the selected categories
+        }
+    }
 
     return (
         <Card>
@@ -198,7 +215,7 @@ const CardMetadata: React.FC<IProps> = ({ title, description }) => {
                                         startContent={<SVG_Search />}
                                         type="search"
                                     />
-                                    
+
                                 </DrawerBody>
                                 <DrawerFooter>
                                     <Button color="danger" variant="flat" onPress={onClose}>
@@ -219,13 +236,14 @@ const CardMetadata: React.FC<IProps> = ({ title, description }) => {
                                 color={color_input}
                                 variant="shadow"
                                 radius="full"
+                                onPress={onOpenCategory}
                             >
                                 <SVG_Plus />
                             </Button>
 
 
                             {
-                                tmpListCategory.map((item, index) => (
+                                /* tmpListCategory.map((item, index) => (
                                     <div className="flex justify-between items-center">
                                         <p key={index}>{item}</p>
                                         <Tooltip content="Eliminar">
@@ -234,11 +252,65 @@ const CardMetadata: React.FC<IProps> = ({ title, description }) => {
                                             </Button>
                                         </Tooltip>
                                     </div>
-                                ))
+                                )) */
                             }
+
+                            <div className="flex gap-2">
+                                {
+                                    selectedCategory.map((item, index) => (
+
+                                        <Chip
+                                            key={index} variant="shadow" color="success"
+                                            onClose={() => handleUnSelectCategory(item)}>
+                                            {item}
+                                        </Chip>
+                                    ))
+                                }
+                            </div>
                         </Flex>
                     </AccordionItem>
                 </Accordion>
+                <Drawer isOpen={isOpenCategory} onOpenChange={onOpenChangeCategory} backdrop="blur" size="sm">
+                    <DrawerContent>
+                        {(onClose) => (
+                            <>
+                                <DrawerHeader className="flex flex-col gap-1">Categorias</DrawerHeader>
+                                <DrawerBody>
+                                    <Input
+                                        radius="full"
+                                        classNames={{
+                                            base: "max-w-full sm:max-w-[10rem] h-10",
+                                            mainWrapper: "h-full",
+                                            input: "text-small",
+                                            inputWrapper:
+                                                "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                                        }}
+                                        placeholder="Búsqueda"
+                                        size="sm"
+                                        startContent={<SVG_Search />}
+                                        type="search"
+                                    />
+
+                                    <CheckboxGroup defaultValue={selectedCategory} onChange={setSelectedCategory}>
+                                        {tmpListCategory.map((item, index) => (
+                                            <Checkbox key={index} value={item}>
+                                                {item}
+                                            </Checkbox>
+                                            
+                                        ))}
+                                    </CheckboxGroup>
+
+                                    <Button color="primary" variant="shadow" isIconOnly radius="full" onPress={()=> setSelectedCategory(tmpListCategory, )} ><SVG_Plus /></Button>
+                                </DrawerBody>
+                                <DrawerFooter>
+                                    <Button color="danger" variant="flat" onPress={onClose}>
+                                        Cancelar
+                                    </Button>
+                                </DrawerFooter>
+                            </>
+                        )}
+                    </DrawerContent>
+                </Drawer>
                 <Input
                     placeholder="Poblacion en especifico"
                     value={formDescription}
