@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 import type { IDetailForm } from "@/domain/models/form";
 import { EQuestionType } from "@/domain/enum/question/types";
 import FormConfig from "./config";
+import FormAnswerReport from "./anwer_report";
 
 
 
@@ -83,10 +84,12 @@ const FormInfo: React.FC = () => {
             <Tab key="preguntas" title="Preguntas" className="p-0">
                 <FormNew data={form} setData={setForm}/>
             </Tab>
-            <Tab key="configuracion" title="Configuracion">
+            <Tab key="configuracion" title="Configuracion" className="p-0">
                 <FormConfig />
             </Tab>
-            <Tab key="respuestas" title="Respuestas" />
+            <Tab key="respuestas" title="Respuestas" className="p-0">
+                <FormAnswerReport />
+                </Tab>
         </Tabs>
         </LayoutForm>
     );

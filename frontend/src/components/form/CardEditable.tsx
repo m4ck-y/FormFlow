@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardHeader } from "@heroui/react";
+import { Button, Card, CardBody } from "@heroui/react";
 import {
     Dropdown,
     DropdownTrigger,

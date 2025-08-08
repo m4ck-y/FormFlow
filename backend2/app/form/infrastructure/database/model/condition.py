@@ -15,5 +15,5 @@ class ModelFormCondition(BaseModel):
     # 1:1 | 1 condition -> 1 form
     form = relationship("ModelForm", back_populates="condition")
 
-    expression = Column(String(255), nullable=False)
+    expression = Column(String(255), nullable=False) # Expresión DSL
     description = Column(Text)

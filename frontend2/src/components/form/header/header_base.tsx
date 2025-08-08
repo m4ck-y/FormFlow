@@ -6,7 +6,8 @@ import {
 
 
 import MenuProfile from "@/components/form/header/MenuProfile";
-import flow from "@/assets/flow.png";
+//import flow from "@/assets/flow.png";
+import flow from "@/assets/logo.svg";
 import { useNavigate } from "react-router-dom";
 
 import React, { type ReactNode } from "react";

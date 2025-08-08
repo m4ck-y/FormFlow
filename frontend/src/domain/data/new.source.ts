@@ -37,4 +37,11 @@ export const NEWS_SOURCES: Record<ENewsSource, NewSource> = {
     link: "https://www.paho.org/es",
     has_author: false,
   },
+  [ENewsSource.AM_DIABETES]:{
+    id: ENewsSource.AM_DIABETES,
+    name: "Asociación Mexicana de Diabetes",
+    logoUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUFRnIiAUNyKPI8SCLhU3gUalvVk_5VmR13svy_l5pbR5TpQyM6KiVc8efl40WMecWsgQ",
+    link: "https://www.amdiabetes.org.mx/",
+    has_author: false
+  }
 };

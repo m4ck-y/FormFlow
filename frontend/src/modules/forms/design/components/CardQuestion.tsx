@@ -1,12 +1,7 @@
 import { Flex } from "antd";
-import Card from "../../../../components/card";
 import CardEditable from "../../../../components/form/CardEditable";
-import { Input } from "@heroui/react";
 import { Select, SelectSection, SelectItem } from "@heroui/select";
 import React, { useEffect } from "react";
-import {
-  NodeIndexOutlined
-} from '@ant-design/icons';
 import { QuestionType } from "../../../../domain/enum/question/types";
 import { ListQuestionObtionsLabels } from "../../../../domain/form/question_type";
 import { ListQuestionTextLabels } from "../../../../domain/form/question_type";

@@ -57,8 +57,8 @@ const CardMetadata: React.FC<IProps> = ({ }) => {
 
     const [tmpListWhatItEvaluates, setTmpListWhatItEvaluates] = React.useState<string[]>([]);
     const [selectedWhatItEvaluates, setSelectedWhatItEvaluates] = React.useState<string[]>([]);
-    const [tmpListCategory, setTmpListCategory] = React.useState<IItemCategory[]>([]);
-    const [selectedCategory, setSelectedCategory] = React.useState<string[]>([]);
+    const [DBListCategory, setDBListCategory] = React.useState<IItemCategory[]>([]);
+    const [selectedIDSCategory, setSelectedIDSCategory] = React.useState<string[]>([]);
     const [tmpTargetAgeGroup, setTmpTargetAgeGroup] = React.useState<string>("");
     const [tmpTargetSex, setTmpTargetSex] = React.useState<string>("");
 
@@ -78,10 +78,10 @@ const CardMetadata: React.FC<IProps> = ({ }) => {
         catService.List().then((response) => {
             console.log(">>>", COMPONENT, "Fetched categories:", response);
             if (response.value) {
-                setTmpListCategory(response.value);
+                setDBListCategory(response.value);
             } else if (response.error) {
                 console.error(">>>", COMPONENT, "Error fetching categories:", response.error);
-                setTmpListCategory([{
+                setDBListCategory([{
                     id: 1,
                     name: "Error de conexxion, :(",
                     key_industry: 1
@@ -115,11 +115,11 @@ const CardMetadata: React.FC<IProps> = ({ }) => {
 
     const handleUnSelectCategory = (categoryToRemove: string) => {
         //setTmpCategory(tmpListCategory.filter((value) => value !== categoryToRemove));
-        setSelectedCategory(selectedCategory.filter((value, index) => String(index) !== categoryToRemove));
-        console.warn(">>>", COMPONENT, "handleUnSelectCategory called with categoryToRemove:", categoryToRemove, selectedCategory);
-        if (tmpListCategory.length === 1) {
+        setSelectedIDSCategory(selectedIDSCategory.filter((value, index) => String(index) !== categoryToRemove));
+        console.warn(">>>", COMPONENT, "handleUnSelectCategory called with categoryToRemove:", categoryToRemove, selectedIDSCategory);
+        if (DBListCategory.length === 1) {
             //setTmpCategory([]); // Clear the list if it was the last item
-            setSelectedCategory([]); // Clear the selected categories
+            setSelectedIDSCategory([]); // Clear the selected categories
         }
     }
 
@@ -244,12 +244,12 @@ const CardMetadata: React.FC<IProps> = ({ }) => {
 
                             <div className="flex gap-2">
                                 {
-                                    selectedCategory.map((item, index) => (
+                                    selectedIDSCategory.map((item, index) => (
 
                                         <Chip
                                             key={index} variant="shadow" color="success"
                                             onClose={() => handleUnSelectCategory(String(index))}>
-                                            {item}
+                                            {DBListCategory.find(cat => String(cat.id) === item)?.name || "Categoria no encontrada"}
                                         </Chip>
                                     ))
                                 }
@@ -312,12 +312,12 @@ const CardMetadata: React.FC<IProps> = ({ }) => {
                                         type="search"
                                     />
 
-                                    <CheckboxGroup defaultValue={selectedCategory} onChange={setSelectedCategory} classNames={{
+                                    <CheckboxGroup defaultValue={selectedIDSCategory} onChange={setSelectedIDSCategory} classNames={{
                                         wrapper: "gap-4" // Aplica un gap de 1rem entre los hijos
                                     }}>
-                                        {tmpListCategory.map((item, index) => (
+                                        {DBListCategory.map((item, index) => (
                                             <div className="flex justify-between items-center">
-                                                <Checkbox key={item.id} value={item.name}>
+                                                <Checkbox value={String(item.id)} key={index}>
 
                                                     {item.name}
 
@@ -363,7 +363,7 @@ const CardMetadata: React.FC<IProps> = ({ }) => {
                                                 if (response.value) {
                                                     catService.List().then((response) => {
                                                         if (response.value){
-                                                            setTmpListCategory(response.value);
+                                                            setDBListCategory(response.value);
                                                         }
                                                     })
                                                 }
@@ -380,7 +380,10 @@ const CardMetadata: React.FC<IProps> = ({ }) => {
                     </ModalContent>
                 </Modal>
                 <Input
-                    placeholder="Poblacion en especifico"
+                  classNames={{
+    //label: "black", // Cambia el color del label aquí
+  }}
+                    label="Población en específico"
                     //value={formDescription}
                     variant="underlined"
                     //isClearable

@@ -4,4 +4,5 @@ export enum ENewsSource {
   INSP = "insp",
   OPS = "paho.org",
   MILENIO = "www.milenio.com",
+  AM_DIABETES = "amdiabetes.org",
 }

@@ -16,8 +16,6 @@ class ModelCategory(BaseModel):
     key_industry = Column(Integer, nullable=False)
     name = Column(String(255), nullable=False)
 
-    id_form = Column(Integer, ForeignKey("form.id"), nullable=False)
-    # 1:1 | 1 category -> 1 form
     # N:N | N categories -> N forms
     list_forms = relationship(
         "ModelForm",
