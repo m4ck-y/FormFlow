@@ -29,14 +29,14 @@ jobs:
       # Se accede al subdirectorio 'frontend' donde se encuentra el archivo package.json
       - name: Install dependencies
         run: |
-          cd frontend
+          cd frontend3
           npm install
 
       # Ejecuta el proceso de construcción de la aplicación frontend
       # El script de build genera los archivos estáticos que serán utilizados para el despliegue
       - name: Build frontend
         run: | 
-          cd frontend
+          cd frontend3
           npm run build
 
       # Despliega el contenido generado en la carpeta de build al entorno de GitHub Pages
@@ -45,4 +45,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}  # Token de autenticación integrado para permitir el acceso al repositorio
-          publish_dir: ./frontend/build  # Ruta del directorio que contiene los archivos generados tras el proceso de build
+          publish_dir: ./frontend3/dist  # Ruta del directorio que contiene los archivos generados tras el proceso de build
