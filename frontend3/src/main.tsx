@@ -1,10 +1,14 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import '@/index.css'
-import App from "@/App"
+import Register from './modules/auth/register'
+import {HeroUIProvider} from "@heroui/react";
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <HeroUIProvider>
+    <Register />
+
+    </HeroUIProvider>
   </StrictMode>,
 )
