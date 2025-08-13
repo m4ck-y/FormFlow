@@ -5,13 +5,13 @@ import { Link } from "@heroui/react";
 import { Flex } from "antd";
 
 import AuthLayout from "@/layouts/auth";
-//import { useNavigate } from "react-router-dom"; // Importamos el hook useNavigate
+import { useNavigate } from "react-router-dom"; // Importamos el hook useNavigate
 
 import { OtpService } from "@/api/otp"
 import { addToast, Button, type ToastProps } from "@heroui/react";
 
 const Register: React.FC = () => {
-    //const navigate = useNavigate(); // Usamos el hook para la navegación
+    const navigate = useNavigate(); // Usamos el hook para la navegación
     const [emailValue, setEmailValue] = React.useState("");
     const api = new OtpService();
 
@@ -49,7 +49,7 @@ const Register: React.FC = () => {
                     <Button
                         color="primary"
                         variant="light"
-                        //onPress={() => navigate("/login")}
+                        onPress={() => navigate("/login")}
                     >
                         Iniciar sesion
                     </Button>

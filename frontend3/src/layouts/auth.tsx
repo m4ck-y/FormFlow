@@ -5,7 +5,7 @@ import Stack from "@mui/material/Stack";
 import { Flex } from "antd";
 import type { PropsWithChildren } from "react";
 //import flow from "../assets/flow.png";
-import flow from "@/assets/react.svg";
+import logo from "@/assets/logo.svg";
 
 
 const AuthLayout: React.FC<PropsWithChildren> = ({ children }) => {
@@ -14,7 +14,7 @@ const AuthLayout: React.FC<PropsWithChildren> = ({ children }) => {
             <Container>
                 <Paper elevation={0} style={{ padding: "20px" }}>
                     <Stack spacing={2}>
-                        <img src={flow} alt="" height="80px" width="80px" />
+                        <img src={logo} alt="" height="80px" width="80px" />
                         <Flex vertical={false} justify="space-between">
                         {children}
                         </Flex>
