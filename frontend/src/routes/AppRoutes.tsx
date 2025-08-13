@@ -18,7 +18,7 @@ import { NewDetailPage } from "@/modules/news/detail";
 
 export enum ROUTES {
     FORM = "/form",
-    LOGIN = "/login",
+    LOGIN = "/",
     LOGIN_PASSWORD = "/login/password",
     OTP = "/otp",
     REGISTER = "/register",

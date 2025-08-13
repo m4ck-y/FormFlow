@@ -1,0 +1,48 @@
+# Define el nombre del flujo de trabajo que se mostrará en la interfaz de GitHub Actions
+name: Build & Deploy React App from Frontend Folder
+
+# Indica que el flujo de trabajo se ejecuta automáticamente cuando se produce un push sobre la rama 'main'
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    # Establece que el entorno de ejecución será una máquina virtual con Ubuntu en su versión más reciente
+    runs-on: ubuntu-latest
+
+    steps:
+      # Descarga el contenido del repositorio en el entorno de ejecución
+      # La acción 'actions/checkout@v4' permite acceder a los archivos del repositorio para su uso posterior en el workflow
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # Configura la versión de Node.js especificada en el entorno virtual
+      # La acción 'actions/setup-node@v4' se utiliza para instalar y definir la versión de Node.js requerida para el proyecto
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18  # Versión de Node.js compatible con el entorno de desarrollo del frontend
+
+      # Instala las dependencias del proyecto frontend utilizando el gestor de paquetes definido (npm)
+      # Se accede al subdirectorio 'frontend' donde se encuentra el archivo package.json
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm install
+
+      # Ejecuta el proceso de construcción de la aplicación frontend
+      # El script de build genera los archivos estáticos que serán utilizados para el despliegue
+      - name: Build frontend
+        run: | 
+          cd frontend
+          npm run build
+
+      # Despliega el contenido generado en la carpeta de build al entorno de GitHub Pages
+      # La acción 'peaceiris/actions-gh-pages@v3' permite publicar archivos estáticos en la rama gh-pages del repositorio
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # Token de autenticación integrado para permitir el acceso al repositorio
+          publish_dir: ./frontend/build  # Ruta del directorio que contiene los archivos generados tras el proceso de build
