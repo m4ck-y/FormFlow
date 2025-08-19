@@ -2,7 +2,6 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 from app.base.domain.exception import BusinessValidationException
-from app.config.env import API_HOST, API_PORT
 from app.config.init_db import init_db
 from app.config.init_api import init_api
 import uvicorn
@@ -27,6 +26,3 @@ async def business_validation_exception_handler(request: Request, exc: BusinessV
 
 init_db()
 init_api(app) #No registrar dentro de main
-
-if __name__ == "__main__":
-    uvicorn.run("app.main:app", host=API_HOST, port=API_PORT, reload=True)
