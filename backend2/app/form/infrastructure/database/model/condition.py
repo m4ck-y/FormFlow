@@ -6,11 +6,11 @@ from app.form.infrastructure.database.schema import SchemaForm
 
 class ModelFormCondition(BaseModel):
 
-    __tablename__ = "form_condition"
+    __tablename__ = SchemaForm.TBL_FORM_CONDITION.name
 
-    __table_args__ = {"schema": "form"}
+    __table_args__ = {"schema": SchemaForm.NAME}
 
-    id_form =  Column(Integer, ForeignKey("form.id"), nullable=False)
+    id_form =  Column(Integer, ForeignKey(f"{SchemaForm.TBL_FORM.identifier}.id"), nullable=False)
 
     # 1:1 | 1 condition -> 1 form
     form = relationship("ModelForm", back_populates="condition")

@@ -20,5 +20,6 @@
             "database": "${workspaceFolder:backend2}/file.db"
         }
     ],
-    "sqltools.useNodeRuntime": true
+    "sqltools.useNodeRuntime": true,
+    "kiroAgent.configureMCP": "Disabled"
 }

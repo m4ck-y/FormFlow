@@ -27,9 +27,10 @@ class EBiologicalSex(int, Enum):
     "INTERSEXUAL"
 
 class ModelTargetSex(BaseModel):
-    __tablename__ = SchemaForm("target_sex")
+    __tablename__ = SchemaForm.TBL_TARGET_SEX.name
+    __table_args__ = {"schema": SchemaForm.NAME}
 
-    id_form = Column(Integer, ForeignKey("form.id"), nullable=False, unique=True)
+    id_form = Column(Integer, ForeignKey(f"{SchemaForm.TBL_FORM.identifier}.id"), nullable=False, unique=True)
     # 1:1 | 1 target_sex -> 1 form
     form = relationship("ModelForm", back_populates="target_sex")
 

@@ -5,8 +5,15 @@ from app.question.infrastructure.database.model.question import questions_form
 from app.form.infrastructure.database.model.category import form_category
 from app.form.infrastructure.database.model.age_group import target_age_group
 
+from app.form.infrastructure.database.schema import SchemaForm
+from app.utils.log import log_info
+
+
+log_info("ModelForm initialized:", SchemaForm.TBL_FORM.name)
+
 class ModelForm(BaseModel):
-    __tablename__ = "form"
+    __tablename__ = SchemaForm.TBL_FORM.name
+    __table_args__ = {"schema": SchemaForm.NAME}
 
     key = Column(String(255), unique=True)
     name = Column(String(255), nullable=False)
