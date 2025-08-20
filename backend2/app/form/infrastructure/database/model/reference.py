@@ -10,9 +10,10 @@ class EReferenceType(Enum):
     LINK = "LINK"
 
 class ModelReference(BaseModel):
-    __tablename__ = SchemaForm("reference")
+    __tablename__ = SchemaForm.TBL_REFERENCE.name
+    __table_args__ = {"schema": SchemaForm.TBL_REFERENCE.schema}
 
-    id_form = Column(Integer, ForeignKey("form.id"), nullable=False)
+    id_form = Column(Integer, ForeignKey(f"{SchemaForm.TBL_FORM.identifier}.id"), nullable=False)
     # 1:1 | 1 reference -> 1 form
     form = relationship("ModelForm", back_populates="list_references")
 

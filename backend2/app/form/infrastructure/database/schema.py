@@ -1,19 +1,18 @@
-from app.base.infrastructure.database.schema import SchemaGenerator
+from app.utils.database.table_name import TableName
+class SchemaForm:
+    NAME = "form"
 
-SCHEMA_NAME = "form"
+    TBL_FORM = TableName(None, "form")
+    TBL_ESTIMATED_DURATION = TableName(NAME, "estimated_duration")
 
-def SchemaForm(table_name: str) -> str:
-    """
-    Genera el nombre completo de una tabla con el esquema correspondiente.
+    TBL_TARGET_AGE_GROUP = TableName(NAME, "target_age_group")
+    TBL_AGE_GROUP = TableName(NAME, "age_group")
 
-    Esta función utiliza un generador base para construir el nombre de la tabla 
-    en el formato adecuado, teniendo en cuenta el motor de base de datos en uso 
-    (PostgreSQL o SQLite, por ejemplo) y aplicando el esquema especificado.
+    TBL_TARGET_SEX = TableName(NAME, "target_sex")
+    TBL_REFERENCE = TableName(NAME, "reference")
+    TBL_WHAT_IT_EVALUATE = TableName(NAME, "what_it_evaluate")
 
-    Args:
-        table_name (str): El nombre de la tabla que se desea formatear.
+    TBL_FORM_CATEGORY = TableName(NAME, "form_category")
+    TBL_CATEGORY = TableName(NAME, "category")
 
-    Returns:
-        str: El nombre completo de la tabla con el esquema aplicado.
-    """
-    return SchemaGenerator(SCHEMA_NAME, table_name)
+    TBL_FORM_CONDITION = TableName(NAME, "form_condition")

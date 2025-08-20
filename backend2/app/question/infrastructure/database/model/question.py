@@ -2,30 +2,42 @@ from sqlalchemy import Column, Enum, Integer, String, Table, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from app.base.infrastructure.database.model import BaseModel
 from app.form.infrastructure.database.schema import SchemaForm
+from app.question.infrastructure.database.schema import SchemaQuestion
+from app.section.infrastructure.database.schema import SchemaSection
 from app.question.domain.enum.question_type import EQuestionType
+from app.utils.log import log_info
 
 # ------------------------------------------------------
 # 🧩 Tablas Intermedias (Many-to-Many)
 # ------------------------------------------------------
 
+
+log_info("Questions_form: ",SchemaQuestion.TBL_QUESTIONS_FORM.name)
+
 # Relación muchos a muchos: preguntas directamente asociadas al formulario (sin sección)
 questions_form = Table(
-    SchemaForm("questions_form"),
+    SchemaQuestion.TBL_QUESTIONS_FORM.name,
     BaseModel.metadata,
-    Column("id_form", Integer, ForeignKey("form.id"), primary_key=True),
-    Column("id_question", Integer, ForeignKey(f"{SchemaForm('question')}.id"), primary_key=True)
+    Column("id_form", Integer, ForeignKey(f"{SchemaForm.TBL_FORM.identifier}.id"), primary_key=True),
+    Column("id_question", Integer, ForeignKey(f"{SchemaQuestion.TBL_QUESTION.identifier}.id"), primary_key=True),
+    schema=SchemaQuestion.TBL_QUESTIONS_FORM.schema
 )
 
+log_info("Questions_section:",SchemaQuestion.TBL_QUESTIONS_SECTION.name)
 # Relación muchos a muchos: preguntas asociadas a secciones
 questions_section = Table(
-    SchemaForm('questions_section'),
+    SchemaQuestion.TBL_QUESTIONS_SECTION.name,
     BaseModel.metadata,
-    Column('id_section', ForeignKey(f'{SchemaForm("section")}.id'), primary_key=True),
-    Column('id_question', ForeignKey(f'{SchemaForm("question")}.id'), primary_key=True)
+    Column('id_section', ForeignKey(f'{SchemaSection.TBL_SECTION.identifier}.id'), primary_key=True),
+    Column('id_question', ForeignKey(f'{SchemaQuestion.TBL_QUESTION.identifier}.id'), primary_key=True),
+    schema=SchemaQuestion.TBL_QUESTIONS_SECTION.schema
 )
 
+log_info("ModelQuestion:",SchemaQuestion.TBL_QUESTION.name)
+
 class ModelQuestion(BaseModel):
-    __tablename__ = SchemaForm("question")
+    __tablename__ = SchemaQuestion.TBL_QUESTION.name
+    __table_args__ = {"schema": SchemaQuestion.TBL_QUESTION.schema}
 
     type = Column(Enum(EQuestionType), nullable=False)
     text = Column(String, nullable=False)

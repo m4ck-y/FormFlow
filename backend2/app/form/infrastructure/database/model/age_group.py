@@ -5,14 +5,17 @@ from app.form.infrastructure.database.schema import SchemaForm
 
 
 target_age_group = Table(
-    SchemaForm("target_age_group"),
+    SchemaForm.TBL_TARGET_AGE_GROUP.name,
     BaseModel.metadata,
     Column("id_form", Integer, ForeignKey("form.id"), primary_key=True),
-    Column("id_age_group", Integer, ForeignKey(f"{SchemaForm('age_group')}.id"), primary_key=True),
+    Column("id_age_group", Integer, ForeignKey(f"{SchemaForm.TBL_AGE_GROUP.identifier}.id"), primary_key=True),
+    schema=SchemaForm.TBL_TARGET_AGE_GROUP.schema
 )
 
 class ModelAgeGroup(BaseModel):
-    __tablename__ = SchemaForm("age_group")
+    __tablename__ = SchemaForm.TBL_AGE_GROUP.name
+
+    __table_args__ = {"schema": SchemaForm.TBL_AGE_GROUP.schema}
 
     name = Column(String(255), nullable=False)
     

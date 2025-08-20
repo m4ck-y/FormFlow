@@ -11,8 +11,8 @@ def init_db():
         CreateSchema("form")
     
     init_form()
-    init_question()
     init_section()
+    init_question()
     #...
     Base.metadata.create_all(bind=engine)
     #SeederHealth()
