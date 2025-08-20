@@ -8,7 +8,7 @@ class ModelFormCondition(BaseModel):
 
     __tablename__ = SchemaForm.TBL_FORM_CONDITION.name
 
-    __table_args__ = {"schema": SchemaForm.NAME}
+    __table_args__ = {"schema": SchemaForm.TBL_FORM_CONDITION.schema}
 
     id_form =  Column(Integer, ForeignKey(f"{SchemaForm.TBL_FORM.identifier}.id"), nullable=False)
 

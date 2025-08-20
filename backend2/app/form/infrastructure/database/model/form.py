@@ -13,7 +13,7 @@ log_info("ModelForm initialized:", SchemaForm.TBL_FORM.name)
 
 class ModelForm(BaseModel):
     __tablename__ = SchemaForm.TBL_FORM.name
-    __table_args__ = {"schema": SchemaForm.NAME}
+    __table_args__ = {"schema": SchemaForm.TBL_FORM.schema}
 
     key = Column(String(255), unique=True)
     name = Column(String(255), nullable=False)

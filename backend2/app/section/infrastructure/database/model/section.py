@@ -8,7 +8,7 @@ from app.question.infrastructure.database.model.question import questions_sectio
 class ModelSection(BaseModel):
     __tablename__ = SchemaSection.TBL_SECTION.name
 
-    __table_args__ = {"schema": SchemaSection.NAME}
+    __table_args__ = {"schema": SchemaSection.TBL_SECTION.schema}
 
     id_form = Column(Integer, ForeignKey(f"{SchemaForm.TBL_FORM.identifier}.id"), nullable=False)
     # 1:1 | 1 section -> 1 form

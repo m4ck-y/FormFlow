@@ -8,13 +8,13 @@ form_category = Table(
     BaseModel.metadata,
     Column("id_form", Integer, ForeignKey("form.id")),
     Column("id_category", Integer, ForeignKey(f"{SchemaForm.TBL_CATEGORY.identifier}.id")),
-    schema=SchemaForm.NAME
+    schema=SchemaForm.TBL_FORM_CATEGORY.schema
 )
 
 class ModelCategory(BaseModel):
 
     __tablename__ = SchemaForm.TBL_CATEGORY.name
-    __table_args__ = {"schema": SchemaForm.NAME}
+    __table_args__ = {"schema": SchemaForm.TBL_CATEGORY.schema}
 
     key_industry = Column(Integer, nullable=False)
     name = Column(String(255), nullable=False)

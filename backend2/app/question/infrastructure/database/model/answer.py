@@ -9,7 +9,7 @@ from app.question.infrastructure.database.schema import SchemaQuestion
 class ModelAnswer(BaseModel):
     __tablename__ = SchemaQuestion.TBL_ANSWER.name
 
-    __table_args__ = {"schema": SchemaQuestion.NAME}
+    __table_args__ = {"schema": SchemaQuestion.TBL_ANSWER.schema}
 
     id_question = Column(Integer, ForeignKey(f"{SchemaQuestion.TBL_QUESTION.identifier}.id"), nullable=False)
     question = relationship("ModelQuestion", back_populates="list_answers")

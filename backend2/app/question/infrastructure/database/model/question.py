@@ -20,7 +20,7 @@ questions_form = Table(
     BaseModel.metadata,
     Column("id_form", Integer, ForeignKey(f"{SchemaForm.TBL_FORM.identifier}.id"), primary_key=True),
     Column("id_question", Integer, ForeignKey(f"{SchemaQuestion.TBL_QUESTION.identifier}.id"), primary_key=True),
-    schema=SchemaQuestion.NAME
+    schema=SchemaQuestion.TBL_QUESTIONS_FORM.schema
 )
 
 log_info("Questions_section:",SchemaQuestion.TBL_QUESTIONS_SECTION.name)
@@ -30,14 +30,14 @@ questions_section = Table(
     BaseModel.metadata,
     Column('id_section', ForeignKey(f'{SchemaSection.TBL_SECTION.identifier}.id'), primary_key=True),
     Column('id_question', ForeignKey(f'{SchemaQuestion.TBL_QUESTION.identifier}.id'), primary_key=True),
-    schema=SchemaQuestion.NAME
+    schema=SchemaQuestion.TBL_QUESTIONS_SECTION.schema
 )
 
 log_info("ModelQuestion:",SchemaQuestion.TBL_QUESTION.name)
 
 class ModelQuestion(BaseModel):
     __tablename__ = SchemaQuestion.TBL_QUESTION.name
-    __table_args__ = {"schema": SchemaQuestion.NAME}
+    __table_args__ = {"schema": SchemaQuestion.TBL_QUESTION.schema}
 
     type = Column(Enum(EQuestionType), nullable=False)
     text = Column(String, nullable=False)
