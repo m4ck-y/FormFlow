@@ -5,7 +5,7 @@ class SchemaQuestion:
 
     NAME = SchemaForm.NAME
 
-    TBL_ANSWER = TableName(NAME, "answer")
+    TBL_OPTION = TableName(NAME, "option")
     TBL_CONDITIONAL_LOGIC = TableName(NAME, "conditional_logic")
 
     TBL_QUESTIONS_FORM = TableName(NAME, "questions_form")

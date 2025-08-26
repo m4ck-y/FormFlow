@@ -2,23 +2,23 @@ from typing import Optional
 from app.base.domain.schemas.base import BaseORMModel
 from app.question.domain.schemas.url import SchemaCreateAPIURL, SchemaItemURL, SchemaDetailURL
 
-class SchemaBaseAnswer(BaseORMModel):
+class SchemaBaseOption(BaseORMModel):
     text: str
     value: int
 
-class SchemaCreateDBAnswer(SchemaBaseAnswer):
+class SchemaCreateDBOption(SchemaBaseOption):
     id_question: int
 
-class SchemaCreateAPIAnswer(SchemaBaseAnswer):
+class SchemaCreateAPIOption(SchemaBaseOption):
     id_question: int
     url: Optional[SchemaCreateAPIURL]
 
-class SchemaItemAnswer(SchemaBaseAnswer):
+class SchemaItemOption(SchemaBaseOption):
     id: int
     url: Optional[SchemaItemURL]
 
-class SchemaDetailAnswer(SchemaItemAnswer):
+class SchemaDetailOption(SchemaItemOption):
     url: Optional[SchemaDetailURL]
 
-class SchemaUpdateAnswer(SchemaBaseAnswer):
+class SchemaUpdateOption(SchemaBaseOption):
     id: int
