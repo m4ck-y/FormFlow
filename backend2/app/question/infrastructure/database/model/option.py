@@ -18,4 +18,4 @@ class ModelOption(BaseModel):
     value = Column(Integer, nullable=False)
 
     # 1:1 | 1 Option -> 1 url
-    url = relationship("ModelURL", back_populates="Option", uselist=False)
+    url = relationship("ModelURL", back_populates="option", uselist=False)
