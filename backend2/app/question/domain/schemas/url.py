@@ -6,7 +6,7 @@ class EUrlType(Enum):
     IMAGE = "IMAGE"
 
 class SchemaBaseURL(BaseORMModel):
-    value: str
+    href: str
     type: EUrlType
 
 
