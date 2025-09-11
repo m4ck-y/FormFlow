@@ -16,6 +16,9 @@ class SchemaCreateDBURL(SchemaBaseURL):
 class SchemaCreateAPIURL(SchemaBaseURL):
     id_option: int
 
+class SCreateAPIItemURL(SchemaBaseURL):
+    pass
+
 class SchemaItemURL(SchemaBaseURL):
     id: int
 

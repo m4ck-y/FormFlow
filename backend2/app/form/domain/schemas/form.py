@@ -26,8 +26,8 @@ class SchemaCreateAPIForm(BaseCreateAPISchema, SchemaBaseForm):
     una lista de preguntas, pero no ambas a la vez. A través de este esquema,
     definimos la estructura para crear un formulario.
     """
-    list_sections: Optional[List[SchemaCreateAPISection]]
     list_questions: Optional[List[SchemaCreateAPIQuestion]]
+    list_sections: Optional[List[SchemaCreateAPISection]]
 
     def to_db_schema(self) -> SchemaCreateDB:
         return SchemaCreateDB(

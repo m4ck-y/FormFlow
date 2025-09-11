@@ -4,6 +4,7 @@ from starlette.middleware.cors import CORSMiddleware
 from app.base.domain.exception import BusinessValidationException
 from app.config.init_db import init_db
 from app.config.init_api import init_api
+from fastapi.exceptions import RequestValidationError
 import uvicorn
 
 app = FastAPI()
@@ -16,6 +17,23 @@ app.add_middleware(
     allow_headers=["*"],  # Permite todos los encabezados
 )
 
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc: RequestValidationError):
+    # Imprimir los detalles del error
+    print(f"Error al procesar el contenido: {exc}")
+    
+    # Aquí se pueden agregar detalles adicionales, como guardar los errores en un log
+    error_details = []
+    for error in exc.errors():
+        error_details.append(f"Campo '{error['loc']}' - {error['msg']}")
+    
+    # Regresar una respuesta JSON con el error de validación y los detalles
+    return JSONResponse(
+        status_code=422,
+        content={"detail": "El contenido no se pudo procesar", "errors": error_details}
+    )
+
+
 
 @app.exception_handler(BusinessValidationException)
 async def business_validation_exception_handler(request: Request, exc: BusinessValidationException):
@@ -26,3 +44,7 @@ async def business_validation_exception_handler(request: Request, exc: BusinessV
 
 init_db()
 init_api(app) #No registrar dentro de main
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -26,11 +26,9 @@ class SchemaCreateDetail(SchemaBaseSection, BaseCreateAPISchema):
             description=self.description,
             order=self.order
         )
-    
+
 class SchemaCreateItem(SchemaCreateDetail):
     id_form: int
-    pass
-
 
 class SchemaCreateAPISection(SchemaBaseSection, BaseCreateAPISchema):
     id_form: int # PARENT id
