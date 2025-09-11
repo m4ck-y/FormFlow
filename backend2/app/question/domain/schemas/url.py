@@ -11,10 +11,13 @@ class SchemaBaseURL(BaseORMModel):
 
 
 class SchemaCreateDBURL(SchemaBaseURL):
-    id_answer: int
+    id_option: int
 
 class SchemaCreateAPIURL(SchemaBaseURL):
-    id_answer: int
+    id_option: int
+
+class SCreateAPIItemURL(SchemaBaseURL):
+    pass
 
 class SchemaItemURL(SchemaBaseURL):
     id: int

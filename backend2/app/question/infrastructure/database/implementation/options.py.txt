@@ -1,0 +1,15 @@
+""" from app.form.infrastructure.database.model.form import ModelForm as Table
+from app.base.infrastructure.database.implementation import BaseRepository
+from app.question.domain.schemas.option import (
+    SchemaItemOption as I,
+    SchemaDetailOption as E,
+    SchemaCreateAPIOption as C,
+    SchemaUpdateOption as U,
+) """
+""" class OptionRepository(BaseRepository[Table, C, I, E, U]):
+
+    def __init__(self):
+        super().__init__(Table, C, I, E, U)
+
+    def Create(self, entity: C, db, auto_commit = True):
+        entity.value """

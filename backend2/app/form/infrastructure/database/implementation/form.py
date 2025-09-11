@@ -12,7 +12,7 @@ from app.question.domain.schemas.questions_form import SchemaCreateDBQuestionsFo
 from app.section.domain.schemas.section import SchemaCreateAPISection
 from app.base.domain.exception import UniqueConstraintException
 from app.section.infrastructure.database.implementation.create import SectionCreate
-from app.question.infrastructure.database.implementation.question_create import QuestionCreate
+from app.question.infrastructure.database.implementation.question_create import CreateQuestion
 from app.question.infrastructure.database.implementation.questions_form import CreateQuestionsForm
 from app.section.infrastructure.database.model.section import ModelSection
 from app.question.infrastructure.database.model.question import ModelQuestion
@@ -22,8 +22,7 @@ class FormRepository(BaseRepository[Table, C, I, E, U]):
     def __init__(self):
         super().__init__(Table, C, I, E, U)
 
-    def Create(self, entity, db, auto_commit = True) -> int:
-
+    def Create(self, entity: C, db, auto_commit = True) -> int:
         has_sections = entity.list_sections is not None and len(entity.list_sections) > 0
         has_questions = entity.list_questions is not None and len(entity.list_questions) > 0
 
@@ -44,11 +43,12 @@ class FormRepository(BaseRepository[Table, C, I, E, U]):
             #self.question_repo.bulk_create(entity.list_questions, db, id_form=id_form)
             #raise NotImplementedError
             for question in entity.list_questions:
-                question_db_schema = question.to_db_schema()
-                id_question = QuestionCreate(question_db_schema, db, auto_commit)
+                id_question = CreateQuestion(question, db, auto_commit)
 
                 question_form_db_schema = SchemaCreateDBQuestionsForm(id_form=id_form, id_question=id_question)
                 CreateQuestionsForm(db, question_form_db_schema)
+                
+
 
         # Paso 3: Si hay secciones, asociarlas al formulario
         if has_sections:

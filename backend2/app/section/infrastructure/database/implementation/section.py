@@ -1,5 +1,5 @@
 from typing import Optional
-from app.question.infrastructure.database.implementation.question_create import QuestionCreate
+from app.question.infrastructure.database.implementation.question_create import CreateQuestion
 from app.question.infrastructure.database.implementation.questions_section import CreateQuestionsSection
 from app.section.infrastructure.database.implementation.create import SectionCreate
 from app.section.infrastructure.database.model.section import ModelSection as Table

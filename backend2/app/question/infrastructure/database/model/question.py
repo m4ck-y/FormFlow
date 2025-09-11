@@ -69,8 +69,8 @@ class ModelQuestion(BaseModel):
         uselist=False  # Esto asegura que la relación es 1:1, no 1:N
     )
 
-    # 1:N | 1 question -> N answers
-    list_answers = relationship(
-        "ModelAnswer",  # Modelo relacionado (Respuesta)
-        back_populates="question",  # Relación inversa en ModelAnswer
+    # 1:N | 1 question -> N Options
+    list_options = relationship(
+        "ModelOption",  # Modelo relacionado (Opcion)
+        back_populates="question",  # Relación inversa en ModelOption
         )

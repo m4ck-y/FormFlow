@@ -1,7 +1,6 @@
 from fastapi import APIRouter, FastAPI, HTTPException, status, Depends
 from sqlalchemy.orm import Session # TODO
-from typing import TypeVar, Generic, List, Optional
-from pydantic import BaseModel
+from typing import Generic, List, Optional
 from app.config.db import GetSession
 from app.base.application.base import BaseLayerApplication
 from app.base.domain.schemas.types import TItemSchema, TDetailSchema, TUpdateSchema
