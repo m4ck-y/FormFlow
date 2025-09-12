@@ -10,6 +10,8 @@ from app.config.env import settings
 
 print("DEBUG: ", settings.DEBUG)
 
+print("SQLALCHEMY_DB_URL: ", type(settings.SQLALCHEMY_DB_URL), settings.SQLALCHEMY_DB_URL)
+
 engine = create_engine(settings.SQLALCHEMY_DB_URL, echo=settings.DEBUG)
 Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 

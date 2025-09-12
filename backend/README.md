@@ -88,7 +88,7 @@ FormFlow/
 1.  **Clonar el repositorio**
     ```bash
     git clone <URL_DEL_REPOSITORIO>
-    cd FormFlow/backend2
+    cd FormFlow/backend
     ```
 
 2.  **Crear y activar un entorno virtual**
@@ -116,6 +116,110 @@ FormFlow/
 
 6.  **Acceder a la documentación de la API**
     Abre tu navegador y ve a http://127.0.0.1:8000/docs para ver la documentación interactiva de Swagger UI.
+
+---
+
+## 🐳 Ejecución con Docker
+
+### Construcción y Ejecución
+
+#### 1. Construir la imagen Docker
+```bash
+sudo docker build -t formflow_backend .
+```
+
+#### 2. Ejecutar el contenedor
+
+**Opción A: Usando archivo .env (Recomendado)**
+```bash
+sudo docker run -p 8000:8000 --env-file .env --name formflow_backend formflow_backend
+```
+
+**Opción B: Pasando variables de entorno directamente**
+```bash
+sudo docker run -p 8000:8000 \
+  -e SQLALCHEMY_DB_URL="postgresql+psycopg2://<db_user>:<db_password>@<db_host>:<db_port>/<db_name>?sslmode=require" \
+  -e DEBUG=True \
+  --name formflow_backend \
+  formflow_backend
+```
+
+### Gestión de Contenedores
+
+#### Ver contenedores (activos y detenidos)
+```bash
+sudo docker ps -a
+```
+
+#### Detener contenedor
+```bash
+sudo docker stop formflow_backend
+```
+
+#### Eliminar contenedor
+```bash
+sudo docker rm formflow_backend
+# O por ID: sudo docker rm 243bb3d93489
+```
+
+#### Ver logs del contenedor
+```bash
+sudo docker logs formflow_backend
+sudo docker logs -f formflow_backend  # Seguir logs en tiempo real
+```
+
+### Gestión de Imágenes
+
+#### Listar imágenes
+```bash
+sudo docker images
+```
+
+#### Eliminar imagen
+```bash
+sudo docker rmi formflow_backend
+# O por ID: sudo docker rmi 6cf0c487c619
+```
+
+#### Limpiar imágenes no utilizadas
+```bash
+sudo docker image prune
+sudo docker system prune  # Limpieza completa (contenedores, imágenes, redes)
+```
+
+### Comandos de Desarrollo
+
+#### Reconstruir y ejecutar (desarrollo rápido)
+```bash
+# Detener y eliminar contenedor anterior
+sudo docker stop formflow_backend 2>/dev/null || true
+sudo docker rm formflow_backend 2>/dev/null || true
+
+# Reconstruir imagen
+sudo docker build -t formflow_backend .
+
+# Ejecutar nuevo contenedor
+sudo docker run -p 8000:8000 --env-file .env --name formflow_backend formflow_backend
+```
+
+#### Ejecutar en modo interactivo (debugging)
+```bash
+sudo docker run -it -p 8000:8000 --env-file .env --name formflow_backend formflow_backend /bin/bash
+```
+
+### Acceso a la Aplicación
+
+Una vez que el contenedor esté ejecutándose:
+- **API**: http://localhost:8000
+- **Documentación Swagger**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+
+### Notas Importantes
+
+- **Variables de entorno**: Asegúrate de que tu archivo `.env` no contenga comillas dobles alrededor de los valores (especialmente para `SQLALCHEMY_DB_URL`)
+- **Puerto**: El contenedor expone el puerto 8000, mapeado al puerto 8000 del host
+- **Persistencia**: Los datos se almacenan en la base de datos externa (Neon), no en el contenedor
+- **Logs**: Usa `docker logs` para ver la salida de la aplicación y debugging
 
 ---
 
