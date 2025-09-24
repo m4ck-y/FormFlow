@@ -5,6 +5,7 @@ from app.section.infrastructure.database.init import init as init_section
 from app.config.db import Base, engine, is_db_postgres, CreateSchema
 
 def init_db():
+
     print("init >>> db ... ")
 
     if is_db_postgres():
@@ -13,8 +14,7 @@ def init_db():
     init_form()
     init_section()
     init_question()
-    #...
-    Base.metadata.create_all(bind=engine)
-    #SeederHealth()
+
+Base.metadata.create_all(bind=engine)
 
 print("app/config/init_db.py")
