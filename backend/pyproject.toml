@@ -13,3 +13,6 @@ dependencies = [
     "sqlalchemy>=2.0.43",
     "uvicorn>=0.35.0",
 ]
+
+[tool.ruff]
+ignore = ["N802"] #función no está en snake_case

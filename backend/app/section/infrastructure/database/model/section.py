@@ -5,6 +5,11 @@ from app.section.infrastructure.database.schema import SchemaSection
 from app.form.infrastructure.database.schema import SchemaForm
 from app.question.infrastructure.database.model.question import questions_section
 
+from app.utils.log import log_info
+
+log_info("[MODEL][SECTION] app/section/infrastructure/database/model/section.py:", SchemaSection.TBL_SECTION.name)
+
+
 class ModelSection(BaseModel):
     __tablename__ = SchemaSection.TBL_SECTION.name
 

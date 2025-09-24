@@ -9,7 +9,7 @@ from app.form.infrastructure.database.schema import SchemaForm
 from app.utils.log import log_info
 
 
-log_info("ModelForm initialized:", SchemaForm.TBL_FORM.name)
+log_info("[MODEL][FORM] app/form/infrastructure/database/model/form.py:", SchemaForm.TBL_FORM.name)
 
 class ModelForm(BaseModel):
     __tablename__ = SchemaForm.TBL_FORM.name

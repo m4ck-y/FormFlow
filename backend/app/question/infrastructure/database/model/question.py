@@ -12,7 +12,7 @@ from app.utils.log import log_info
 # ------------------------------------------------------
 
 
-log_info("Questions_form: ",SchemaQuestion.TBL_QUESTIONS_FORM.name)
+log_info("[MODEL][QUESTIONS_FORM] app/question/infrastructure/database/model/question.py: ",SchemaQuestion.TBL_QUESTIONS_FORM.name)
 
 # Relación muchos a muchos: preguntas directamente asociadas al formulario (sin sección)
 questions_form = Table(
@@ -23,7 +23,7 @@ questions_form = Table(
     schema=SchemaQuestion.TBL_QUESTIONS_FORM.schema
 )
 
-log_info("Questions_section:",SchemaQuestion.TBL_QUESTIONS_SECTION.name)
+log_info("[MODEL][QUESTIONS_SECTION] app/question/infrastructure/database/model/question.py:",SchemaQuestion.TBL_QUESTIONS_SECTION.name)
 # Relación muchos a muchos: preguntas asociadas a secciones
 questions_section = Table(
     SchemaQuestion.TBL_QUESTIONS_SECTION.name,
@@ -33,7 +33,7 @@ questions_section = Table(
     schema=SchemaQuestion.TBL_QUESTIONS_SECTION.schema
 )
 
-log_info("ModelQuestion:",SchemaQuestion.TBL_QUESTION.name)
+log_info("[MODEL][QUESTION] app/question/infrastructure/database/model/question.py:ModelQuestion:",SchemaQuestion.TBL_QUESTION.name)
 
 class ModelQuestion(BaseModel):
     __tablename__ = SchemaQuestion.TBL_QUESTION.name

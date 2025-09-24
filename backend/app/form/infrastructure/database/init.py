@@ -8,18 +8,23 @@ from app.form.infrastructure.database.model.category import form_category, Model
 from app.form.infrastructure.database.model.condition import ModelFormCondition
 
 from app.config.db import Session, engine, TSession
-from app.utils.log import log_error, log_info
+from app.utils.log import log_error, log_info, log_info_cyan
 
 
 def init():
-    print("init >>> form ... ")
+    log_info("init FORM")
+    
 
+def seeder_form():
+    log_info("SEEDER")
     session = Session()
+
     try:
         seeder_category(session)
     except Exception as e:
         log_error("Error al insertar las categorias del form:" + str(e))
         return
+    
 
     
 
@@ -41,3 +46,5 @@ def seeder_category(session: TSession):
     session.commit()
 
     log_info("Categorias del form insertadas correctamente")
+
+log_info_cyan("app/form/infrastructure/database/init.py")

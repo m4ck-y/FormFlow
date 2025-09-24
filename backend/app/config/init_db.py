@@ -1,20 +1,23 @@
-from app.form.infrastructure.database.init import init as init_form
+from app.form.infrastructure.database.init import init as init_form, seeder_form
 from app.question.infrastructure.database.init import init as init_question
 from app.section.infrastructure.database.init import init as init_section
 
 from app.config.db import Base, engine, is_db_postgres, CreateSchema
+from app.utils.log import log_info, log_info_cyan
 
 def init_db():
 
-    print("init >>> db ... ")
-
-    if is_db_postgres():
-        CreateSchema("form")
+    log_info("Initializing database...")
     
     init_form()
     init_section()
     init_question()
 
-Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
 
-print("app/config/init_db.py")
+    seeder_form()
+
+log_info_cyan("app/config/init_db.py")
+
+if is_db_postgres():
+    CreateSchema("form")

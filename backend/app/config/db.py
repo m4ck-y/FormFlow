@@ -7,6 +7,7 @@ from sqlalchemy.orm.session import sessionmaker, Session as TSession
 from sqlalchemy.ext.declarative import declarative_base
 
 from app.config.env import settings
+from app.utils.log import log_info
 
 print("DEBUG: ", settings.DEBUG)
 
@@ -38,5 +39,6 @@ def is_db_postgres():
 def CreateSchema(*names):
     with engine.connect() as connection:
         for name in names:
+            log_info(f"Creating schema if not exists: {name}")
             connection.execute(text(f"CREATE SCHEMA IF NOT EXISTS {name}"))
         connection.commit()
