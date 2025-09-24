@@ -6,8 +6,8 @@ from app.form.infrastructure.database.schema import SchemaForm
 form_category = Table(
     SchemaForm.TBL_FORM_CATEGORY.name,
     BaseModel.metadata,
-    Column("id_form", Integer, ForeignKey("form.id")),
-    Column("id_category", Integer, ForeignKey(f"{SchemaForm.TBL_CATEGORY.identifier}.id")),
+    Column("id_form", Integer, ForeignKey("form.id"), primary_key=True),
+    Column("id_category", Integer, ForeignKey(f"{SchemaForm.TBL_CATEGORY.identifier}.id"), primary_key=True),
     schema=SchemaForm.TBL_FORM_CATEGORY.schema
 )
 

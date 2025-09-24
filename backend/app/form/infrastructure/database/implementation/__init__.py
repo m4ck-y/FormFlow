@@ -42,7 +42,7 @@ class FormRepository(BaseRepository[Table, C, I, E, U]):
         # Paso 2: Si hay preguntas, asociarlas al formulario
         if has_questions:
             for question in entity.list_questions:
-                id_question = CreateQuestion(question, db, auto_commit)
+                id_question = CreateQuestion(question, db, False)
 
                 question_form_db_schema = SchemaCreateDBQuestionsForm(id_form=id_form, id_question=id_question)
                 CreateQuestionsForm(db, question_form_db_schema)
