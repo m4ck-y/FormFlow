@@ -14,10 +14,12 @@ from app.base.domain.exception import UniqueConstraintException
 from app.section.infrastructure.database.implementation.create import SectionCreate
 from app.question.infrastructure.database.implementation.question_create import CreateQuestion
 from app.question.infrastructure.database.implementation.questions_form import CreateQuestionsForm
-from app.section.infrastructure.database.model.section import ModelSection
-from app.question.infrastructure.database.model.question import ModelQuestion
 
-from sqlalchemy.orm import joinedload
+from app.form.domain.schemas.category import SchemaCreateAPICategory, SchemaCreateDBCategory
+from app.form.infrastructure.database.implementation.category.create import CreateCategory
+from app.form.infrastructure.database.implementation.form.category import CreateFormCategory
+
+from app.form.domain.schemas.form_category import SCreateDBFormCategory
 class FormRepository(BaseRepository[Table, C, I, E, U]):
     def __init__(self):
         super().__init__(Table, C, I, E, U)
@@ -31,7 +33,6 @@ class FormRepository(BaseRepository[Table, C, I, E, U]):
             raise BusinessValidationException("No puedes proporcionar 'list_sections' y 'list_questions' al mismo tiempo.")
         if not has_sections and not has_questions:
             raise BusinessValidationException("Debes proporcionar al menos 'list_sections' o 'list_questions'.")
-        
 
         # Paso 1: Crear el formulario base
         form_schema_db = entity.to_db_schema()
@@ -40,15 +41,11 @@ class FormRepository(BaseRepository[Table, C, I, E, U]):
 
         # Paso 2: Si hay preguntas, asociarlas al formulario
         if has_questions:
-            #self.question_repo.bulk_create(entity.list_questions, db, id_form=id_form)
-            #raise NotImplementedError
             for question in entity.list_questions:
                 id_question = CreateQuestion(question, db, auto_commit)
 
                 question_form_db_schema = SchemaCreateDBQuestionsForm(id_form=id_form, id_question=id_question)
                 CreateQuestionsForm(db, question_form_db_schema)
-                
-
 
         # Paso 3: Si hay secciones, asociarlas al formulario
         if has_sections:
@@ -56,6 +53,19 @@ class FormRepository(BaseRepository[Table, C, I, E, U]):
             for section in entity.list_sections:
                 section.id_form = id_form
                 SectionCreate(section, db, False)
+
+        for category in entity.list_categories:
+            id_category = None
+
+            if isinstance(category, SchemaCreateAPICategory):
+                category_db_schema = SchemaCreateDBCategory(key_industry=category.key_industry, name=category.name)
+                id_category = CreateCategory(category_db_schema, db, False)
+            else:
+                id_category = category
+
+            form_category_db_schema = SCreateDBFormCategory(id_form=id_form, id_category=id_category)
+            CreateFormCategory(db, form_category_db_schema, False)
+
         db.commit()
 
         return id_form

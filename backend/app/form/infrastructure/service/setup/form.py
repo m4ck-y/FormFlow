@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.base.application.base import BaseLayerApplication as LayerApplication
-from app.form.infrastructure.database.implementation.form import FormRepository as LayerRepository
+from app.form.infrastructure.database.implementation import FormRepository as LayerRepository
 from app.form.infrastructure.service.routes.form import ServiceForm as LayerService
 
 

@@ -1,24 +1,41 @@
 from app.base.domain.schemas.base import BaseORMModel
 from app.base.domain.schemas.create_api import BaseCreateAPISchema
 from app.form.domain.schemas.age_group import SchemaDetailAgeGroup
-from app.form.domain.schemas.category import SchemaDetailCategory
+from app.form.domain.schemas.category import (
+    SchemaDetailCategory,
+    SchemaCreateAPICategory,
+)
 from app.form.domain.schemas.estimated_duration import SchemaDetailEstimatedDuration
 from app.form.domain.schemas.reference import SchemaDetailReference
 from app.form.domain.schemas.target_sex import SchemaDetailTargetSex
 from app.form.domain.schemas.what_it_evaluate import SchemaDetailWhatItEvaluate
-from app.question.domain.schemas.question import SchemaCreateAPIQuestion, SchemaDetailQuestion
-from app.section.domain.schemas.section import SchemaDetailSection, SchemaCreateAPISection
+from app.question.domain.schemas.question import (
+    SchemaCreateAPIQuestion,
+    SchemaDetailQuestion,
+)
+from app.section.domain.schemas.section import (
+    SchemaDetailSection,
+    SchemaCreateAPISection,
+)
 from typing import List, Text, Optional
 from pydantic import Field, model_validator
 
+
 class SchemaBaseForm(BaseORMModel):
-    key: Optional[str] = Field(None, description="Código único del formulario",examples=["ENCUESTA123", "FOLIO12345"]) #FOLIO
+    key: Optional[str] = Field(
+        None,
+        description="Código único del formulario",
+        examples=["ENCUESTA123", "FOLIO12345"],
+    )  # FOLIO
     name: str = Field(..., examples=["Encuesta de Satisfacción"])
-    description: Text = Field(..., examples=["Formulario para evaluar el servicio ofrecido"])
+    description: Text = Field(
+        ..., examples=["Formulario para evaluar el servicio ofrecido"]
+    )
 
 
 class SchemaCreateDB(SchemaBaseForm):
     pass
+
 
 class SchemaCreateAPIForm(BaseCreateAPISchema, SchemaBaseForm):
     """
@@ -26,14 +43,25 @@ class SchemaCreateAPIForm(BaseCreateAPISchema, SchemaBaseForm):
     una lista de preguntas, pero no ambas a la vez. A través de este esquema,
     definimos la estructura para crear un formulario.
     """
+
     list_questions: Optional[List[SchemaCreateAPIQuestion]]
     list_sections: Optional[List[SchemaCreateAPISection]]
 
+    list_categories: List[SchemaCreateAPICategory | int] = Field(
+        ...,
+        description="Lista de categorías asociadas al formulario. Cada categoría puede ser representada por su ID (entero) o por un objeto completo de categoría.",
+        examples=[
+            [1, 2],
+            [
+                {"key_industry": 1, "name": "Salud"},
+                {"key_industry": 2, "name": "Educación"},
+            ],
+        ],
+    )
+
     def to_db_schema(self) -> SchemaCreateDB:
         return SchemaCreateDB(
-            key=self.key,
-            name=self.name,
-            description=self.description
+            key=self.key, name=self.name, description=self.description
         )
 
     @model_validator(mode="before")
@@ -42,10 +70,10 @@ class SchemaCreateAPIForm(BaseCreateAPISchema, SchemaBaseForm):
         Valida que el formulario contenga **solo una de las dos listas**:
         `list_sections` o `list_questions`. No se puede proporcionar ambas listas
         al mismo tiempo.
-        
+
         - Si ambas listas están presentes, levantará un error.
         - Si ninguna lista está presente, levantará un error.
-        
+
         Args:
             cls: La clase a la que pertenece el validador.
             values: Los valores actuales de los campos del formulario (listas `list_sections` y `list_questions`).
@@ -61,19 +89,25 @@ class SchemaCreateAPIForm(BaseCreateAPISchema, SchemaBaseForm):
 
         # Verificar que no ambas listas estén presentes al mismo tiempo
         if sections and questions:
-            raise ValueError("Solo puedes proporcionar una de las listas: 'list_sections' o 'list_questions', no ambas.")
-        
+            raise ValueError(
+                "Solo puedes proporcionar una de las listas: 'list_sections' o 'list_questions', no ambas."
+            )
+
         # Verificar que al menos una lista esté presente
         if not sections and not questions:
-            raise ValueError("Debes proporcionar al menos una de las listas: 'list_sections' o 'list_questions'.")
-        
+            raise ValueError(
+                "Debes proporcionar al menos una de las listas: 'list_sections' o 'list_questions'."
+            )
+
         return values  # Devuelve los valores validados (sin cambios si son válidos)
+
 
 class SchemaItemForm(SchemaBaseForm):
     id: int
 
+
 class SchemaDetailForm(SchemaItemForm):
-    list_questions:  List[SchemaDetailQuestion]  # Preguntas del formulario
+    list_questions: List[SchemaDetailQuestion]  # Preguntas del formulario
     list_sections: List[SchemaDetailSection]
     list_what_it_evaluate: List[SchemaDetailWhatItEvaluate]
     list_references: List[SchemaDetailReference]

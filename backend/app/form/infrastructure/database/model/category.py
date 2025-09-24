@@ -16,7 +16,7 @@ class ModelCategory(BaseModel):
     __tablename__ = SchemaForm.TBL_CATEGORY.name
     __table_args__ = {"schema": SchemaForm.TBL_CATEGORY.schema}
 
-    key_industry = Column(Integer, nullable=False)
+    key_industry = Column(Integer, nullable=False) #https://www.inegi.org.mx/scian/, clasificacion industrial de america del norte
     name = Column(String(255), nullable=False)
 
     # N:N | N categories -> N forms

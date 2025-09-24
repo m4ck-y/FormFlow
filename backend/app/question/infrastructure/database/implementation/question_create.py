@@ -3,13 +3,9 @@ from app.base.infrastructure.database.implementation.create import BaseCreate
 from app.question.infrastructure.database.model.question import ModelQuestion
 from app.question.domain.schemas.question import SchemaCreateAPIQuestion
 from app.base.domain.repository.session import TSession
-
-
-from app.question.infrastructure.database.model.option import ModelOption
 from app.question.domain.schemas.option import SchemaCreateAPIOption
 from app.question.infrastructure.database.implementation.options.create import CreateOptions
 
-from app.utils.str_class_json import str_class_json
 from app.base.domain.schemas.str_schema_json import str_schema_json
 
 def CreateQuestion(entity: SchemaCreateAPIQuestion, db: TSession, auto_commit = True) -> int:
