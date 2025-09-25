@@ -4,10 +4,11 @@ from starlette.middleware.cors import CORSMiddleware
 from app.base.domain.exception import BusinessValidationException
 from app.config.init_db import init_db
 from app.config.init_api import init_api
+from app.config.env import settings
 from fastapi.exceptions import RequestValidationError
 import uvicorn
 
-app = FastAPI(root_path="/api/form")
+app = FastAPI(root_path=settings.ROOT_PATH)
 
 app.add_middleware(
     CORSMiddleware,

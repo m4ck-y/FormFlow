@@ -23,6 +23,8 @@ class Settings(BaseSettings):
     API_USER_EXISTS: str = "/person/email/exists"
     API_USER_BASIC_INFO: str = "/person/basic_info"
 
+    ROOT_PATH: str = ""
+
     model_config = SettingsConfigDict(env_file=".env")
 
 settings = Settings()
