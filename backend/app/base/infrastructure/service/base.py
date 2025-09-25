@@ -6,6 +6,7 @@ from app.base.application.base import BaseLayerApplication
 from app.base.domain.schemas.types import TItemSchema, TDetailSchema, TUpdateSchema
 from app.base.domain.schemas.create_api import TCreateAPISchema
 from app.base.domain.exception import UniqueConstraintException
+from app.utils.log import log_error, log_info, log_info_cyan
 
 class BaseLayerService(Generic[TCreateAPISchema, TItemSchema, TDetailSchema, TUpdateSchema]):
     """
@@ -44,16 +45,36 @@ class BaseLayerService(Generic[TCreateAPISchema, TItemSchema, TDetailSchema, TUp
             schema_item: TItemSchema,
             schema_detail: TDetailSchema,
             schema_update: TUpdateSchema, 
-            route_name: str, 
-            route_parent: str = None):
+            route_name: Optional[str] = None, 
+            route_parent: Optional[str] = None):
         
+
+        self.is_router = bool(route_name)
+
+        if not self.is_router:
+            log_error("El route_name es obligatorio para crear un router")
 
         route_name = f"{route_parent}/{route_name}" if route_parent else route_name
 
-        tags = [route_parent, route_name] if route_parent else [route_name]
-        
-        # Configura el router para el recurso
-        self.api_router = APIRouter(prefix=f"/{route_name}", tags=tags)
+        tags = None  #: Aquí inicializamos una lista vacía para los tags. Si no se encuentran valores para tags más adelante, permanecerá vacía.
+
+        # Si tanto route_parent como self.route_name están presentes
+        if route_parent and route_name:
+            tags = [route_parent, route_name]  #: Si `route_parent = "admin"` y `self.route_name = "users"`, `tags` será `["admin", "users"]`.
+
+        # Si solo self.route_name está presente (sin route_parent)
+        elif route_name:
+            tags = [route_name]  #: Si `self.route_name = "users"` y `route_parent = None`, `tags` será `["users"]`.
+
+
+        log_info("app/base/infrastructure/service/base.py")
+        log_info_cyan(f"parent: {type(route_parent)}:{route_parent} - route: {route_name}")
+
+        if self.is_router:
+            self.api_router = APIRouter(prefix=f"/{route_name}", tags=tags)
+        else:
+            self.api_router = api_server
+
         # Capa de aplicación que maneja operaciones CRUD
         self.application_layer = application_layer
         self.schema_create = schema_create
@@ -92,7 +113,8 @@ class BaseLayerService(Generic[TCreateAPISchema, TItemSchema, TDetailSchema, TUp
         self.api_router.route
 
         # Incluye el router en la API principal
-        api_server.include_router(self.api_router)
+        if self.is_router: # si tiene un router_name es un router
+            api_server.include_router(self.api_router)
 
     def Create(self, data: TCreateAPISchema, db: Session) -> int:
         """
