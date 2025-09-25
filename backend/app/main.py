@@ -7,7 +7,7 @@ from app.config.init_api import init_api
 from fastapi.exceptions import RequestValidationError
 import uvicorn
 
-app = FastAPI()
+app = FastAPI(root_path="/api/form")
 
 app.add_middleware(
     CORSMiddleware,

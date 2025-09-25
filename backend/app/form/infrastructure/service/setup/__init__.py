@@ -4,4 +4,4 @@ from app.form.infrastructure.service.setup.category import setup as setup_catego
 
 def setup_all(api_server: FastAPI):
     setup_form(api_server)
-    setup_category(api_server, route_parent="form")
+    setup_category(api_server, route_parent=None)
