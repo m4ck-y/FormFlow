@@ -16,3 +16,5 @@ class SchemaForm:
     TBL_CATEGORY = TableName(NAME, "category")
 
     TBL_FORM_CONDITION = TableName(NAME, "form_condition")
+
+    TBL_FORM_CIE11_CODE = TableName(NAME, "form_cie11_code")
