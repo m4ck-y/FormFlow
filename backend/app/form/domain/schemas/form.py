@@ -19,6 +19,7 @@ from app.section.domain.schemas.section import (
 )
 from typing import List, Text, Optional
 from pydantic import Field, model_validator
+from app.form.domain.schemas.cie11_code import SNewItemCie11Code
 
 
 class SchemaBaseForm(BaseORMModel):
@@ -51,13 +52,11 @@ class SchemaCreateAPIForm(BaseCreateAPISchema, SchemaBaseForm):
         ...,
         description="Lista de categorías asociadas al formulario. Cada categoría puede ser representada por su ID (entero) o por un objeto completo de categoría.",
         examples=[
-            [1, 2],
-            [
-                {"key_industry": 1, "name": "Salud"},
-                {"key_industry": 2, "name": "Educación"},
-            ],
+            [1, {"key_industry": 1, "name": "Salud"}]
         ],
     )
+
+    list_cie11_codes: List[SNewItemCie11Code | str]
 
     def to_db_schema(self) -> SchemaCreateDB:
         return SchemaCreateDB(

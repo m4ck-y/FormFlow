@@ -9,4 +9,4 @@ from app.form.domain.schemas.category import (
 
 class CategoryRepository(BaseRepository[Table, C, I, E, U]):
     def __init__(self):
-        super().__init__(Table, C, I, E, U)
+        super().__init__(Table, C, I, E, U)# TODO: asignaciones forms/{id}/category {}

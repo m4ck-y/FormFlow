@@ -33,6 +33,9 @@ class ModelForm(BaseModel):
      # N:N | N form -> N categories
     list_categories = relationship("ModelCategory", secondary=form_category, back_populates="list_forms")
 
+    # N:N | N form -> N cie11_code
+    list_cie11_codes = relationship("ModelCIE11Code", back_populates="form")
+
     # OPTIONALS
 
     # 1:1 | 1 form -> 1 estimated duration
