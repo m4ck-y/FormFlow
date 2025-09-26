@@ -40,8 +40,8 @@ def BaseCreate(model: TModelType, entity: TCreateAPISchema, db: TSession, auto_c
         log_error(e)
         if "unique constraint" in str(e.orig).lower():
             raise UniqueConstraintException(model.__name__, str(e.orig))
-        return e
+        raise e
     except Exception as e:
         db.rollback()
         log_error(e)
-        return e  # Retorna None si ocurre un error inesperado
+        raise e  # Retorna None si ocurre un error inesperado
