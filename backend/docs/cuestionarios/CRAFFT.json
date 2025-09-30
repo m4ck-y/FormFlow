@@ -1,0 +1,157 @@
+{
+  "key": "CRAFFT",
+  "name": "CRAFFT (Test de adicción en adolescentes)",
+	"description": "El cuestionario CRAFFT ayuda a jóvenes a entender si el consumo de alcohol o drogas está afectando su vida diaria. No es un diagnóstico, sino una forma fácil de identificar si es momento de pedir ayuda o conversar con alguien. Es usado por muchas familias y profesionales para cuidar tu bienestar y prevenir problemas.",
+  "estimated_duration": {
+    "max_minutes": 10,
+    "description": "Tiempo aplicativo ≤ 10 minutos"
+  },
+  "list_cie11_codes": ["6C4"],
+  "list_categories": [
+    {
+      "name": "Bienestar físico",
+      "id": 1
+    },
+    {
+      "name": "Bienestar social",
+      "id": 2
+    }
+  ],
+  "target_age_group": {
+    "min_age": 12,
+    "max_age": 21,
+    "name": "12 a 21 años o personas con sospecha de adicciones"
+  },
+  "list_questions": [
+    {
+      "id": 1,
+      "order": 1,
+      "type": "SINGLE_CHOICE",
+      "text": "En los últimos seis meses: ¿Has consumido bebidas con ALCOHOL (cerveza, vino, ginebra, etc.)?",
+      "list_options": [
+        {"id": 1, "text": "Sí", "value": 1},
+        {"id": 2, "text": "No", "value": 0}
+      ]
+    },
+    {
+      "id": 2,
+      "order": 2,
+      "type": "SINGLE_CHOICE",
+      "text": "En los últimos seis meses: ¿Has consumido Marihuana, HACHÍS, o MARIHUANA SINTÉTICA (“pescao”, “K2”, “Spice”)? Incluye fumada, vapeada o en cualquier tipo de alimento.",
+      "list_options": [
+        {"id": 1, "text": "Sí", "value": 1},
+        {"id": 2, "text": "No", "value": 0}
+      ]
+    },
+    {
+      "id": 3,
+      "order": 3,
+      "type": "SINGLE_CHOICE",
+      "text": "En los últimos seis meses: ¿Has consumido OTRAS DROGAS para colocarte (drogas ilegales, medicamentos con o sin receta, inhaladas, vapeadas o esnifadas)?",
+      "list_options": [
+        {"id": 1, "text": "Sí", "value": 1},
+        {"id": 2, "text": "No", "value": 0}
+      ]
+    },
+    {
+      "id": 4,
+      "order": 4,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Alguna vez has andado en un AUTO manejado por alguien (incluyéndote a ti mismo) que estuviera “volado” o consumiendo alcohol o drogas?",
+      "list_options": [
+        {"id": 1, "text": "Sí", "value": 1},
+        {"id": 2, "text": "No", "value": 0}
+      ]
+    },
+    {
+      "id": 5,
+      "order": 5,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Has usado alguna vez alcohol o drogas para RELAJARTE, sentirte mejor contigo mismo o para ser parte de un grupo?",
+      "list_options": [
+        {"id": 1, "text": "Sí", "value": 1},
+        {"id": 2, "text": "No", "value": 0}
+      ],
+      "conditional": {
+        "type": "any",
+        "rules": [
+          {"id_question": 1, "operator": "=", "value": 1},
+          {"id_question": 2, "operator": "=", "value": 1},
+          {"id_question": 3, "operator": "=", "value": 1}
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "order": 6,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Has consumido alguna vez alcohol o drogas estando SOLO?",
+      "list_options": [
+        {"id": 1, "text": "Sí", "value": 1},
+        {"id": 2, "text": "No", "value": 0}
+      ],
+      "conditional": {
+        "type": "any",
+        "rules": [
+          {"id_question": 1, "operator": "=", "value": 1},
+          {"id_question": 2, "operator": "=", "value": 1},
+          {"id_question": 3, "operator": "=", "value": 1}
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "order": 7,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Has OLVIDADO alguna vez cosas que hiciste mientras estabas bajo la influencia del alcohol o drogas?",
+      "list_options": [
+        {"id": 1, "text": "Sí", "value": 1},
+        {"id": 2, "text": "No", "value": 0}
+      ],
+      "conditional": {
+        "type": "any",
+        "rules": [
+          {"id_question": 1, "operator": "=", "value": 1},
+          {"id_question": 2, "operator": "=", "value": 1},
+          {"id_question": 3, "operator": "=", "value": 1}
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "order": 8,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Te ha dicho tu familia o amigos que debes disminuir el consumo de alcohol o drogas?",
+      "list_options": [
+        {"id": 1, "text": "Sí", "value": 1},
+        {"id": 2, "text": "No", "value": 0}
+      ],
+      "conditional": {
+        "type": "any",
+        "rules": [
+          {"id_question": 1, "operator": "=", "value": 1},
+          {"id_question": 2, "operator": "=", "value": 1},
+          {"id_question": 3, "operator": "=", "value": 1}
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "order": 9,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Has tenido problemas por consumir alcohol o drogas?",
+      "list_options": [
+        {"id": 1, "text": "Sí", "value": 1},
+        {"id": 2, "text": "No", "value": 0}
+      ],
+      "conditional": {
+        "type": "any",
+        "rules": [
+          {"id_question": 1, "operator": "=", "value": 1},
+          {"id_question": 2, "operator": "=", "value": 1},
+          {"id_question": 3, "operator": "=", "value": 1}
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "key": "IPAQ_S",
+  "name": "Cuestionario Internacional de Actividad Física",
+  "description": "Evalúa la actividad física de adultos de 18 a 65 años durante los últimos 7 días.",
+  "estimated_duration": {
+    "min_minutes": null,
+    "max_minutes": 7,
+    "description": "Tiempo aplicativo 7 minutos"
+  },
+  "list_cie11_codes": ["QE20"],
+  "list_categories": [
+    {
+      "name": "Bienestar Fisico",
+      "id": 1
+    }
+  ],
+  "list_questions": [
+    {
+      "id": 1,
+      "type": "RANGE",
+      "order": 1,
+      "text": "Durante los últimos 7 días, ¿cuántos días realizó usted actividades físicas vigorosas como levantar objetos pesados, excavar, aeróbicos o pedalear rápido en bicicleta?",
+      "validation": {
+        "min_value": 0,
+        "max_value": 7
+      }
+    },
+    {
+      "id": 2,
+      "type": "TIMER",
+      "order": 2,
+      "text": "¿Cuánto tiempo en total usualmente le tomó realizar actividades físicas vigorosas en uno de esos días que las realizó?",
+      "validation": {
+        "min_value": "PT0M",
+        "max_value": "PT24H"
+      },
+      "conditional": {
+        "type": "all",
+        "rules": [
+          {
+            "id_question": 1,
+            "operator": ">",
+            "value": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "type": "RANGE",
+      "order": 3,
+      "text": "Durante los últimos 7 días, ¿cuántos días hizo usted actividades físicas moderadas tal como cargar objetos livianos, pedalear en bicicleta a paso regular, o jugar dobles de tenis? (No incluya caminatas)",
+      "validation": {
+        "min_value": 0,
+        "max_value": 7
+      }
+    },
+    {
+      "id": 4,
+      "type": "TIMER",
+      "order": 4,
+      "text": "Usualmente, ¿cuánto tiempo dedica usted en uno de esos días haciendo actividades físicas moderadas?",
+      "validation": {
+        "min_value": "PT0M",
+        "max_value": "PT24H"
+      },
+      "conditional": {
+        "type": "all",
+        "rules": [
+          {
+            "id_question": 3,
+            "operator": ">",
+            "value": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "type": "RANGE",
+      "order": 5,
+      "text": "Durante los últimos 7 días, ¿cuántos días caminó usted por al menos 10 minutos continuos?",
+      "validation": {
+        "min_value": 0,
+        "max_value": 7
+      }
+    },
+    {
+      "id": 6,
+      "type": "TIMER",
+      "order": 6,
+      "text": "Usualmente, ¿cuánto tiempo gastó usted en uno de esos días caminando?",
+      "validation": {
+        "min_value": "PT0M",
+        "max_value": "PT24H"
+      },
+      "conditional": {
+        "type": "all",
+        "rules": [
+          {
+            "id_question": 5,
+            "operator": ">",
+            "value": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "type": "TIMER",
+      "order": 7,
+      "text": "En los últimos 7 días, ¿cuánto tiempo permaneció sentado(a) en un día típico?",
+      "validation": {
+        "min_value": "PT0M",
+        "max_value": "PT24H"
+      }
+    }
+  ],
+  "list_sections": []
+}

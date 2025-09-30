@@ -1,0 +1,177 @@
+{
+  "id": 1,
+  "key": "PHQ-9",
+  "name": "PHQ-9 (Patient Health Questionnaire)",
+  "description": "El PHQ-9 es una herramienta breve y confidencial que te ayuda a reflexionar sobre cómo te has estado sintiendo en las últimas dos semanas. Sus preguntas se enfocan en aspectos comunes del estado de ánimo, como la energía, el sueño o el apetito. No se trata de un diagnóstico, sino de un primer paso para entender mejor tu bienestar emocional. Muchas personas lo usan para saber si sería útil hablar con un profesional de salud mental. Responde con tranquilidad y honestidad: no hay respuestas correctas o incorrectas, solo lo que tú has vivido últimamente.",
+  "list_categories": [
+    {
+      "key_industry": 1,
+      "name": "Bienestar Mental"
+    }
+  ],
+  "estimated_duration": {
+    "min_minutes": 5,
+    "max_minutes": 10,
+    "description": "Duración estimada para completar el cuestionario"
+  },
+  "list_cie11_codes": ["6A7"],
+  "list_questions": [
+    {
+      "id": 1,
+      "type": "SINGLE_CHOICE",
+      "text": "1. En las últimas dos semanas, ¿con qué frecuencia ha sentido poco interés o placer en hacer las cosas?",
+      "order": 1,
+      "list_options": [
+        {"text": "Ningún día", "value": 0, "id": 1, "url":null},
+        {"text": "Varios días", "value": 1, "id": 2, "url":null},
+        {"text": "Más de la mitad de los días", "value": 2, "id": 3, "url":null},
+        {"text": "Casi todos los días", "value": 3, "id": 4, "url":null}
+      ]
+    },
+    {
+      "id": 2,
+      "type": "SINGLE_CHOICE",
+      "text": "2. En las últimas dos semanas, ¿con qué frecuencia se ha sentido decaído(a), deprimido(a) o sin esperanzas?",
+      "order": 2,
+      "list_options": [
+        {"text": "Ningún día", "value": 0, "id": 5, "url":null},
+        {"text": "Varios días", "value": 1, "id": 6, "url":null},
+        {"text": "Más de la mitad de los días", "value": 2, "id": 7, "url":null},
+        {"text": "Casi todos los días", "value": 3, "id": 8, "url":null}
+      ]
+    },
+    {
+      "id": 3,
+      "type": "SINGLE_CHOICE",
+      "text": "3. En las últimas dos semanas, ¿ha tenido dificultad para quedarse dormido(a), para mantenerse dormido(a) o ha dormido demasiado?",
+      "order": 3,
+      "list_options": [
+        {"text": "Ningún día", "value": 0, "id": 9, "url":null},
+        {"text": "Varios días", "value": 1, "id": 10, "url":null},
+        {"text": "Más de la mitad de los días", "value": 2, "id": 11, "url":null},
+        {"text": "Casi todos los días", "value": 3, "id": 12, "url":null}
+      ]
+    },
+    {
+      "id": 4,
+      "type": "SINGLE_CHOICE",
+      "text": "4. En las últimas dos semanas, ¿con qué frecuencia se ha sentido cansado(a) o con poca energía?",
+      "order": 4,
+      "list_options": [
+        {"text": "Ningún día", "value": 0, "id": 13, "url":null},
+        {"text": "Varios días", "value": 1, "id": 14, "url":null},
+        {"text": "Más de la mitad de los días", "value": 2, "id": 15, "url":null},
+        {"text": "Casi todos los días", "value": 3, "id": 16, "url":null}
+      ]
+    },
+    {
+      "id": 5,
+      "type": "SINGLE_CHOICE",
+      "text": "5. En las últimas dos semanas, ¿ha tenido poco apetito o ha comido en exceso?",
+      "order": 5,
+      "list_options": [
+        {"text": "Ningún día", "value": 0, "id": 17, "url":null},
+        {"text": "Varios días", "value": 1, "id": 18, "url":null},
+        {"text": "Más de la mitad de los días", "value": 2, "id": 19, "url":null},
+        {"text": "Casi todos los días", "value": 3, "id": 20, "url":null}
+      ]
+    },
+    {
+      "id": 6,
+      "type": "SINGLE_CHOICE",
+      "text": "6. En las últimas dos semanas, ¿se ha sentido mal consigo mismo(a) — o que ha sido un fracaso o que ha defraudado a usted mismo(a) o a su familia?",
+      "order": 6,
+      "list_options": [
+        {"text": "Ningún día", "value": 0, "id": 21, "url":null},
+        {"text": "Varios días", "value": 1, "id": 22, "url":null},
+        {"text": "Más de la mitad de los días", "value": 2, "id": 23, "url":null},
+        {"text": "Casi todos los días", "value": 3, "id": 24, "url":null}
+      ]
+    },
+    {
+      "id": 7,
+      "type": "SINGLE_CHOICE",
+      "text": "7. En las últimas dos semanas, ¿ha tenido dificultad para concentrarse en actividades como leer el periódico o ver televisión?",
+      "order": 7,
+      "list_options": [
+        {"text": "Ningún día", "value": 0, "id": 25, "url":null},
+        {"text": "Varios días", "value": 1, "id": 26, "url":null},
+        {"text": "Más de la mitad de los días", "value": 2, "id": 27, "url":null},
+        {"text": "Casi todos los días", "value": 3, "id": 28, "url":null}
+      ]
+    },
+    {
+      "id": 8,
+      "type": "SINGLE_CHOICE",
+      "text": "8. En las últimas dos semanas, ¿se ha movido o hablado tan lento(a) que otras personas lo notaron, o ha estado tan inquieto(a) o agitado(a) que se ha movido más de lo normal?",
+      "order": 8,
+      "list_options": [
+        {"text": "Ningún día", "value": 0, "id": 29, "url":null},
+        {"text": "Varios días", "value": 1, "id": 30, "url":null},
+        {"text": "Más de la mitad de los días", "value": 2, "id": 31, "url":null},
+        {"text": "Casi todos los días", "value": 3, "id": 32, "url":null}
+      ]
+    },
+    {
+      "id": 9,
+      "type": "SINGLE_CHOICE",
+      "text": "9. En las últimas dos semanas, ¿ha tenido pensamientos de que estaría mejor muerto(a) o de lastimarse de alguna manera?",
+      "order": 9,
+      "list_options": [
+        {"text": "Ningún día", "value": 0, "id": 33, "url":null},
+        {"text": "Varios días", "value": 1, "id": 34, "url":null},
+        {"text": "Más de la mitad de los días", "value": 2, "id": 35, "url":null},
+        {"text": "Casi todos los días", "value": 3, "id": 36, "url":null}
+      ]
+    },
+    {
+      "id": 10,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Qué tan difícil han sido para usted estos problemas en su vida diaria?",
+      "order": 10,
+      "list_options": [
+        {"text": "Nada difícil", "value": 0, "id": 37, "url":null},
+        {"text": "Un poco difícil", "value": 1, "id": 38, "url":null},
+        {"text": "Bastante difícil", "value": 2, "id": 39, "url":null},
+        {"text": "Muy difícil", "value": 3, "id": 40, "url":null}
+      ],
+      "conditional": {
+        "type": "any",
+        "rules": [
+          {"id_question": 1, "operator": ">", "value": 0},
+          {"id_question": 2, "operator": ">", "value": 0},
+          {"id_question": 3, "operator": ">", "value": 0},
+          {"id_question": 4, "operator": ">", "value": 0},
+          {"id_question": 5, "operator": ">", "value": 0},
+          {"id_question": 6, "operator": ">", "value": 0},
+          {"id_question": 7, "operator": ">", "value": 0},
+          {"id_question": 8, "operator": ">", "value": 0},
+          {"id_question": 9, "operator": ">", "value": 0}
+        ]
+      }
+    }
+  ],
+  "list_sections": [],
+  "list_what_it_evaluate": [
+    {
+      "id": 1,
+      "name": "Depresión"
+    }
+  ],
+  "list_references": [
+    {
+      "id": 0,
+      "url_reference": "https://pubmed.ncbi.nlm.nih.gov/11485122/",
+      "name": "Validation of a Brief Depression Severity Measure",
+      "notes": "Artículo que valida el PHQ-9.",
+      "url_thumbnail": "",
+      "type": "LINK"
+    }
+  ],
+  "target_age_group": {
+    "name": "Adultos",
+    "min_age": 18,
+    "max_age": 99
+  },
+  "target_sex": null
+}

@@ -1,0 +1,314 @@
+{
+  "key": "CALIDAD_VIDA_SF12",
+  "name": "Programa ISSET en tu casa - Calidad de Vida SF-12",
+  "description": "Formulario para evaluar el estado de salud y calidad de vida del paciente.",
+  "list_sections": [],
+  "list_questions": [
+    {
+      "id": 1,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Conoce su diagnóstico médico?",
+      "order": 1,
+      "list_options": [
+        { "id": 1, "text": "Sí", "value": 1, "url": null },
+        { "id": 2, "text": "No", "value": 0, "url": null }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "TEXT",
+      "text": "De ser así, ¿cuál es su diagnóstico?",
+      "order": 2,
+      "list_options": []
+    },
+    {
+      "id": 3,
+      "type": "TEXT",
+      "text": "Inicio del padecimiento",
+      "order": 3,
+      "list_options": []
+    },
+    {
+      "id": 4,
+      "type": "SINGLE_CHOICE",
+      "text": "Evolución del padecimiento",
+      "order": 4,
+      "list_options": [
+        { "id": 3, "text": "Mantenido", "value": 1, "url": null },
+        { "id": 4, "text": "Mejorado", "value": 2, "url": null },
+        { "id": 5, "text": "Empeorado", "value": 3, "url": null }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "MULTIPLE_CHOICE",
+      "text": "¿Cuál o cuáles de los siguientes tratamientos le ha indicado su médico?",
+      "order": 5,
+      "list_options": [
+        { "id": 6, "text": "Medicamentos", "value": 1, "url": null },
+        { "id": 7, "text": "Tratamiento dietético", "value": 2, "url": null },
+        { "id": 8, "text": "Realizar ejercicios físicos", "value": 3, "url": null },
+        { "id": 9, "text": "Otro", "value": 4, "url": null }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "TEXT",
+      "text": "Especifique otro tratamiento indicado",
+      "order": 6,
+      "list_options": []
+    },
+    {
+      "id": 7,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Consume algún psicofármaco, alcohol o droga?",
+      "order": 7,
+      "list_options": [
+        { "id": 10, "text": "Sí", "value": 1, "url": null },
+        { "id": 11, "text": "No", "value": 0, "url": null }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "TEXT",
+      "text": "Especifique sustancia consumida",
+      "order": 8,
+      "list_options": []
+    },
+    {
+      "id": 9,
+      "type": "TEXT",
+      "text": "Tiempo y frecuencia de consumo",
+      "order": 9,
+      "list_options": []
+    },
+    {
+      "id": 10,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Cuál es su lateralidad?",
+      "order": 10,
+      "list_options": [
+        { "id": 12, "text": "Diestra/derecha", "value": 1, "url": null },
+        { "id": 13, "text": "Zurda", "value": 2, "url": null }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Qué tan saludable se considera?",
+      "order": 11,
+      "list_options": [
+        { "id": 14, "text": "Nada saludable", "value": 0, "url": null },
+        { "id": 15, "text": "Poco saludable", "value": 1, "url": null },
+        { "id": 16, "text": "Regularmente saludable", "value": 2, "url": null },
+        { "id": 17, "text": "Muy saludable", "value": 3, "url": null }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Qué tan presionado se siente con el estilo de vida que lleva?",
+      "order": 12,
+      "list_options": [
+        { "id": 18, "text": "Nada presionado", "value": 0, "url": null },
+        { "id": 19, "text": "Poco presionado", "value": 1, "url": null },
+        { "id": 20, "text": "Regularmente presionado", "value": 2, "url": null },
+        { "id": 21, "text": "Muy presionado", "value": 3, "url": null }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "TEXT",
+      "text": "¿Qué hace en su tiempo libre?",
+      "order": 13,
+      "list_options": []
+    },
+    {
+      "id": 14,
+      "type": "TEXT",
+      "text": "¿Qué hace para cuidar su salud?",
+      "order": 14,
+      "list_options": []
+    },
+    {
+      "id": 15,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Qué tanto han cambiado las actividades de su vida diaria a causa de su enfermedad?",
+      "order": 15,
+      "list_options": [
+        { "id": 22, "text": "Nada", "value": 0, "url": null },
+        { "id": 23, "text": "Algo", "value": 1, "url": null },
+        { "id": 24, "text": "Regularmente", "value": 2, "url": null },
+        { "id": 25, "text": "Mucho", "value": 3, "url": null }
+      ]
+    },
+    {
+      "id": 16,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Se siente seguro de poder superar los problemas cotidianos causados por su enfermedad?",
+      "order": 16,
+      "list_options": [
+        { "id": 26, "text": "Nada seguro", "value": 0, "url": null },
+        { "id": 27, "text": "Algo seguro", "value": 1, "url": null },
+        { "id": 28, "text": "Regularmente seguro", "value": 2, "url": null },
+        { "id": 29, "text": "Muy seguro", "value": 3, "url": null }
+      ]
+    },
+    {
+      "id": 17,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Está dispuesto a realizar cambios en su estilo de vida debido a su enfermedad?",
+      "order": 17,
+      "list_options": [
+        { "id": 30, "text": "No estoy dispuesto a hacer cambios", "value": 0, "url": null },
+        { "id": 31, "text": "Lo he pensado, pero no los he llevado a cabo", "value": 1, "url": null },
+        { "id": 32, "text": "He hecho cambios desde hace un mes", "value": 2, "url": null },
+        { "id": 33, "text": "Llevo haciendo cambios hace más de 6 meses", "value": 3, "url": null }
+      ]
+    },
+    {
+      "id": 18,
+      "type": "SINGLE_CHOICE",
+      "text": "En general, usted diría que su salud es:",
+      "order": 18,
+      "list_options": [
+        { "id": 34, "text": "100% Excelente", "value": 100, "url": null },
+        { "id": 35, "text": "75% Muy buena", "value": 75, "url": null },
+        { "id": 36, "text": "50% Buena", "value": 50, "url": null },
+        { "id": 37, "text": "25% Regular", "value": 25, "url": null },
+        { "id": 38, "text": "0% Mala", "value": 0, "url": null }
+      ]
+    },
+    {
+      "id": 19,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Su salud actual le limita para hacer esfuerzos moderados?",
+      "order": 19,
+      "list_options": [
+        { "id": 39, "text": "0% Sí, me limita mucho", "value": 0, "url": null },
+        { "id": 40, "text": "50% Sí, me limita poco", "value": 50, "url": null },
+        { "id": 41, "text": "100% No, no me limita en nada", "value": 100, "url": null }
+      ]
+    },
+    {
+      "id": 20,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Su salud actual le limita para subir varios pisos por las escaleras?",
+      "order": 20,
+      "list_options": [
+        { "id": 42, "text": "0% Sí, me limita mucho", "value": 0, "url": null },
+        { "id": 43, "text": "50% Sí, me limita poco", "value": 50, "url": null },
+        { "id": 44, "text": "100% No, no me limita en nada", "value": 100, "url": null }
+      ]
+    },
+    {
+      "id": 21,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Hizo menos de lo que hubiera querido a causa de su salud física?",
+      "order": 21,
+      "list_options": [
+        { "id": 45, "text": "100% Sí", "value": 100, "url": null },
+        { "id": 46, "text": "0% No", "value": 0, "url": null }
+      ]
+    },
+    {
+      "id": 22,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Tuvo que dejar de hacer algunas tareas por su salud física?",
+      "order": 22,
+      "list_options": [
+        { "id": 47, "text": "100% Sí", "value": 100, "url": null },
+        { "id": 48, "text": "0% No", "value": 0, "url": null }
+      ]
+    },
+    {
+      "id": 23,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Hizo menos de lo que hubiera querido por algún problema emocional?",
+      "order": 23,
+      "list_options": [
+        { "id": 49, "text": "100% Sí", "value": 100, "url": null },
+        { "id": 50, "text": "0% No", "value": 0, "url": null }
+      ]
+    },
+    {
+      "id": 24,
+      "type": "SINGLE_CHOICE",
+      "text": "¿No hizo sus tareas tan cuidadosamente por problemas emocionales?",
+      "order": 24,
+      "list_options": [
+        { "id": 51, "text": "100% Sí", "value": 100, "url": null },
+        { "id": 52, "text": "0% No", "value": 0, "url": null }
+      ]
+    },
+    {
+      "id": 25,
+      "type": "SINGLE_CHOICE",
+      "text": "¿El dolor le ha dificultado su trabajo habitual?",
+      "order": 25,
+      "list_options": [
+        { "id": 53, "text": "0% Nada", "value": 0, "url": null },
+        { "id": 54, "text": "25% Un poco", "value": 25, "url": null },
+        { "id": 55, "text": "50% Regular", "value": 50, "url": null },
+        { "id": 56, "text": "75% Bastante", "value": 75, "url": null },
+        { "id": 57, "text": "100% Mucho", "value": 100, "url": null }
+      ]
+    },
+    {
+      "id": 26,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Cuánto tiempo se sintió calmado y tranquilo?",
+      "order": 26,
+      "list_options": [
+        { "id": 58, "text": "100% Siempre", "value": 100, "url": null },
+        { "id": 59, "text": "75% Casi siempre", "value": 75, "url": null },
+        { "id": 60, "text": "60% Algunas veces", "value": 60, "url": null },
+        { "id": 61, "text": "40% Muchas veces", "value": 40, "url": null },
+        { "id": 62, "text": "25% Sólo alguna vez", "value": 25, "url": null },
+        { "id": 63, "text": "0% Nunca", "value": 0, "url": null }
+      ]
+    },
+    {
+      "id": 27,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Cuánto tiempo tuvo mucha energía?",
+      "order": 27,
+      "list_options": [
+        { "id": 64, "text": "100% Siempre", "value": 100, "url": null },
+        { "id": 65, "text": "75% Casi siempre", "value": 75, "url": null },
+        { "id": 66, "text": "60% Algunas veces", "value": 60, "url": null },
+        { "id": 67, "text": "40% Muchas veces", "value": 40, "url": null },
+        { "id": 68, "text": "25% Sólo alguna vez", "value": 25, "url": null },
+        { "id": 69, "text": "0% Nunca", "value": 0, "url": null }
+      ]
+    },
+    {
+      "id": 28,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Cuánto tiempo se sintió desanimado y triste?",
+      "order": 28,
+      "list_options": [
+        { "id": 70, "text": "100% Siempre", "value": 100, "url": null },
+        { "id": 71, "text": "75% Casi siempre", "value": 75, "url": null },
+        { "id": 72, "text": "60% Algunas veces", "value": 60, "url": null },
+        { "id": 73, "text": "40% Muchas veces", "value": 40, "url": null },
+        { "id": 74, "text": "25% Sólo alguna vez", "value": 25, "url": null },
+        { "id": 75, "text": "0% Nunca", "value": 0, "url": null }
+      ]
+    },
+    {
+      "id": 29,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Con qué frecuencia la salud física o emocional dificultó sus actividades sociales?",
+      "order": 29,
+      "list_options": [
+        { "id": 76, "text": "100% Siempre", "value": 100, "url": null },
+        { "id": 77, "text": "75% Casi siempre", "value": 75, "url": null },
+        { "id": 78, "text": "60% Algunas veces", "value": 60, "url": null },
+        { "id": 79, "text": "40% Muchas veces", "value": 40, "url": null },
+        { "id": 80, "text": "25% Sólo alguna vez", "value": 25, "url": null },
+        { "id": 81, "text": "0% Nunca", "value": 0, "url": null }
+      ]
+    }
+  ]
+}
