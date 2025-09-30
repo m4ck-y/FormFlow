@@ -15,5 +15,5 @@ class SNewItemCie11Code(SBaseCie11Code):
 class SUpdateCie11Code(SRequestCie11Code):
     id: int
 
-class SResponse(SUpdateCie11Code):
+class SResponseCIE11Code(SUpdateCie11Code):
     pass

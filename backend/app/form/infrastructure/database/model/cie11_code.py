@@ -7,6 +7,8 @@ class ModelCIE11Code(Base): #TODO: table, updatated_by, deleted_by, etc, se pued
     __tablename__ = SchemaForm.TBL_FORM_CIE11_CODE.name
     __table_args__ = {"schema": SchemaForm.TBL_FORM_CIE11_CODE.schema}
 
+    id = Column(Integer, autoincrement=True, primary_key=True)
+
     id_form = Column(Integer, ForeignKey(f"{SchemaForm.TBL_FORM.identifier}.id"), nullable=False, primary_key=True)
     # 1:1 | 1 cie11_code -> 1 form
     form = relationship("ModelForm", back_populates="list_cie11_codes")

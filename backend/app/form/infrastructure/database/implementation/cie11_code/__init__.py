@@ -1,7 +1,7 @@
 from app.form.infrastructure.database.model.cie11_code import ModelCIE11Code as Table
 from app.base.infrastructure.database.implementation import BaseRepository
 from app.form.domain.schemas.cie11_code import (
-    SResponse as E,
+    SResponseCIE11Code as E,
     SRequestCie11Code as C,
     SUpdateCie11Code as U
 )

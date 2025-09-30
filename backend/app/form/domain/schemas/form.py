@@ -19,7 +19,7 @@ from app.section.domain.schemas.section import (
 )
 from typing import List, Text, Optional
 from pydantic import Field, model_validator
-from app.form.domain.schemas.cie11_code import SNewItemCie11Code
+from app.form.domain.schemas.cie11_code import SNewItemCie11Code, SResponseCIE11Code
 
 
 class SchemaBaseForm(BaseORMModel):
@@ -111,6 +111,7 @@ class SchemaDetailForm(SchemaItemForm):
     list_what_it_evaluate: List[SchemaDetailWhatItEvaluate]
     list_references: List[SchemaDetailReference]
     list_categories: List[SchemaDetailCategory]
+    list_cie11_codes: List[SResponseCIE11Code]
 
     estimated_duration: Optional[SchemaDetailEstimatedDuration]
     target_age_group: Optional[SchemaDetailAgeGroup]

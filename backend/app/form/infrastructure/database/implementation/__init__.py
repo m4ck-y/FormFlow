@@ -18,8 +18,10 @@ from app.question.infrastructure.database.implementation.questions_form import C
 from app.form.domain.schemas.category import SchemaCreateAPICategory, SchemaCreateDBCategory
 from app.form.infrastructure.database.implementation.category.create import CreateCategory
 from app.form.infrastructure.database.implementation.form.category import CreateFormCategory
-
 from app.form.domain.schemas.form_category import SCreateDBFormCategory
+
+from app.form.infrastructure.database.implementation.cie11_code.create import CreateCIE11Code
+from app.form.domain.schemas.cie11_code import SRequestCie11Code
 class FormRepository(BaseRepository[Table, C, I, E, U]):
     def __init__(self):
         super().__init__(Table, C, I, E, U)
@@ -65,6 +67,16 @@ class FormRepository(BaseRepository[Table, C, I, E, U]):
 
             form_category_db_schema = SCreateDBFormCategory(id_form=id_form, id_category=id_category)
             CreateFormCategory(db, form_category_db_schema, False)
+
+        for cie11_code in entity.list_cie11_codes:
+            cie11_code_db_schema = None
+
+            if isinstance(cie11_code, str):
+                cie11_code_db_schema = SRequestCie11Code(id_form=id_form, code=cie11_code)
+            else:
+                cie11_code_db_schema = SRequestCie11Code(id_form=id_form, code=cie11_code.code)
+
+            CreateCIE11Code(cie11_code_db_schema, db, False)
 
         db.commit()
 
