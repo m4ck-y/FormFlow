@@ -1,5 +1,6 @@
 from typing import Optional
 from app.base.domain.exception import BusinessValidationException
+from app.form.infrastructure.database.implementation.cie11_code.create_with_form import CreateCIE11CodeWithForm
 from app.form.infrastructure.database.model.form import ModelForm as Table
 from app.base.infrastructure.database.implementation import BaseRepository
 from app.form.domain.schemas.form import (
@@ -22,6 +23,7 @@ from app.form.domain.schemas.form_category import SCreateDBFormCategory
 
 from app.form.infrastructure.database.implementation.cie11_code.create import CreateCIE11Code
 from app.form.domain.schemas.cie11_code import SRequestCie11Code
+from app.form.domain.schemas.form_cie11codes import SInsertFormCie11Codes
 class FormRepository(BaseRepository[Table, C, I, E, U]):
     def __init__(self):
         super().__init__(Table, C, I, E, U)
@@ -68,15 +70,17 @@ class FormRepository(BaseRepository[Table, C, I, E, U]):
             form_category_db_schema = SCreateDBFormCategory(id_form=id_form, id_category=id_category)
             CreateFormCategory(db, form_category_db_schema, False)
 
-        for cie11_code in entity.list_cie11_codes:
-            cie11_code_db_schema = None
+        for cie11_code in entity.list_cie11codes:
+            id_cie11code = None
 
-            if isinstance(cie11_code, str):
-                cie11_code_db_schema = SRequestCie11Code(id_form=id_form, code=cie11_code)
+            if isinstance(cie11_code, int):
+                id_cie11code = cie11_code
             else:
-                cie11_code_db_schema = SRequestCie11Code(id_form=id_form, code=cie11_code.code)
+                cie11_code_db_schema = SRequestCie11Code(code=cie11_code.code)
+                id_cie11code = CreateCIE11Code(cie11_code_db_schema, db, False)
 
-            CreateCIE11Code(cie11_code_db_schema, db, False)
+            form_cie11code_db_schema = SInsertFormCie11Codes(id_form=id_form, id_cie11code=id_cie11code)
+            CreateCIE11CodeWithForm(db, form_cie11code_db_schema, False)
 
         db.commit()
 

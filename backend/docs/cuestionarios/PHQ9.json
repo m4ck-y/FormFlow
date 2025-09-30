@@ -14,7 +14,9 @@
     "max_minutes": 10,
     "description": "Duración estimada para completar el cuestionario"
   },
-  "list_cie11_codes": ["6A7"],
+  "list_cie11codes": [{
+    "code": "6A7"
+  }],
   "list_questions": [
     {
       "id": 1,

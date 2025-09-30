@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Text, Enum as SQLAlc
 from sqlalchemy.orm import relationship
 from app.base.infrastructure.database.model import BaseModel
 from app.form.infrastructure.database.schema import SchemaForm
-from app.question.infrastructure.database.model.question import questions_section
+from app.question.infrastructure.database.model.question import section_questions
 from enum import Enum
 class EBiologicalSex(int, Enum):
     """

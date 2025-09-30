@@ -17,4 +17,5 @@ class SchemaForm:
 
     TBL_FORM_CONDITION = TableName(NAME, "form_condition")
 
-    TBL_FORM_CIE11_CODE = TableName(NAME, "form_cie11_code")
+    TBL_CIE11_CODE = TableName(NAME, "cie11_code")
+    TBL_FORM_CIE11CODES = TableName(NAME, "form_cie11codes")

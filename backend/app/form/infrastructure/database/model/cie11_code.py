@@ -1,16 +1,25 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Text, Enum as SQLAlchemyEnum
+from sqlalchemy import Column, Integer, String, ForeignKey, Text, Enum as SQLAlchemyEnum, Table
 from sqlalchemy.orm import relationship
-from app.base.infrastructure.database.model import Base
+from app.base.infrastructure.database.model import BaseModel
 from app.form.infrastructure.database.schema import SchemaForm
 
-class ModelCIE11Code(Base): #TODO: table, updatated_by, deleted_by, etc, se puede hacer una clase que herede de table? y tendria atributos creted_at, by?, etc, ...
-    __tablename__ = SchemaForm.TBL_FORM_CIE11_CODE.name
-    __table_args__ = {"schema": SchemaForm.TBL_FORM_CIE11_CODE.schema}
+form_cie11codes = Table(
+    SchemaForm.TBL_FORM_CIE11CODES.name,
+    BaseModel.metadata, # TODO: sqlite no soporta primary key compuesta(con fks) + una pk propia con autoincrement
+    Column("id_form", Integer, ForeignKey(f"{SchemaForm.TBL_FORM.identifier}.id"), primary_key=True),
+    Column("id_cie11code", Integer, ForeignKey(f"{SchemaForm.TBL_CIE11_CODE.identifier}.id"), primary_key=True),
+    schema=SchemaForm.TBL_FORM_CIE11CODES.schema
+)
 
-    id = Column(Integer, autoincrement=True, primary_key=True)
+class ModelCIE11Code(BaseModel): #TODO: table, updatated_by, deleted_by, etc, se puede hacer una clase que herede de table? y tendria atributos creted_at, by?, etc, ...
+    __tablename__ = SchemaForm.TBL_CIE11_CODE.name
+    __table_args__ = {"schema": SchemaForm.TBL_FORM_CIE11CODES.schema}
 
-    id_form = Column(Integer, ForeignKey(f"{SchemaForm.TBL_FORM.identifier}.id"), nullable=False, primary_key=True)
-    # 1:1 | 1 cie11_code -> 1 form
-    form = relationship("ModelForm", back_populates="list_cie11_codes")
+    code = Column(String(10), nullable=False, unique=True)
 
-    code = Column(String(10), nullable=False, primary_key=True)
+    # N:N | N cie11_code -> N form
+    list_forms = relationship(
+        "ModelForm",
+        secondary=form_cie11codes,
+        back_populates="list_cie11codes"
+    )

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Enum, Integer, String, Table, Text, ForeignKey
+from sqlalchemy import Column, Enum, Integer, String, Table, ForeignKey
 from sqlalchemy.orm import relationship
 from app.base.infrastructure.database.model import BaseModel
 from app.form.infrastructure.database.schema import SchemaForm
@@ -15,7 +15,7 @@ from app.utils.log import log_info
 log_info("[MODEL][QUESTIONS_FORM] app/question/infrastructure/database/model/question.py: ",SchemaQuestion.TBL_QUESTIONS_FORM.name)
 
 # Relación muchos a muchos: preguntas directamente asociadas al formulario (sin sección)
-questions_form = Table(
+form_questions = Table(
     SchemaQuestion.TBL_QUESTIONS_FORM.name,
     BaseModel.metadata,
     Column("id_form", Integer, ForeignKey(f"{SchemaForm.TBL_FORM.identifier}.id"), primary_key=True),
@@ -25,7 +25,7 @@ questions_form = Table(
 
 log_info("[MODEL][QUESTIONS_SECTION] app/question/infrastructure/database/model/question.py:",SchemaQuestion.TBL_QUESTIONS_SECTION.name)
 # Relación muchos a muchos: preguntas asociadas a secciones
-questions_section = Table(
+section_questions = Table(
     SchemaQuestion.TBL_QUESTIONS_SECTION.name,
     BaseModel.metadata,
     Column('id_section', ForeignKey(f'{SchemaSection.TBL_SECTION.identifier}.id'), primary_key=True),
@@ -57,14 +57,14 @@ class ModelQuestion(BaseModel):
     # 1:N | 1 form -> N questions (sin sección)
     form = relationship(
         "ModelForm",  # Modelo relacionado (Formulario)
-        secondary=questions_form,  # Tabla intermedia
+        secondary=form_questions,  # Tabla intermedia
         back_populates="list_questions",  # Relación inversa en ModelForm
         uselist=False  # Esto asegura que la relación es 1:1, no 1:N
     )
 
     section = relationship(
         "ModelSection",  # Modelo relacionado (Sección)
-        secondary=questions_section,  # Tabla intermedia
+        secondary=section_questions,  # Tabla intermedia
         back_populates="list_questions",  # Relación inversa en ModelSection
         uselist=False  # Esto asegura que la relación es 1:1, no 1:N
     )

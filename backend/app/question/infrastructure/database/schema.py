@@ -8,8 +8,8 @@ class SchemaQuestion:
     TBL_OPTION = TableName(NAME, "option")
     TBL_CONDITIONAL_LOGIC = TableName(NAME, "conditional_logic")
 
-    TBL_QUESTIONS_FORM = TableName(NAME, "questions_form")
-    TBL_QUESTIONS_SECTION = TableName(NAME, "questions_section")
+    TBL_QUESTIONS_FORM = TableName(NAME, "form_questions")
+    TBL_QUESTIONS_SECTION = TableName(NAME, "section_questions")
     TBL_QUESTION = TableName(NAME, "question")
 
 

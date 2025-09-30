@@ -1,9 +1,10 @@
 from sqlalchemy import Column, String, Text
 from sqlalchemy.orm import relationship
 from app.base.infrastructure.database.model import BaseModel
-from app.question.infrastructure.database.model.question import questions_form
+from app.question.infrastructure.database.model.question import form_questions
 from app.form.infrastructure.database.model.category import form_category
 from app.form.infrastructure.database.model.age_group import target_age_group
+from app.form.infrastructure.database.model.cie11_code import form_cie11codes
 
 from app.form.infrastructure.database.schema import SchemaForm
 from app.utils.log import log_info
@@ -22,7 +23,7 @@ class ModelForm(BaseModel):
     # 1:N | 1 form -> N sections
     list_sections = relationship("ModelSection", back_populates="form")
     # 1:N | 1 form -> N questions
-    list_questions = relationship("ModelQuestion", secondary=questions_form, back_populates="form")
+    list_questions = relationship("ModelQuestion", secondary=form_questions, back_populates="form")
 
     # 1:N | 1 form -> N references
     list_references = relationship("ModelReference", back_populates="form")
@@ -34,7 +35,7 @@ class ModelForm(BaseModel):
     list_categories = relationship("ModelCategory", secondary=form_category, back_populates="list_forms")
 
     # N:N | N form -> N cie11_code
-    list_cie11_codes = relationship("ModelCIE11Code", back_populates="form")
+    list_cie11codes = relationship("ModelCIE11Code", secondary=form_cie11codes, back_populates="list_forms")
 
     # OPTIONALS
 

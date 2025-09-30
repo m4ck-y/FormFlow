@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from app.base.infrastructure.database.model import BaseModel
 from app.section.infrastructure.database.schema import SchemaSection
 from app.form.infrastructure.database.schema import SchemaForm
-from app.question.infrastructure.database.model.question import questions_section
+from app.question.infrastructure.database.model.question import section_questions
 
 from app.utils.log import log_info
 
@@ -20,7 +20,7 @@ class ModelSection(BaseModel):
     form = relationship("ModelForm", back_populates="list_sections")
     
     # 1:N | 1 section -> N questions
-    list_questions = relationship("ModelQuestion", secondary=questions_section, back_populates="section")
+    list_questions = relationship("ModelQuestion", secondary=section_questions, back_populates="section")
 
     name = Column(String(255), nullable=False)
     description = Column(Text)

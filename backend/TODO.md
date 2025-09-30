@@ -29,3 +29,47 @@
   "target_sex": null,
   "list_sections": []
 }
+
+
+# NOMENCLATURAS
+ejemplo
+relacion n:n
+
+n forms - n cie11_codes
+
+## tables
+form, cie11_code
+
+## table auxiliar
+
+identificar tabla primaria: form
+
+{nombre_tabla_primaria}_{nombre_tabla_secundaria_sin_separacion}
+
+form_cie11codes
+
+## relacion final
+tablas finales
+form(id, name, etc)
+cie11_code(id, code, etc)
+form_cie11codes(id_form, id_cie11_code)
+
+# fastapi:
+## schemas pydantic
+
+schema_cie11code{
+  id, code
+}
+
+
+schema_form{
+  id, name
+  list_cie11codes {aqui se omite el nombre de la tabla primaria porque ya estaria implicito en el schema padre en pydantic}
+}
+
+## endpoint
+cuando se haga GET form/{id_form}, retorne:
+form:{
+  id, name
+  list_cie11codes {aqui se omite el nombre de la tabla primaria porque ya estaria implicito en el schema padre en pydantic}
+}
