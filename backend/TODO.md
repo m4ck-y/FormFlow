@@ -22,6 +22,42 @@
   "list_questions": [], # TODO "conditional"
 
   # TODO
+
+  formula por pregunta, ej imc
+  formula para form{
+     calcular el valor final del form, ejemplo summando todos los valores de cada pregunta
+     el valor final del form puede ser tipo entero o string por eso es mejor dejarlo como bjson
+
+     no se como representar la puntuacion
+     
+     formula:"JSON ej: sum(entity:"question"."value"."all")"
+     puntuacion o value, o resultado o evaluacio o calificacion:
+     [{
+        "text": "sin dificultad",
+        "value": 0
+     },
+     {
+        "text": "un poco de dificultad",
+        "value": 1
+     },
+     {
+        "text": "muy difícil",
+        "value": 2
+     },
+     }],
+
+
+     esque despues hay otros
+
+     por ejem
+
+     RESULTADOS de pHQ9
+
+     puntuacion, interpretacion
+     1-4 puntos, depresion minima
+  }
+
+
   "list_what_it_evaluate": [],
   "list_references": [],
   "estimated_duration": null,
@@ -29,6 +65,8 @@
   "target_sex": null,
   "list_sections": []
 }
+
+
 
 
 # NOMENCLATURAS
