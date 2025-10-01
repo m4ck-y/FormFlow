@@ -5,6 +5,7 @@ from app.form.infrastructure.database.schema import SchemaForm
 from app.question.infrastructure.database.schema import SchemaQuestion
 from app.section.infrastructure.database.schema import SchemaSection
 from app.question.domain.enum.question_type import EQuestionType
+from app.config.db import get_json_column_type
 from app.utils.log import log_info
 
 # ------------------------------------------------------
@@ -42,6 +43,9 @@ class ModelQuestion(BaseModel):
     type = Column(Enum(EQuestionType), nullable=False)
     text = Column(String, nullable=False)
     order = Column(Integer, nullable=False)
+    
+    # Columna JSON para condiciones - compatible SQLite/PostgreSQL
+    condition = Column(get_json_column_type(), nullable=True)
 
 
 

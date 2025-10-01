@@ -36,6 +36,20 @@ Base = declarative_base()
 def is_db_postgres():
     return "postgresql" in settings.SQLALCHEMY_DB_URL
 
+def get_json_column_type():
+    """
+    Retorna el tipo de columna JSON apropiado según el motor de base de datos.
+    
+    Returns:
+        JSONB para PostgreSQL, Text para SQLite
+    """
+    if is_db_postgres():
+        from sqlalchemy.dialects.postgresql import JSONB
+        return JSONB
+    else:
+        from sqlalchemy import Text
+        return Text
+
 def CreateSchema(*names):
     with engine.connect() as connection:
         for name in names:
