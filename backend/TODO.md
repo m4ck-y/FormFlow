@@ -111,3 +111,9 @@ form:{
   id, name
   list_cie11codes {aqui se omite el nombre de la tabla primaria porque ya estaria implicito en el schema padre en pydantic}
 }
+
+sqlalchemy with tables update fields, updated at, by, etc like basemodel
+
+herencia?: Table, 
+
+#TODO: table, updatated_by, deleted_by, etc, se puede hacer una clase que herede de table? y tendria atributos creted_at, by?, etc, ...
