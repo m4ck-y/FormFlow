@@ -21,7 +21,6 @@ El objeto `conditional` define **condiciones lógicas** que deben cumplirse para
     }
   ]
 }
-
 ```
 
 ---
@@ -30,7 +29,7 @@ El objeto `conditional` define **condiciones lógicas** que deben cumplirse para
 
 | Campo | Tipo | Descripción |
 | --- | --- | --- |
-| `type` | string | Tipo de lógica para evaluar las reglas:- `"all"`: todas las reglas deben cumplirse (AND).- `"any"`: al menos una regla debe cumplirse (OR).- `"none"`: ninguna regla debe cumplirse (NOT). |
+| `type` | string | Tipo de lógica para evaluar las reglas:<br/>- `"all"`: todas las reglas deben cumplirse (AND).<br/>- `"any"`: al menos una regla debe cumplirse (OR).<br/>- `"none"`: ninguna regla debe cumplirse (NOT). |
 | `rules` | array | Lista de reglas individuales a evaluar. |
 
 ---
@@ -40,8 +39,8 @@ El objeto `conditional` define **condiciones lógicas** que deben cumplirse para
 | Campo | Tipo | Descripción |
 | --- | --- | --- |
 | `id_question` | integer | ID de la pregunta cuyas respuestas se evalúan. |
-| `operator` | string | Operador lógico de comparación:`"=="`, `"!="`, `">"`, `"<"`, `">="`, `"<="`. |
-| `value` | number | string | Valor contra el que se compara la respuesta de la pregunta especificada. |
+| `operator` | string | Operador lógico de comparación:<br/>`"=="`, `"!="`, `">"`, `"<"`, `">="`, `"<="`. |
+| `value` | number \| string | Valor contra el que se compara la respuesta de la pregunta especificada. |
 
 ---
 
@@ -69,7 +68,7 @@ type ConditionalType = "all" | "any" | "none";
 
 interface Conditional {
   type: ConditionalType;
-  rules: ConditionalRule[];
+  rules: Array<ConditionalRule | Conditional>; // permite anidación
 }
 
 ```
@@ -114,9 +113,16 @@ function evalConditional(
   conditional: Conditional,
   responses: Record<number, number | string>
 ): boolean {
-  const results = conditional.rules.map((rule) =>
-    evalRule(responses[rule.id_question], rule.operator, rule.value)
-  );
+  const results = conditional.rules.map((rule) => {
+    // Si es una regla simple
+    if ('id_question' in rule) {
+      return evalRule(responses[rule.id_question], rule.operator, rule.value);
+    }
+    // Si es un conditional anidado
+    else {
+      return evalConditional(rule, responses);
+    }
+  });
 
   switch (conditional.type) {
     case "all":
@@ -154,6 +160,28 @@ const userResponses: Record<number, number> = {
 const result = evalConditional(conditionalExample, userResponses);
 console.log(result); // true
 
+// Ejemplo con anidación (lógica compleja)
+const conditionalWithNesting: Conditional = {
+  type: "any", // OR principal
+  rules: [
+    // Regla simple
+    { id_question: 1, operator: ">", value: 10 },
+    // Conditional anidado
+    {
+      type: "all", // AND anidado
+      rules: [
+        { id_question: 2, operator: ">=", value: 5 },
+        { id_question: 3, operator: "==", value: "yes" }
+      ]
+    }
+  ]
+};
+
+// Lógica: (pregunta_1 > 10) OR (pregunta_2 >= 5 AND pregunta_3 == "yes")
+const complexResponses = { 1: 8, 2: 6, 3: "yes" };
+const complexResult = evalConditional(conditionalWithNesting, complexResponses);
+console.log(complexResult); // true (porque 2 >= 5 AND 3 == "yes")
+
 ```
 
 ---
@@ -176,9 +204,16 @@ function evalRule(response, operator, value) {
 }
 
 function evalConditional(conditional, responses) {
-  const results = conditional.rules.map(rule =>
-    evalRule(responses[rule.id_question], rule.operator, rule.value)
-  );
+  const results = conditional.rules.map(rule => {
+    // Si es una regla simple
+    if (rule.id_question !== undefined) {
+      return evalRule(responses[rule.id_question], rule.operator, rule.value);
+    }
+    // Si es un conditional anidado
+    else {
+      return evalConditional(rule, responses);
+    }
+  });
 
   switch (conditional.type) {
     case "all": return results.every(Boolean);
@@ -201,6 +236,99 @@ const userResponses = { 1: 3, 2: 5, 3: 10 };
 const result = evalConditional(conditionalExample, userResponses);
 console.log(result); // true
 
+```
+
+---
+
+## 5. Implementación Python (Backend)
+
+### Enums para Type Safety
+
+```python
+# app/question/domain/enum/conditional.py
+from enum import Enum
+
+class EConditionalOperator(str, Enum):
+    EQUAL = "=="
+    NOT_EQUAL = "!="
+    GREATER_THAN = ">"
+    LESS_THAN = "<"
+    GREATER_EQUAL = ">="
+    LESS_EQUAL = "<="
+
+class EConditionalType(str, Enum):
+    ALL = "all"    # AND
+    ANY = "any"    # OR  
+    NONE = "none"  # NOT
+```
+
+### Schemas Pydantic
+
+```python
+# app/question/domain/schemas/conditional.py
+from app.question.domain.enum.conditional import EConditionalOperator, EConditionalType
+
+class ConditionalRule(BaseModel):
+    id_question: int
+    operator: EConditionalOperator
+    value: Union[int, float, str]
+
+class Conditional(BaseModel):
+    type: EConditionalType
+    rules: List[Union[ConditionalRule, 'Conditional']]  # permite anidación
+```
+
+### Ejemplo de Uso
+
+```python
+# Crear conditional (type-safe)
+conditional = Conditional(
+    type=EConditionalType.ALL,
+    rules=[
+        ConditionalRule(
+            id_question=1, 
+            operator=EConditionalOperator.GREATER_THAN, 
+            value=0
+        )
+    ]
+)
+
+# Serializar para BD
+json_data = conditional.model_dump_json()
+# {"type": "all", "rules": [{"id_question": 1, "operator": ">", "value": 0}]}
+
+# Ejemplo con anidación
+conditional_nested = Conditional(
+    type=EConditionalType.ANY,  # OR principal
+    rules=[
+        # Regla simple
+        ConditionalRule(id_question=1, operator=EConditionalOperator.GREATER_THAN, value=10),
+        # Conditional anidado
+        Conditional(
+            type=EConditionalType.ALL,  # AND anidado
+            rules=[
+                ConditionalRule(id_question=2, operator=EConditionalOperator.GREATER_EQUAL, value=5),
+                ConditionalRule(id_question=3, operator=EConditionalOperator.EQUAL, value="yes")
+            ]
+        )
+    ]
+)
+
+# JSON resultante con anidación
+nested_json = conditional_nested.model_dump_json()
+# {
+#   "type": "any",
+#   "rules": [
+#     {"id_question": 1, "operator": ">", "value": 10},
+#     {
+#       "type": "all",
+#       "rules": [
+#         {"id_question": 2, "operator": ">=", "value": 5},
+#         {"id_question": 3, "operator": "==", "value": "yes"}
+#       ]
+#     }
+#   ]
+# }
 ```
 
 ---
