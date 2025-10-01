@@ -66,21 +66,9 @@
   "list_sections": []
 }
 
+#TODO: table, updatated_by, deleted_by, etc, se puede hacer una clase que herede de table? y tendria atributos creted_at, by?, etc, ...
 
-
-
-# NOMENCLATURAS
-
-Ver documentación completa de convenciones de nomenclatura en: `docs/naming.md`
-
-Incluye:
-- Convenciones para tablas intermedias N:N
-- Esquemas Pydantic con relaciones
-- Estructura de respuestas API
-- Modelos SQLAlchemy con herencia
 
 sqlalchemy with tables update fields, updated at, by, etc like basemodel
 
 herencia?: Table, 
-
-#TODO: table, updatated_by, deleted_by, etc, se puede hacer una clase que herede de table? y tendria atributos creted_at, by?, etc, ...
