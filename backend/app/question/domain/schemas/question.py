@@ -7,39 +7,48 @@ import json
 
 from app.question.domain.schemas.option import SCreateAPIItemOption, SchemaDetailOption
 from app.question.domain.schemas.conditional import Conditional
+from app.utils.log import log_info
 
-class SchemaBaseQuestion_str(BaseORMModel):
+class SchemaBaseQuestion(BaseORMModel):
     """Schema base con condition como string (para BD)"""
     type: EQuestionType = Field(..., examples=[EQuestionType.SINGLE_CHOICE])
     text: str = Field(..., examples=["¿Cómo calificaría la atención recibida?"])
     order: int = Field(..., examples=[1])
-    condition: Optional[Conditional | str] = Field(None, description="Condición para mostrar la pregunta")
+    condition: Optional[Conditional] = Field(None, description="Condición para mostrar la pregunta") #el tipo from db sqlite sera text y se necesita validad antes
 
-class SchemaBaseQuestion(BaseORMModel):
-    """Schema base con condition como objeto (para API)"""
-    type: EQuestionType = Field(..., examples=[EQuestionType.SINGLE_CHOICE])
-    text: str = Field(..., examples=["¿Cómo calificaría la atención recibida?"])
-    order: int = Field(..., examples=[1])
-    condition: Optional[Conditional] = Field(None, description="Condición para mostrar la pregunta")
+    @field_validator('condition', mode='before')
+    @classmethod
+    def parse_condition_json(cls, v):
+        """Convierte automáticamente JSON string a objeto Conditional"""
+        if isinstance(v, str): #si es string convertir a objeto
+            try:
+                data = json.loads(v)
+                return Conditional(**data)
+            except json.JSONDecodeError:
+                return None
+        elif isinstance(v, dict):
+            return Conditional(**v)
+        return v
 
-class SchemaCreateDBQuestion(SchemaBaseQuestion_str):
+class SchemaCreateDBQuestion(SchemaBaseQuestion):
     """
     Schema para inserción en BD - se adapta para la inserción en DB ya sea SQLite (text) o PostgreSQL (jsonb).
     Aquí es donde se hace la conversión dinámica según el motor de BD.
     """
-    
-    @model_validator(mode='after')
-    def prepare_condition_for_db(self):
+    @field_validator("condition", mode='after')
+    @classmethod
+    def prepare_condition_for_db(cls, v):
         """Convierte condition según el motor de BD"""
-        if self.condition and isinstance(self.condition, Conditional):
+        if v and isinstance(v, Conditional):
             from app.config.db import is_db_postgres
             
             if not is_db_postgres():
                 # SQLite: convertir a JSON string
-                self.condition = self.condition.model_dump_json()
+                log_info("SQLite: Converting condition to JSON string")
+                v = v.model_dump_json()
+                log_info("SQLite: ",v)
             # PostgreSQL: mantener como objeto (se serializa automáticamente)
-        
-        return self
+        return v
 
 class SchemaCreateAPIQuestion(SchemaBaseQuestion, BaseCreateAPISchema):
     """
@@ -71,42 +80,7 @@ class SchemaItemQuestion(SchemaBaseQuestion):
 class SchemaDetailQuestion(SchemaItemQuestion):
     list_options: List[SchemaDetailOption]
 
-    @field_validator('condition', mode='before')
-    @classmethod
-    def parse_condition_json(cls, v):
-        """Convierte automáticamente JSON string a objeto Conditional"""
-        if isinstance(v, str):
-            try:
-                data = json.loads(v)
-                return Conditional(**data)
-            except json.JSONDecodeError:
-                return None
-        elif isinstance(v, dict):
-            return Conditional(**v)
-        return v
+    pass
 
 class SchemaUpdateQuestion(SchemaBaseQuestion):
     id: int
-
-class SchemaQuestionResponse(BaseORMModel):
-    """Schema optimizado para respuestas API - condition siempre como objeto estructurado"""
-    id: int
-    type: EQuestionType = Field(..., examples=[EQuestionType.SINGLE_CHOICE])
-    text: str = Field(..., examples=["¿Cómo calificaría la atención recibida?"])
-    order: int = Field(..., examples=[1])
-    condition: Optional[Conditional] = Field(None, description="Condición para mostrar la pregunta")
-    list_options: List[SchemaDetailOption]
-    
-    @field_validator('condition', mode='before')
-    @classmethod
-    def parse_condition_json(cls, v):
-        """Convierte automáticamente JSON string a objeto Conditional"""
-        if isinstance(v, str):
-            try:
-                data = json.loads(v)
-                return Conditional(**data)
-            except json.JSONDecodeError:
-                return None
-        elif isinstance(v, dict):
-            return Conditional(**v)
-        return v

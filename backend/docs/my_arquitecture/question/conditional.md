@@ -334,76 +334,294 @@ db_question = api_question.to_db_schema()  # Conversión automática según moto
 
 ---
 
-## 🏗️ Arquitectura de Schemas (Mejorada)
+## 🏗️ Arquitectura de Schemas (Refinada - Versión Final)
 
-### Separación de Responsabilidades
+### Filosofía de Diseño
 
-La arquitectura de schemas está diseñada para separar claramente las responsabilidades entre la API y la base de datos, siguiendo el principio de que **el frontend siempre trabaja con objetos estructurados**, mientras que **la BD se adapta según el motor**.
+La arquitectura final está diseñada con **un solo schema base unificado** que maneja automáticamente la conversión bidireccional entre objetos `Conditional` y representaciones de base de datos, eliminando duplicación y simplificando el mantenimiento.
 
-#### 1. **SchemaBaseQuestion** - Base para API
+**Principio clave**: **Siempre trabajar con objetos `Conditional` en toda la aplicación**, con conversión automática transparente según el motor de BD.
+
+### Arquitectura Unificada
+
+#### 1. **SchemaBaseQuestion** - Schema Base Unificado
 ```python
 class SchemaBaseQuestion(BaseORMModel):
-    condition: Optional[Conditional]  # Siempre objeto estructurado
+    """Schema base con condition como objeto Conditional - maneja conversión automática"""
+    condition: Optional[Conditional] = Field(None, description="Condición para mostrar la pregunta")
+    
+    @field_validator('condition', mode='before')
+    @classmethod
+    def parse_condition_json(cls, v):
+        """Convierte automáticamente JSON string a objeto Conditional"""
+        if isinstance(v, str):  # Desde BD SQLite (JSON string)
+            try:
+                data = json.loads(v)
+                return Conditional(**data)
+            except json.JSONDecodeError:
+                return None
+        elif isinstance(v, dict):  # Desde BD PostgreSQL (dict)
+            return Conditional(**v)
+        return v  # Ya es objeto Conditional
 ```
 
-#### 2. **SchemaBaseQuestion_str** - Base para BD
+**Beneficios:**
+- ✅ **Un solo schema base** para toda la aplicación
+- ✅ **Conversión automática** desde BD → objeto
+- ✅ **Type safety completo** - siempre `Optional[Conditional]`
+- ✅ **Compatible** con SQLite (string) y PostgreSQL (dict)
+
+#### 2. **SchemaCreateDBQuestion** - Especializado para Inserción BD
 ```python
-class SchemaBaseQuestion_str(BaseORMModel):
-    condition: Optional[Conditional | str]  # Flexible según motor
+class SchemaCreateDBQuestion(SchemaBaseQuestion):
+    """Schema para inserción en BD - conversión automática según motor"""
+    
+    @field_validator("condition", mode='after')
+    @classmethod
+    def prepare_condition_for_db(cls, v):
+        """Convierte condition según el motor de BD"""
+        if v and isinstance(v, Conditional):
+            from app.config.db import is_db_postgres
+            
+            if not is_db_postgres():
+                # SQLite: convertir a JSON string
+                log_info("SQLite: Converting condition to JSON string")
+                v = v.model_dump_json()
+                log_info("SQLite: ", v)
+            # PostgreSQL: mantener como objeto (se serializa automáticamente)
+        return v
 ```
+
+**Beneficios:**
+- ✅ **Conversión específica** solo para inserción
+- ✅ **Logging detallado** para debugging
+- ✅ **Detección automática** del motor de BD
 
 #### 3. **SchemaCreateAPIQuestion** - Para Frontend/API
-- `condition: Optional[Conditional]` - Siempre como objeto estructurado
-- El frontend envía y recibe objetos JSON estructurados
-- Validación completa de tipos y estructura
-- Método `to_db_schema()` para conversión automática
-
-#### 4. **SchemaCreateDBQuestion** - Para Base de Datos  
-- `condition: Optional[Conditional | str]` - Flexible según motor de BD
-- SQLite: Se convierte automáticamente a JSON string
-- PostgreSQL: Se mantiene como JSONB nativo
-- Conversión transparente en el `@model_validator`
-
-### Flujo de Conversión
-
 ```python
-# Frontend → API
-api_data = SchemaCreateAPIQuestion(condition=Conditional(...))
-
-# API → BD (conversión automática)
-db_data = api_data.to_db_schema()  # o SchemaCreateDBQuestion(**api_data.dict())
-
-# La conversión se hace automáticamente según el motor:
-# - SQLite: condition se convierte a JSON string
-# - PostgreSQL: condition se mantiene como objeto
+class SchemaCreateAPIQuestion(SchemaBaseQuestion, BaseCreateAPISchema):
+    """Schema para API - frontend siempre envía objetos estructurados"""
+    list_options: List[SCreateAPIItemOption]
+    
+    def to_db_schema(self) -> SchemaCreateDBQuestion:
+        """Conversión explícita a schema de BD"""
+        return SchemaCreateDBQuestion(
+            type=self.type,
+            text=self.text,
+            order=self.order,
+            condition=self.condition  # Se convierte automáticamente en el validator
+        )
 ```
 
-### Ejemplo de Uso en Infraestructura
+### Flujo de Datos Completo
 
 ```python
-def create_question(api_data: SchemaCreateAPIQuestion):
-    """
-    Imaginemos que en el frontend se usa SchemaCreateAPIQuestion,
-    luego en alguna capa de infraestructura, se hace la conversión:
-    """
-    
-    # La propiedad condition siempre será un JSON que viene desde el frontend
-    question_db_schema = api_data.to_db_schema()  # Conversión automática
-    
-    # Aquí ya está preparado para inserción en BD (dinámico según motor)
-    # - SQLite: condition es string JSON
-    # - PostgreSQL: condition es objeto/dict
-    
-    return repository.create(question_db_schema)
+# 1. Frontend → API (siempre objetos)
+api_data = SchemaCreateAPIQuestion(
+    condition=Conditional(
+        type=EConditionalType.ALL,
+        rules=[ConditionalRule(...)]
+    )
+)
+
+# 2. API → BD (conversión automática)
+db_data = api_data.to_db_schema()  # SchemaCreateDBQuestion
+
+# 3. Inserción en BD (automática según motor)
+# SQLite: condition → '{"type": "all", "rules": [...]}'  (string)
+# PostgreSQL: condition → {"type": "all", "rules": [...]}  (dict/JSONB)
+
+# 4. Lectura desde BD (conversión automática)
+# SQLite: '{"type": "all", ...}' → parse_condition_json() → Conditional object
+# PostgreSQL: {"type": "all", ...} → parse_condition_json() → Conditional object
+
+# 5. Respuesta API (siempre objetos)
+response = SchemaDetailQuestion(condition=conditional_obj)  # Objeto Conditional
 ```
+
+### Ventajas de la Arquitectura Refinada
+
+#### ✅ **Eliminación de Duplicación**
+- **Antes**: `SchemaBaseQuestion` + `SchemaBaseQuestion_str` (duplicación)
+- **Ahora**: Un solo `SchemaBaseQuestion` unificado
+
+#### ✅ **Conversión Bidireccional Automática**
+- **Lectura**: JSON string/dict → objeto `Conditional` (automático)
+- **Escritura**: objeto `Conditional` → formato BD (automático según motor)
+
+#### ✅ **Type Safety Completo**
+- **Toda la aplicación**: `condition: Optional[Conditional]`
+- **Sin tipos Union confusos**: No más `Conditional | str`
+- **IntelliSense completo**: IDE reconoce propiedades de `Conditional`
+
+#### ✅ **Mantenibilidad Mejorada**
+- **Un solo lugar** para lógica de conversión
+- **Logging integrado** para debugging
+- **Fácil testing** de conversiones
+
+### Ejemplo de Uso Práctico
+
+```python
+# Crear pregunta con conditional desde API
+async def create_question_endpoint(question_data: SchemaCreateAPIQuestion):
+    """Endpoint que maneja conditional automáticamente"""
+    
+    # 1. Datos del frontend (siempre objetos)
+    print(f"API condition type: {type(question_data.condition)}")  # <class 'Conditional'>
+    
+    # 2. Conversión a schema de BD
+    db_schema = question_data.to_db_schema()
+    print(f"DB condition type: {type(db_schema.condition)}")  # str (SQLite) o dict (PostgreSQL)
+    
+    # 3. Inserción automática
+    question_id = await question_service.create(db_schema)
+    
+    return {"id": question_id, "message": "Question created with conditional"}
+
+# Leer pregunta con conditional desde BD
+async def get_question_endpoint(question_id: int):
+    """Endpoint que convierte conditional automáticamente"""
+    
+    # 1. Lectura desde BD (automática)
+    question = await question_service.get(question_id)  # SchemaDetailQuestion
+    
+    # 2. Conditional ya convertido a objeto
+    print(f"Response condition type: {type(question.condition)}")  # <class 'Conditional'>
+    
+    return question  # Frontend recibe objetos estructurados
+```
+
+### Testing de la Arquitectura
+
+```python
+def test_conditional_conversion():
+    """Test completo de conversión bidireccional"""
+    
+    # 1. Crear conditional object
+    conditional = Conditional(
+        type=EConditionalType.ALL,
+        rules=[ConditionalRule(question_id=1, operator=EConditionalOperator.EQUALS, value="yes")]
+    )
+    
+    # 2. API Schema
+    api_schema = SchemaCreateAPIQuestion(
+        type=EQuestionType.SINGLE_CHOICE,
+        text="Test question",
+        order=1,
+        condition=conditional,
+        list_options=[]
+    )
+    
+    # 3. Conversión a DB Schema
+    db_schema = api_schema.to_db_schema()
+    
+    # 4. Verificar conversión según motor
+    if is_db_postgres():
+        assert isinstance(db_schema.condition, dict)
+    else:
+        assert isinstance(db_schema.condition, str)
+    
+    # 5. Simular lectura desde BD
+    if isinstance(db_schema.condition, str):
+        # SQLite: string → object
+        parsed = SchemaBaseQuestion.parse_condition_json(db_schema.condition)
+        assert isinstance(parsed, Conditional)
+        assert parsed.type == EConditionalType.ALL
+```
+
+---
+
+## 🔧 Implementación Técnica Detallada
+
+### Configuración de Base de Datos
+
+#### Modelo SQLAlchemy
+```python
+class ModelQuestion(BaseModel):
+    # Columna JSON para condiciones - compatible SQLite/PostgreSQL
+    condition = Column(get_json_column_type(), nullable=True)
+```
+
+#### Función de Detección de Motor
+```python
+def get_json_column_type():
+    """Retorna el tipo de columna JSON según el motor de BD"""
+    if is_db_postgres():
+        return JSONB  # PostgreSQL: JSONB nativo
+    else:
+        return Text   # SQLite: TEXT para JSON strings
+```
+
+### Integración con BaseLayerApplication
+
+```python
+def Create(self, value: TCreateAPISchema, db: TSession, auto_commit: bool = True) -> int:
+    """Crea entidad con conversión automática de schemas"""
+    
+    # Convertir schema de API a schema de BD si tiene el método to_db_schema()
+    if hasattr(value, 'to_db_schema') and callable(getattr(value, 'to_db_schema')):
+        schema_db = value.to_db_schema()
+        log_info("Conversión API → DB ejecutada")
+        log_info("CreateAPISchema condition type:", type(value.condition))
+        log_info("CreateDBSchema condition type:", type(schema_db.condition))
+    else:
+        schema_db = value
+        log_info("Sin conversión - usando schema API directamente")
+
+    return self.repository.Create(schema_db, db, auto_commit=auto_commit)
+```
+
+### Endpoints Automáticos
+
+Los endpoints estándar ya funcionan automáticamente:
+
+```python
+# POST /question - Crear pregunta con conditional
+# GET /question/{id} - Obtener pregunta con conditional convertido
+# GET /question/list - Listar preguntas con conditionals convertidos
+# PUT /question - Actualizar pregunta con conditional
+```
+
+---
+
+## 🚀 Estado de Implementación
+
+### ✅ **Completado**
+- ✅ **Schemas unificados** con conversión bidireccional
+- ✅ **Validators automáticos** para ambos motores de BD
+- ✅ **Integración con BaseLayerApplication**
+- ✅ **Logging detallado** para debugging
+- ✅ **Type safety completo** en toda la aplicación
+
+### 🔄 **En Progreso**
+- 🔄 **Testing unitario** de conversiones
+- 🔄 **Testing de integración** con ambos motores
+- 🔄 **Documentación OpenAPI** actualizada
+
+### 📋 **Próximos Pasos**
+- [ ] Aplicar mismo patrón a otros módulos (Option, Form, Section)
+- [ ] Crear herramientas de migración para datos existentes
+- [ ] Optimizar performance con cache si es necesario
 
 ---
 
 ## 📝 Notas y Recomendaciones
 
+### Evaluación de Conditionals
 - Se asume que las respuestas se almacenan en un objeto donde la clave es el `id_question`.
 - Los operadores `<`, `>`, `<=`, `>=` aplican sólo para valores numéricos; con strings la evaluación retorna `false`.
 - El tipo `"none"` permite usar lógica de negación para que ninguna regla se cumpla.
 - Puedes extender esta lógica para operadores más complejos (`includes`, `in`, etc.) si tu caso lo requiere.
-- Esta lógica es clave para crear cuestionarios y formularios con visibilidad y habilitación dinámica de preguntas o secciones.
-- **Nueva arquitectura**: El frontend siempre trabaja con objetos `Conditional`, la conversión a string/JSON se hace automáticamente en la capa de BD según el motor.
+
+### Arquitectura de Schemas
+- **Principio fundamental**: El frontend siempre trabaja con objetos `Conditional` estructurados
+- **Conversión automática**: La BD se adapta según el motor sin lógica manual en endpoints
+- **Type safety**: Eliminación completa de tipos Union confusos
+- **Mantenibilidad**: Un solo lugar para lógica de conversión con logging integrado
+
+### Performance
+- **SQLite**: Conversión a JSON string es rápida y eficiente
+- **PostgreSQL**: JSONB nativo permite queries complejas sobre conditional
+- **Cache**: Considerar cache de conversiones para aplicaciones de alto tráfico
+
+Esta arquitectura es la base para crear cuestionarios y formularios con visibilidad y habilitación dinámica de preguntas o secciones, con soporte completo para conditional logic.
