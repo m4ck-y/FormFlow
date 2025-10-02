@@ -6,7 +6,10 @@ from app.form.domain.schemas.category import (
     SchemaCreateAPICategory,
 )
 from app.form.domain.schemas.estimated_duration import SchemaDetailEstimatedDuration
-from app.form.domain.schemas.reference import SchemaDetailReference
+from app.form.domain.schemas.reference import (
+    SchemaDetailReference,
+    SchemaCreateItemAPIReference,
+)
 from app.form.domain.schemas.target_sex import SchemaDetailTargetSex
 
 from app.question.domain.schemas.question import (
@@ -74,6 +77,18 @@ class SchemaCreateAPIForm(BaseCreateAPISchema, SchemaBaseForm):
         examples=[
             [1, {"name": "Salud Mental", "description": "Evaluación de aspectos psicológicos", "key_industry": "health"}]
         ],
+    )
+
+    list_references: List[SchemaCreateItemAPIReference] = Field(
+        default=[],
+        description="Lista de referencias bibliográficas específicas de este formulario.",
+        examples=[[{
+            "url_reference": "https://pubmed.ncbi.nlm.nih.gov/11485122/",
+            "name": "Validation of a Brief Depression Severity Measure",
+            "notes": "Artículo que valida el PHQ-9",
+            "url_thumbnail": "",
+            "type": "LINK"
+        }]]
     )
 
     def to_db_schema(self) -> SchemaCreateDB:

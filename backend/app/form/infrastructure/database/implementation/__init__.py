@@ -26,6 +26,9 @@ from app.form.infrastructure.database.implementation.evaluation_topic.create imp
 from app.form.infrastructure.database.implementation.form.evaluation_topic import CreateFormEvaluationTopic
 from app.form.domain.schemas.form_evaluation_topics import SCreateDBFormEvaluationTopics
 
+from app.form.domain.schemas.reference import SchemaCreateItemAPIReference, SchemaCreateDBReference
+from app.form.infrastructure.database.implementation.reference.create import CreateReference
+
 from app.form.infrastructure.database.implementation.cie11_code.create import CreateCIE11Code
 from app.form.domain.schemas.cie11_code import SRequestCie11Code
 from app.form.domain.schemas.form_cie11_codes import SInsertFormCie11Codes
@@ -76,15 +79,15 @@ class FormRepository(BaseRepository[Table, C, I, E, U]):
             CreateFormCategory(db, form_category_db_schema, False)
 
         for cie11_code in entity.list_cie11_codes:
-            id_cie11code = None
+            id_cie11_code = None
 
             if isinstance(cie11_code, int):
-                id_cie11code = cie11_code
+                id_cie11_code = cie11_code
             else:
                 cie11_code_db_schema = SRequestCie11Code(code=cie11_code.code)
-                id_cie11code = CreateCIE11Code(cie11_code_db_schema, db, False)
+                id_cie11_code = CreateCIE11Code(cie11_code_db_schema, db, False)
 
-            form_cie11code_db_schema = SInsertFormCie11Codes(id_form=id_form, id_cie11code=id_cie11code)
+            form_cie11code_db_schema = SInsertFormCie11Codes(id_form=id_form, id_cie11_code=id_cie11_code)
             CreateCIE11CodeWithForm(db, form_cie11code_db_schema, False)
 
         for evaluation_topic in entity.list_evaluation_topics:
@@ -102,6 +105,18 @@ class FormRepository(BaseRepository[Table, C, I, E, U]):
 
             form_evaluation_topic_db_schema = SCreateDBFormEvaluationTopics(id_form=id_form, id_evaluation_topic=id_evaluation_topic)
             CreateFormEvaluationTopic(db, form_evaluation_topic_db_schema, False)
+
+        # Procesar references (relación 1:N - siempre crear nuevas)
+        for reference in entity.list_references:
+            reference_db_schema = SchemaCreateDBReference(
+                id_form=id_form,  # Asignar automáticamente
+                url_reference=reference.url_reference,
+                name=reference.name,
+                notes=reference.notes,
+                url_thumbnail=reference.url_thumbnail,
+                type=reference.type
+            )
+            CreateReference(reference_db_schema, db, False)
 
         db.commit()
 

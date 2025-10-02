@@ -17,8 +17,8 @@ class ModelReference(BaseModel):
     # 1:1 | 1 reference -> 1 form
     form = relationship("ModelForm", back_populates="list_references")
 
-    url_reference = Column(String(255), nullable=False)
+    url_reference = Column(String(255), nullable=False) # url de la fuente o url del archivo que proceso el servidor de files
     name = Column(String(255))
     notes = Column(Text)
-    url_thumbnail = Column(String(255))
+    url_thumbnail = Column(String(255)) # miniatura de la fuente, si es web extraer el opengraph o si es archvo estraer el preview
     type = Column(SQLAlchemyEnum(EReferenceType), nullable=False)

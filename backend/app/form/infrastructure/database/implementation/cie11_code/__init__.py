@@ -6,7 +6,7 @@ from app.form.domain.schemas.cie11_code import (
     SRequestCie11Code as C,
     SUpdateCie11Code as U
 )
-from app.form.domain.schemas.form_cie11codes import SInsertFormCie11Codes
+from app.form.domain.schemas.form_cie11_codes import SInsertFormCie11Codes
 from app.base.domain.repository.session import TSession
 
 class Cie11CodeRepository(BaseRepository[Table, C, E, E, U]):

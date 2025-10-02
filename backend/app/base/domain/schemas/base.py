@@ -11,6 +11,7 @@ class BaseORMModel(BaseModel):
     """
 
     model_config = ConfigDict(from_attributes=True)
+    #use_enum_values=True, simepre heredar de str en enum, (str, Enum)
     """
     📄 Descripción:
     Configuración de Pydantic para mapear atributos del objeto ORM de forma automática. La opción 

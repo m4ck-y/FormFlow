@@ -1,6 +1,6 @@
 from app.form.domain.schemas.form_category import SCreateDBFormCategory
 from app.base.domain.repository.session import TSession
-from app.form.infrastructure.database.model.category import form_category as Table
+from app.form.infrastructure.database.model.category import form_categories as Table
 from app.utils.log import log_error, log_info
 from app.base.domain.schemas.str_schema_json import str_schema_json
 
