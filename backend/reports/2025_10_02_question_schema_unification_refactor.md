@@ -9,7 +9,7 @@
 
 ## 🎯 Resumen Ejecutivo
 
-Se implementó una refactorización completa de unificación arquitectónica en los schemas del módulo Question, eliminando la duplicación de schemas base y creando un sistema unificado con conversión bidireccional automática. El cambio principal consistió en consolidar `SchemaBaseQuestion` y `SchemaBaseQuestion_str` en un solo schema base que maneja automáticamente la conversión entre objetos `Conditional` y representaciones de base de datos según el motor utilizado.
+Se implementó una refactorización completa de unificación arquitectónica en los schemas del módulo Question, eliminando la duplicación de schemas base y creando un sistema unificado con conversión bidireccional automática. El cambio principal consistió en consolidar `SchemaBaseQuestion` y `SchemaBaseQuestion_str` en un solo schema base que maneja automáticamente la conversión entre objetos `SchemaCondition` y representaciones de base de datos según el motor utilizado.
 
 Esta unificación elimina completamente la duplicación de código, mejora significativamente la mantenibilidad y proporciona type safety completo en toda la aplicación, manteniendo compatibilidad total con SQLite (JSON strings) y PostgreSQL (JSONB).
 
@@ -33,31 +33,31 @@ Esta unificación elimina completamente la duplicación de código, mejora signi
 ```python
 class SchemaBaseQuestion_str(BaseORMModel):
     """Schema base con condition como string (para BD)"""
-    condition: Optional[Conditional | str] = Field(None)
+    condition: Optional[SchemaCondition | str] = Field(None)
 
 class SchemaBaseQuestion(BaseORMModel):
     """Schema base con condition como objeto (para API)"""
-    condition: Optional[Conditional] = Field(None)
+    condition: Optional[SchemaCondition] = Field(None)
 ```
 
 **DESPUÉS:**
 ```python
 class SchemaBaseQuestion(BaseORMModel):
     """Schema base unificado con conversión automática bidireccional"""
-    condition: Optional[Conditional] = Field(None, description="Condición para mostrar la pregunta")
+    condition: Optional[SchemaCondition] = Field(None, description="Condición para mostrar la pregunta")
     
     @field_validator('condition', mode='before')
     @classmethod
     def parse_condition_json(cls, v):
-        """Convierte automáticamente JSON string a objeto Conditional"""
+        """Convierte automáticamente JSON string a objeto SchemaCondition"""
         if isinstance(v, str):  # Desde BD SQLite
             try:
                 data = json.loads(v)
-                return Conditional(**data)
+                return SchemaCondition(**data)
             except json.JSONDecodeError:
                 return None
         elif isinstance(v, dict):  # Desde BD PostgreSQL
-            return Conditional(**v)
+            return SchemaCondition(**v)
         return v
 ```
 
@@ -72,7 +72,7 @@ class SchemaBaseQuestion(BaseORMModel):
 @model_validator(mode='after')
 def prepare_condition_for_db(self):
     """Convierte condition según el motor de BD"""
-    if self.condition and isinstance(self.condition, Conditional):
+    if self.condition and isinstance(self.condition, SchemaCondition):
         from app.config.db import is_db_postgres
         if not is_db_postgres():
             self.condition = self.condition.model_dump_json()
@@ -85,7 +85,7 @@ def prepare_condition_for_db(self):
 @classmethod
 def prepare_condition_for_db(cls, v):
     """Convierte condition según el motor de BD"""
-    if v and isinstance(v, Conditional):
+    if v and isinstance(v, SchemaCondition):
         from app.config.db import is_db_postgres
         
         if not is_db_postgres():
@@ -138,14 +138,14 @@ def Create(self, value: TCreateAPISchema, db: TSession, auto_commit: bool = True
 - ✅ **Mantenimiento simplificado**: Un solo lugar para lógica base
 
 ### 2. **Conversión Bidireccional Automática**
-- ✅ **Lectura desde BD**: JSON string/dict → objeto `Conditional` (automático)
-- ✅ **Escritura a BD**: objeto `Conditional` → formato BD según motor (automático)
+- ✅ **Lectura desde BD**: JSON string/dict → objeto `SchemaCondition` (automático)
+- ✅ **Escritura a BD**: objeto `SchemaCondition` → formato BD según motor (automático)
 - ✅ **Transparencia total**: Sin lógica manual en endpoints
 
 ### 3. **Type Safety Completo**
-- ✅ **Eliminación de Union types**: No más `Conditional | str` confusos
+- ✅ **Eliminación de Union types**: No más `SchemaCondition | str` confusos
 - ✅ **IntelliSense completo**: IDE reconoce todas las propiedades
-- ✅ **Consistencia total**: `Optional[Conditional]` en toda la aplicación
+- ✅ **Consistencia total**: `Optional[SchemaCondition]` en toda la aplicación
 
 ### 4. **Compatibilidad Mejorada**
 - ✅ **SQLite**: Conversión automática a JSON strings
@@ -162,17 +162,17 @@ def Create(self, value: TCreateAPISchema, db: TSession, auto_commit: bool = True
 ```python
 # Dos schemas base casi idénticos
 class SchemaBaseQuestion_str(BaseORMModel):
-    condition: Optional[Conditional | str]
+    condition: Optional[SchemaCondition | str]
 
 class SchemaBaseQuestion(BaseORMModel):
-    condition: Optional[Conditional]
+    condition: Optional[SchemaCondition]
 ```
 
 **Solución:**
 ```python
 # Un solo schema base unificado con conversión automática
 class SchemaBaseQuestion(BaseORMModel):
-    condition: Optional[Conditional]
+    condition: Optional[SchemaCondition]
     
     @field_validator('condition', mode='before')
     @classmethod
@@ -293,7 +293,7 @@ Los principales logros incluyen la reducción neta de 20 líneas de código, eli
 
 La arquitectura unificada con `SchemaBaseQuestion` como base única y `SchemaCreateDBQuestion` especializado para inserción representa una solución elegante que mantiene compatibilidad total con ambos motores de base de datos mientras simplifica significativamente el mantenimiento del código.
 
-El sistema de conversión bidireccional automática con logging detallado proporciona una base sólida para el manejo de conditional logic en toda la aplicación, eliminando la necesidad de lógica manual en endpoints y garantizando consistencia en el tipo de datos.
+El sistema de conversión bidireccional automática con logging detallado proporciona una base sólida para el manejo de condition logic en toda la aplicación, eliminando la necesidad de lógica manual en endpoints y garantizando consistencia en el tipo de datos.
 
 **Progreso total del proyecto: 25% completado (1/4 módulos unificados)**
 

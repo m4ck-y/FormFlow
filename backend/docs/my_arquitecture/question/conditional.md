@@ -58,7 +58,7 @@ El objeto `conditional` define **condiciones lógicas** que deben cumplirse para
 ```tsx
 type Operator = "==" | "!=" | ">" | "<" | ">=" | "<=";
 
-interface ConditionalRule {
+interface SchemaConditionRule {
   id_question: number;
   operator: Operator;
   value: number | string;
@@ -66,9 +66,9 @@ interface ConditionalRule {
 
 type ConditionalType = "all" | "any" | "none";
 
-interface Conditional {
+interface SchemaCondition {
   type: ConditionalType;
-  rules: Array<ConditionalRule | Conditional>; // permite anidación
+  rules: Array<SchemaConditionRule | SchemaCondition>; // permite anidación
 }
 
 ```
@@ -109,22 +109,22 @@ function evalRule(
   }
 }
 
-function evalConditional(
-  conditional: Conditional,
+function evalSchemaCondition(
+  condition: SchemaCondition,
   responses: Record<number, number | string>
 ): boolean {
-  const results = conditional.rules.map((rule) => {
+  const results = condition.rules.map((rule) => {
     // Si es una regla simple
     if ('id_question' in rule) {
       return evalRule(responses[rule.id_question], rule.operator, rule.value);
     }
-    // Si es un conditional anidado
+    // Si es un condition anidado
     else {
-      return evalConditional(rule, responses);
+      return evalSchemaCondition(rule, responses);
     }
   });
 
-  switch (conditional.type) {
+  switch (condition.type) {
     case "all":
       return results.every(Boolean);
     case "any":
@@ -143,7 +143,7 @@ function evalConditional(
 ## 3. Ejemplo de Uso en TypeScript
 
 ```tsx
-const conditionalExample: Conditional = {
+const conditionExample: SchemaCondition = {
   type: "all",
   rules: [
     { id_question: 1, operator: ">", value: 0 },
@@ -157,16 +157,16 @@ const userResponses: Record<number, number> = {
   3: 10
 };
 
-const result = evalConditional(conditionalExample, userResponses);
+const result = evalSchemaCondition(conditionExample, userResponses);
 console.log(result); // true
 
 // Ejemplo con anidación (lógica compleja)
-const conditionalWithNesting: Conditional = {
+const conditionWithNesting: SchemaCondition = {
   type: "any", // OR principal
   rules: [
     // Regla simple
     { id_question: 1, operator: ">", value: 10 },
-    // Conditional anidado
+    // SchemaCondition anidado
     {
       type: "all", // AND anidado
       rules: [
@@ -179,7 +179,7 @@ const conditionalWithNesting: Conditional = {
 
 // Lógica: (pregunta_1 > 10) OR (pregunta_2 >= 5 AND pregunta_3 == "yes")
 const complexResponses = { 1: 8, 2: 6, 3: "yes" };
-const complexResult = evalConditional(conditionalWithNesting, complexResponses);
+const complexResult = evalSchemaCondition(conditionWithNesting, complexResponses);
 console.log(complexResult); // true (porque 2 >= 5 AND 3 == "yes")
 
 ```
@@ -203,19 +203,19 @@ function evalRule(response, operator, value) {
   }
 }
 
-function evalConditional(conditional, responses) {
-  const results = conditional.rules.map(rule => {
+function evalSchemaCondition(condition, responses) {
+  const results = condition.rules.map(rule => {
     // Si es una regla simple
     if (rule.id_question !== undefined) {
       return evalRule(responses[rule.id_question], rule.operator, rule.value);
     }
-    // Si es un conditional anidado
+    // Si es un condition anidado
     else {
-      return evalConditional(rule, responses);
+      return evalSchemaCondition(rule, responses);
     }
   });
 
-  switch (conditional.type) {
+  switch (condition.type) {
     case "all": return results.every(Boolean);
     case "any": return results.some(Boolean);
     case "none": return !results.some(Boolean);
@@ -223,7 +223,7 @@ function evalConditional(conditional, responses) {
   }
 }
 
-const conditionalExample = {
+const conditionExample = {
   type: "all",
   rules: [
     { id_question: 1, operator: ">", value: 0 },
@@ -233,7 +233,7 @@ const conditionalExample = {
 
 const userResponses = { 1: 3, 2: 5, 3: 10 };
 
-const result = evalConditional(conditionalExample, userResponses);
+const result = evalSchemaCondition(conditionExample, userResponses);
 console.log(result); // true
 
 ```
@@ -268,24 +268,24 @@ class EConditionalType(str, Enum):
 # app/question/domain/schemas/conditional.py
 from app.question.domain.enum.conditional import EConditionalOperator, EConditionalType
 
-class ConditionalRule(BaseModel):
+class SchemaConditionRule(BaseModel):
     id_question: int
     operator: EConditionalOperator
     value: Union[int, float, str]
 
-class Conditional(BaseModel):
+class SchemaCondition(BaseModel):
     type: EConditionalType
-    rules: List[Union[ConditionalRule, 'Conditional']]  # permite anidación
+    rules: List[Union[SchemaConditionRule, 'SchemaCondition']]  # permite anidación
 ```
 
 ### Ejemplo de Uso
 
 ```python
-# Crear conditional (type-safe)
-conditional = Conditional(
+# Crear condition (type-safe)
+condition = SchemaCondition(
     type=EConditionalType.ALL,
     rules=[
-        ConditionalRule(
+        SchemaConditionRule(
             id_question=1, 
             operator=EConditionalOperator.GREATER_THAN, 
             value=0
@@ -294,33 +294,33 @@ conditional = Conditional(
 )
 
 # Serializar para BD
-json_data = conditional.model_dump_json()
+json_data = condition.model_dump_json()
 # {"type": "all", "rules": [{"id_question": 1, "operator": ">", "value": 0}]}
 
 # Ejemplo con anidación
-conditional_nested = Conditional(
+condition_nested = SchemaCondition(
     type=EConditionalType.ANY,  # OR principal
     rules=[
         # Regla simple
-        ConditionalRule(id_question=1, operator=EConditionalOperator.GREATER_THAN, value=10),
-        # Conditional anidado
-        Conditional(
+        SchemaConditionRule(id_question=1, operator=EConditionalOperator.GREATER_THAN, value=10),
+        # SchemaCondition anidado
+        SchemaCondition(
             type=EConditionalType.ALL,  # AND anidado
             rules=[
-                ConditionalRule(id_question=2, operator=EConditionalOperator.GREATER_EQUAL, value=5),
-                ConditionalRule(id_question=3, operator=EConditionalOperator.EQUAL, value="yes")
+                SchemaConditionRule(id_question=2, operator=EConditionalOperator.GREATER_EQUAL, value=5),
+                SchemaConditionRule(id_question=3, operator=EConditionalOperator.EQUAL, value="yes")
             ]
         )
     ]
 )
 
 # Flujo completo Frontend → Backend → BD
-# 1. Frontend envía SchemaCreateAPIQuestion con condition como Conditional
+# 1. Frontend envía SchemaCreateAPIQuestion con condition como SchemaCondition
 api_question = SchemaCreateAPIQuestion(
     type=EQuestionType.SINGLE_CHOICE,
     text="¿Has tenido pensamientos de autolesión?",
     order=9,
-    condition=conditional_nested,  # Objeto Conditional
+    condition=condition_nested,  # Objeto SchemaCondition
     list_options=[]
 )
 
@@ -347,28 +347,28 @@ La arquitectura final está diseñada con **un solo schema base unificado** que 
 #### 1. **SchemaBaseQuestion** - Schema Base Unificado
 ```python
 class SchemaBaseQuestion(BaseORMModel):
-    """Schema base con condition como objeto Conditional - maneja conversión automática"""
-    condition: Optional[Conditional] = Field(None, description="Condición para mostrar la pregunta")
+    """Schema base con condition como objeto SchemaCondition - maneja conversión automática"""
+    condition: Optional[SchemaCondition] = Field(None, description="Condición para mostrar la pregunta")
     
     @field_validator('condition', mode='before')
     @classmethod
     def parse_condition_json(cls, v):
-        """Convierte automáticamente JSON string a objeto Conditional"""
+        """Convierte automáticamente JSON string a objeto SchemaCondition"""
         if isinstance(v, str):  # Desde BD SQLite (JSON string)
             try:
                 data = json.loads(v)
-                return Conditional(**data)
+                return SchemaCondition(**data)
             except json.JSONDecodeError:
                 return None
         elif isinstance(v, dict):  # Desde BD PostgreSQL (dict)
-            return Conditional(**v)
-        return v  # Ya es objeto Conditional
+            return SchemaCondition(**v)
+        return v  # Ya es objeto SchemaCondition
 ```
 
 **Beneficios:**
 - ✅ **Un solo schema base** para toda la aplicación
 - ✅ **Conversión automática** desde BD → objeto
-- ✅ **Type safety completo** - siempre `Optional[Conditional]`
+- ✅ **Type safety completo** - siempre `Optional[SchemaCondition]`
 - ✅ **Compatible** con SQLite (string) y PostgreSQL (dict)
 
 #### 2. **SchemaCreateDBQuestion** - Especializado para Inserción BD
@@ -380,7 +380,7 @@ class SchemaCreateDBQuestion(SchemaBaseQuestion):
     @classmethod
     def prepare_condition_for_db(cls, v):
         """Convierte condition según el motor de BD"""
-        if v and isinstance(v, Conditional):
+        if v and isinstance(v, SchemaCondition):
             from app.config.db import is_db_postgres
             
             if not is_db_postgres():
@@ -418,9 +418,9 @@ class SchemaCreateAPIQuestion(SchemaBaseQuestion, BaseCreateAPISchema):
 ```python
 # 1. Frontend → API (siempre objetos)
 api_data = SchemaCreateAPIQuestion(
-    condition=Conditional(
+    condition=SchemaCondition(
         type=EConditionalType.ALL,
-        rules=[ConditionalRule(...)]
+        rules=[SchemaConditionRule(...)]
     )
 )
 
@@ -432,11 +432,11 @@ db_data = api_data.to_db_schema()  # SchemaCreateDBQuestion
 # PostgreSQL: condition → {"type": "all", "rules": [...]}  (dict/JSONB)
 
 # 4. Lectura desde BD (conversión automática)
-# SQLite: '{"type": "all", ...}' → parse_condition_json() → Conditional object
-# PostgreSQL: {"type": "all", ...} → parse_condition_json() → Conditional object
+# SQLite: '{"type": "all", ...}' → parse_condition_json() → SchemaCondition object
+# PostgreSQL: {"type": "all", ...} → parse_condition_json() → SchemaCondition object
 
 # 5. Respuesta API (siempre objetos)
-response = SchemaDetailQuestion(condition=conditional_obj)  # Objeto Conditional
+response = SchemaDetailQuestion(condition=condition_obj)  # Objeto SchemaCondition
 ```
 
 ### Ventajas de la Arquitectura Refinada
@@ -450,9 +450,9 @@ response = SchemaDetailQuestion(condition=conditional_obj)  # Objeto Conditional
 - **Escritura**: objeto `Conditional` → formato BD (automático según motor)
 
 #### ✅ **Type Safety Completo**
-- **Toda la aplicación**: `condition: Optional[Conditional]`
-- **Sin tipos Union confusos**: No más `Conditional | str`
-- **IntelliSense completo**: IDE reconoce propiedades de `Conditional`
+- **Toda la aplicación**: `condition: Optional[SchemaCondition]`
+- **Sin tipos Union confusos**: No más `SchemaCondition | str`
+- **IntelliSense completo**: IDE reconoce propiedades de `SchemaCondition`
 
 #### ✅ **Mantenibilidad Mejorada**
 - **Un solo lugar** para lógica de conversión
@@ -464,10 +464,10 @@ response = SchemaDetailQuestion(condition=conditional_obj)  # Objeto Conditional
 ```python
 # Crear pregunta con conditional desde API
 async def create_question_endpoint(question_data: SchemaCreateAPIQuestion):
-    """Endpoint que maneja conditional automáticamente"""
+    """Endpoint que maneja condition automáticamente"""
     
     # 1. Datos del frontend (siempre objetos)
-    print(f"API condition type: {type(question_data.condition)}")  # <class 'Conditional'>
+    print(f"API condition type: {type(question_data.condition)}")  # <class 'SchemaCondition'>
     
     # 2. Conversión a schema de BD
     db_schema = question_data.to_db_schema()
@@ -476,17 +476,17 @@ async def create_question_endpoint(question_data: SchemaCreateAPIQuestion):
     # 3. Inserción automática
     question_id = await question_service.create(db_schema)
     
-    return {"id": question_id, "message": "Question created with conditional"}
+    return {"id": question_id, "message": "Question created with condition"}
 
-# Leer pregunta con conditional desde BD
+# Leer pregunta con condition desde BD
 async def get_question_endpoint(question_id: int):
-    """Endpoint que convierte conditional automáticamente"""
+    """Endpoint que convierte condition automáticamente"""
     
     # 1. Lectura desde BD (automática)
     question = await question_service.get(question_id)  # SchemaDetailQuestion
     
-    # 2. Conditional ya convertido a objeto
-    print(f"Response condition type: {type(question.condition)}")  # <class 'Conditional'>
+    # 2. SchemaCondition ya convertido a objeto
+    print(f"Response condition type: {type(question.condition)}")  # <class 'SchemaCondition'>
     
     return question  # Frontend recibe objetos estructurados
 ```
@@ -497,10 +497,10 @@ async def get_question_endpoint(question_id: int):
 def test_conditional_conversion():
     """Test completo de conversión bidireccional"""
     
-    # 1. Crear conditional object
-    conditional = Conditional(
+    # 1. Crear condition object
+    condition = SchemaCondition(
         type=EConditionalType.ALL,
-        rules=[ConditionalRule(question_id=1, operator=EConditionalOperator.EQUALS, value="yes")]
+        rules=[SchemaConditionRule(question_id=1, operator=EConditionalOperator.EQUALS, value="yes")]
     )
     
     # 2. API Schema
@@ -508,7 +508,7 @@ def test_conditional_conversion():
         type=EQuestionType.SINGLE_CHOICE,
         text="Test question",
         order=1,
-        condition=conditional,
+        condition=condition,
         list_options=[]
     )
     
@@ -525,7 +525,7 @@ def test_conditional_conversion():
     if isinstance(db_schema.condition, str):
         # SQLite: string → object
         parsed = SchemaBaseQuestion.parse_condition_json(db_schema.condition)
-        assert isinstance(parsed, Conditional)
+        assert isinstance(parsed, SchemaCondition)
         assert parsed.type == EConditionalType.ALL
 ```
 
@@ -614,7 +614,7 @@ Los endpoints estándar ya funcionan automáticamente:
 - Puedes extender esta lógica para operadores más complejos (`includes`, `in`, etc.) si tu caso lo requiere.
 
 ### Arquitectura de Schemas
-- **Principio fundamental**: El frontend siempre trabaja con objetos `Conditional` estructurados
+- **Principio fundamental**: El frontend siempre trabaja con objetos `SchemaCondition` estructurados
 - **Conversión automática**: La BD se adapta según el motor sin lógica manual en endpoints
 - **Type safety**: Eliminación completa de tipos Union confusos
 - **Mantenibilidad**: Un solo lugar para lógica de conversión con logging integrado
@@ -624,4 +624,4 @@ Los endpoints estándar ya funcionan automáticamente:
 - **PostgreSQL**: JSONB nativo permite queries complejas sobre conditional
 - **Cache**: Considerar cache de conversiones para aplicaciones de alto tráfico
 
-Esta arquitectura es la base para crear cuestionarios y formularios con visibilidad y habilitación dinámica de preguntas o secciones, con soporte completo para conditional logic.
+Esta arquitectura es la base para crear cuestionarios y formularios con visibilidad y habilitación dinámica de preguntas o secciones, con soporte completo para condition logic.
