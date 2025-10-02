@@ -154,6 +154,12 @@
     }
   ],
   "list_sections": [],
+  "list_evaluation_topics": [
+    {
+      "id": 1,
+      "name": "Depresión",
+      "description": "Depresión"
+  }],
   "list_what_it_evaluate": [
     {
       "id": 1,

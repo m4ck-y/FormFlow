@@ -20,6 +20,10 @@ from app.section.domain.schemas.section import (
 from typing import List, Text, Optional
 from pydantic import Field, model_validator
 from app.form.domain.schemas.cie11_code import SRequestCie11Code, SResponseCIE11Code
+from app.form.domain.schemas.evaluation_topic import (
+    SchemaDetailEvaluationTopic,
+    SchemaCreateAPIEvaluationTopic,
+)
 
 
 class SchemaBaseForm(BaseORMModel):
@@ -61,6 +65,14 @@ class SchemaCreateAPIForm(BaseCreateAPISchema, SchemaBaseForm):
         description="Lista de códigos CIE-11 asociados al formulario. Cada código CIE-11 puede ser representado por su ID (entero) o por un objeto completo de código CIE-11.",
         examples=[
             [1, {"code": "1A00", "description": "Cólera"}]
+        ],
+    )
+
+    list_evaluation_topics: List[SchemaCreateAPIEvaluationTopic | int] = Field(
+        ...,
+        description="Lista de temas de evaluación asociados al formulario. Cada tema puede ser representado por su ID (entero) o por un objeto completo de tema de evaluación.",
+        examples=[
+            [1, {"name": "Salud Mental", "description": "Evaluación de aspectos psicológicos", "key_industry": "health"}]
         ],
     )
 
@@ -118,6 +130,7 @@ class SchemaDetailForm(SchemaItemForm):
     list_references: List[SchemaDetailReference]
     list_categories: List[SchemaDetailCategory]
     list_cie11codes: List[SResponseCIE11Code]
+    list_evaluation_topics: List[SchemaDetailEvaluationTopic]
 
     estimated_duration: Optional[SchemaDetailEstimatedDuration]
     target_age_group: Optional[SchemaDetailAgeGroup]

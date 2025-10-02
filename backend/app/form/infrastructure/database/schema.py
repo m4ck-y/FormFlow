@@ -19,3 +19,6 @@ class SchemaForm:
 
     TBL_CIE11_CODE = TableName(NAME, "cie11_code")
     TBL_FORM_CIE11CODES = TableName(NAME, "form_cie11codes")
+
+    TBL_EVALUATION_TOPIC = TableName(NAME, "evaluation_topic")
+    TBL_FORM_EVALUATION_TOPICS = TableName(NAME, "form_evaluation_topics")

@@ -21,6 +21,11 @@ from app.form.infrastructure.database.implementation.category.create import Crea
 from app.form.infrastructure.database.implementation.form.category import CreateFormCategory
 from app.form.domain.schemas.form_category import SCreateDBFormCategory
 
+from app.form.domain.schemas.evaluation_topic import SchemaCreateAPIEvaluationTopic, SchemaCreateDBEvaluationTopic
+from app.form.infrastructure.database.implementation.evaluation_topic.create import CreateEvaluationTopic
+from app.form.infrastructure.database.implementation.form.evaluation_topic import CreateFormEvaluationTopic
+from app.form.domain.schemas.form_evaluation_topics import SCreateDBFormEvaluationTopics
+
 from app.form.infrastructure.database.implementation.cie11_code.create import CreateCIE11Code
 from app.form.domain.schemas.cie11_code import SRequestCie11Code
 from app.form.domain.schemas.form_cie11codes import SInsertFormCie11Codes
@@ -81,6 +86,22 @@ class FormRepository(BaseRepository[Table, C, I, E, U]):
 
             form_cie11code_db_schema = SInsertFormCie11Codes(id_form=id_form, id_cie11code=id_cie11code)
             CreateCIE11CodeWithForm(db, form_cie11code_db_schema, False)
+
+        for evaluation_topic in entity.list_evaluation_topics:
+            id_evaluation_topic = None
+
+            if isinstance(evaluation_topic, SchemaCreateAPIEvaluationTopic):
+                evaluation_topic_db_schema = SchemaCreateDBEvaluationTopic(
+                    name=evaluation_topic.name, 
+                    description=evaluation_topic.description,
+                    key_industry=evaluation_topic.key_industry
+                )
+                id_evaluation_topic = CreateEvaluationTopic(evaluation_topic_db_schema, db, False)
+            else:
+                id_evaluation_topic = evaluation_topic
+
+            form_evaluation_topic_db_schema = SCreateDBFormEvaluationTopics(id_form=id_form, id_evaluation_topic=id_evaluation_topic)
+            CreateFormEvaluationTopic(db, form_evaluation_topic_db_schema, False)
 
         db.commit()
 

@@ -5,6 +5,7 @@ from app.question.infrastructure.database.model.question import form_questions
 from app.form.infrastructure.database.model.category import form_category
 from app.form.infrastructure.database.model.age_group import target_age_group
 from app.form.infrastructure.database.model.cie11_code import form_cie11codes
+from app.form.infrastructure.database.model.evaluation_topic import form_evaluation_topics
 
 from app.form.infrastructure.database.schema import SchemaForm
 from app.utils.log import log_info
@@ -36,6 +37,9 @@ class ModelForm(BaseModel):
 
     # N:N | N form -> N cie11_code
     list_cie11codes = relationship("ModelCIE11Code", secondary=form_cie11codes, back_populates="list_forms")
+
+    # N:N | N form -> N evaluation_topics
+    list_evaluation_topics = relationship("ModelEvaluationTopic", secondary=form_evaluation_topics, back_populates="list_forms")
 
     # OPTIONALS
 
