@@ -28,7 +28,7 @@ from app.form.domain.schemas.form_evaluation_topics import SCreateDBFormEvaluati
 
 from app.form.infrastructure.database.implementation.cie11_code.create import CreateCIE11Code
 from app.form.domain.schemas.cie11_code import SRequestCie11Code
-from app.form.domain.schemas.form_cie11codes import SInsertFormCie11Codes
+from app.form.domain.schemas.form_cie11_codes import SInsertFormCie11Codes
 class FormRepository(BaseRepository[Table, C, I, E, U]):
     def __init__(self):
         super().__init__(Table, C, I, E, U)
@@ -75,7 +75,7 @@ class FormRepository(BaseRepository[Table, C, I, E, U]):
             form_category_db_schema = SCreateDBFormCategory(id_form=id_form, id_category=id_category)
             CreateFormCategory(db, form_category_db_schema, False)
 
-        for cie11_code in entity.list_cie11codes:
+        for cie11_code in entity.list_cie11_codes:
             id_cie11code = None
 
             if isinstance(cie11_code, int):

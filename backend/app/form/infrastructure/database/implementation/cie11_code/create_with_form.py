@@ -1,10 +1,10 @@
 from app.base.domain.repository.session import TSession
-from app.form.domain.schemas.form_cie11codes import SInsertFormCie11Codes
-from app.form.infrastructure.database.model.cie11_code import form_cie11codes
+from app.form.domain.schemas.form_cie11_codes import SInsertFormCie11Codes
+from app.form.infrastructure.database.model.cie11_code import form_cie11_codes
 from app.utils.log import log_error
 
 def CreateCIE11CodeWithForm(db:TSession, value:SInsertFormCie11Codes, auto_commit = False) -> int:
-    smt = form_cie11codes.insert().values(**value.model_dump())
+    smt = form_cie11_codes.insert().values(**value.model_dump())
     result = db.execute(smt)
 
     if auto_commit:

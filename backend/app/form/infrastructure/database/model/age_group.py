@@ -4,12 +4,12 @@ from app.base.infrastructure.database.model import BaseModel
 from app.form.infrastructure.database.schema import SchemaForm
 
 
-target_age_group = Table(
-    SchemaForm.TBL_TARGET_AGE_GROUP.name,
+target_age_groups = Table(
+    SchemaForm.TBL_TARGET_AGE_GROUPS.name,
     BaseModel.metadata,
     Column("id_form", Integer, ForeignKey("form.id"), primary_key=True),
     Column("id_age_group", Integer, ForeignKey(f"{SchemaForm.TBL_AGE_GROUP.identifier}.id"), primary_key=True),
-    schema=SchemaForm.TBL_TARGET_AGE_GROUP.schema
+    schema=SchemaForm.TBL_TARGET_AGE_GROUPS.schema
 )
 
 class ModelAgeGroup(BaseModel):
@@ -26,5 +26,5 @@ class ModelAgeGroup(BaseModel):
     form = relationship(
         "ModelForm",
         back_populates="target_age_group",
-        secondary=target_age_group,
+        secondary=target_age_groups,
         uselist=False)

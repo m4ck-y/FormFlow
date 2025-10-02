@@ -60,7 +60,7 @@ class SchemaCreateAPIForm(BaseCreateAPISchema, SchemaBaseForm):
         ],
     )
 
-    list_cie11codes: List[SRequestCie11Code | int] = Field(
+    list_cie11_codes: List[SRequestCie11Code | int] = Field(
         ...,
         description="Lista de códigos CIE-11 asociados al formulario. Cada código CIE-11 puede ser representado por su ID (entero) o por un objeto completo de código CIE-11.",
         examples=[
@@ -129,7 +129,7 @@ class SchemaDetailForm(SchemaItemForm):
 
     list_references: List[SchemaDetailReference]
     list_categories: List[SchemaDetailCategory]
-    list_cie11codes: List[SResponseCIE11Code]
+    list_cie11_codes: List[SResponseCIE11Code]
     list_evaluation_topics: List[SchemaDetailEvaluationTopic]
 
     estimated_duration: Optional[SchemaDetailEstimatedDuration]

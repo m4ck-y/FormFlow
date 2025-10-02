@@ -14,7 +14,7 @@
     "max_minutes": 10,
     "description": "Duración estimada para completar el cuestionario"
   },
-  "list_cie11codes": [{
+  "list_cie11_codes": [{
     "code": "6A7"
   }],
   "list_questions": [
@@ -159,10 +159,9 @@
       "id": 1,
       "name": "Depresión",
       "description": "Depresión"
-  }],
-  "list_evaluation_topics": [
+    },
     {
-      "id": 1,
+      "id": 2,
       "name": "Salud Mental",
       "description": "Evaluación de aspectos psicológicos y emocionales",
       "key_industry": "health"

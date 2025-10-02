@@ -5,19 +5,19 @@ class SchemaForm:
     TBL_FORM = TableName(None, "form")
     TBL_ESTIMATED_DURATION = TableName(NAME, "estimated_duration")
 
-    TBL_TARGET_AGE_GROUP = TableName(NAME, "target_age_group")
+    TBL_TARGET_AGE_GROUPS = TableName(NAME, "target_age_groups")
     TBL_AGE_GROUP = TableName(NAME, "age_group")
 
     TBL_TARGET_SEX = TableName(NAME, "target_sex")
     TBL_REFERENCE = TableName(NAME, "reference")
 
-    TBL_FORM_CATEGORY = TableName(NAME, "form_category")
     TBL_CATEGORY = TableName(NAME, "category")
+    TBL_FORM_CATEGORIES = TableName(NAME, "form_categories")
 
     TBL_FORM_CONDITION = TableName(NAME, "form_condition")
 
     TBL_CIE11_CODE = TableName(NAME, "cie11_code")
-    TBL_FORM_CIE11CODES = TableName(NAME, "form_cie11codes")
+    TBL_FORM_CIE11_CODES = TableName(NAME, "form_cie11_codes")
 
     TBL_EVALUATION_TOPIC = TableName(NAME, "evaluation_topic")
     TBL_FORM_EVALUATION_TOPICS = TableName(NAME, "form_evaluation_topics")

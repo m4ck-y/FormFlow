@@ -7,11 +7,18 @@
     "max_minutes": 7,
     "description": "Tiempo aplicativo 7 minutos"
   },
-  "list_cie11_codes": ["QE20"],
+  "list_cie11_codes": [{"code": "QE20"}],
   "list_categories": [
     {
       "name": "Bienestar Fisico",
       "id": 1
+    }
+  ],
+  "list_evaluation_topics": [
+    {
+      "name": "Actividad Física",
+      "description": "Evaluación de nivel de actividad física y ejercicio",
+      "key_industry": "health"
     }
   ],
   "list_questions": [
@@ -34,7 +41,7 @@
         "min_value": "PT0M",
         "max_value": "PT24H"
       },
-      "conditional": {
+      "condition": {
         "type": "all",
         "rules": [
           {
@@ -64,7 +71,7 @@
         "min_value": "PT0M",
         "max_value": "PT24H"
       },
-      "conditional": {
+      "condition": {
         "type": "all",
         "rules": [
           {
@@ -94,7 +101,7 @@
         "min_value": "PT0M",
         "max_value": "PT24H"
       },
-      "conditional": {
+      "condition": {
         "type": "all",
         "rules": [
           {

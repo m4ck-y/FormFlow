@@ -3,12 +3,12 @@ from sqlalchemy.orm import relationship
 from app.base.infrastructure.database.model import BaseModel
 from app.form.infrastructure.database.schema import SchemaForm
 
-form_category = Table(
-    SchemaForm.TBL_FORM_CATEGORY.name,
+form_categories = Table(
+    SchemaForm.TBL_FORM_CATEGORIES.name,
     BaseModel.metadata,
     Column("id_form", Integer, ForeignKey("form.id"), primary_key=True),
     Column("id_category", Integer, ForeignKey(f"{SchemaForm.TBL_CATEGORY.identifier}.id"), primary_key=True),
-    schema=SchemaForm.TBL_FORM_CATEGORY.schema
+    schema=SchemaForm.TBL_FORM_CATEGORIES.schema
 )
 
 class ModelCategory(BaseModel):
@@ -23,5 +23,5 @@ class ModelCategory(BaseModel):
     list_forms = relationship(
         "ModelForm",
         back_populates="list_categories",
-        secondary=form_category,
+        secondary=form_categories,
         )

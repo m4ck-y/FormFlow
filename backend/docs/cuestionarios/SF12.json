@@ -12,7 +12,14 @@
     "name": "Bienestar Mental",
     "id": 2
   }],
-  "list_cie11codes": [],
+  "list_cie11_codes": [],
+  "list_evaluation_topics": [
+    {
+      "name": "Calidad de Vida",
+      "description": "Evaluación de calidad de vida y bienestar general",
+      "key_industry": "health"
+    }
+  ],
   "list_questions": [
     {
       "id": 1,

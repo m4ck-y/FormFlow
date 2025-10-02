@@ -2,9 +2,9 @@ from sqlalchemy import Column, String, Text
 from sqlalchemy.orm import relationship
 from app.base.infrastructure.database.model import BaseModel
 from app.question.infrastructure.database.model.question import form_questions
-from app.form.infrastructure.database.model.category import form_category
-from app.form.infrastructure.database.model.age_group import target_age_group
-from app.form.infrastructure.database.model.cie11_code import form_cie11codes
+from app.form.infrastructure.database.model.category import form_categories
+from app.form.infrastructure.database.model.age_group import target_age_groups
+from app.form.infrastructure.database.model.cie11_code import form_cie11_codes
 from app.form.infrastructure.database.model.evaluation_topic import form_evaluation_topics
 
 from app.form.infrastructure.database.schema import SchemaForm
@@ -32,10 +32,10 @@ class ModelForm(BaseModel):
 
 
      # N:N | N form -> N categories
-    list_categories = relationship("ModelCategory", secondary=form_category, back_populates="list_forms")
+    list_categories = relationship("ModelCategory", secondary=form_categories, back_populates="list_forms")
 
-    # N:N | N form -> N cie11_code
-    list_cie11codes = relationship("ModelCIE11Code", secondary=form_cie11codes, back_populates="list_forms")
+    # N:N | N form -> N cie11_codes
+    list_cie11_codes = relationship("ModelCIE11Code", secondary=form_cie11_codes, back_populates="list_forms")
 
     # N:N | N form -> N evaluation_topics
     list_evaluation_topics = relationship("ModelEvaluationTopic", secondary=form_evaluation_topics, back_populates="list_forms")
@@ -46,7 +46,7 @@ class ModelForm(BaseModel):
     estimated_duration = relationship("ModelEstimatedDuration", back_populates="form", uselist=False)
 
     # 1:1 | 1 form -> 1 target age group
-    target_age_group = relationship("ModelAgeGroup", secondary=target_age_group,back_populates="form", uselist=False)
+    target_age_group = relationship("ModelAgeGroup", secondary=target_age_groups,back_populates="form", uselist=False)
 
     # 1:1 | 1 form -> 1 target sex
     target_sex = relationship("ModelTargetSex", back_populates="form", uselist=False)
