@@ -8,7 +8,7 @@ from app.form.domain.schemas.category import (
 from app.form.domain.schemas.estimated_duration import SchemaDetailEstimatedDuration
 from app.form.domain.schemas.reference import SchemaDetailReference
 from app.form.domain.schemas.target_sex import SchemaDetailTargetSex
-from app.form.domain.schemas.what_it_evaluate import SchemaDetailWhatItEvaluate
+
 from app.question.domain.schemas.question import (
     SchemaCreateAPIQuestion,
     SchemaDetailQuestion,
@@ -126,7 +126,7 @@ class SchemaItemForm(SchemaBaseForm):
 class SchemaDetailForm(SchemaItemForm):
     list_questions: List[SchemaDetailQuestion]  # Preguntas del formulario
     list_sections: List[SchemaDetailSection]
-    list_what_it_evaluate: List[SchemaDetailWhatItEvaluate]
+
     list_references: List[SchemaDetailReference]
     list_categories: List[SchemaDetailCategory]
     list_cie11codes: List[SResponseCIE11Code]

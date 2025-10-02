@@ -10,7 +10,6 @@ class SchemaForm:
 
     TBL_TARGET_SEX = TableName(NAME, "target_sex")
     TBL_REFERENCE = TableName(NAME, "reference")
-    TBL_WHAT_IT_EVALUATE = TableName(NAME, "what_it_evaluate")
 
     TBL_FORM_CATEGORY = TableName(NAME, "form_category")
     TBL_CATEGORY = TableName(NAME, "category")

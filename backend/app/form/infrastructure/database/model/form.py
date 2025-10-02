@@ -29,8 +29,7 @@ class ModelForm(BaseModel):
     # 1:N | 1 form -> N references
     list_references = relationship("ModelReference", back_populates="form")
 
-    # 1:N | 1 form -> N what it evaluate
-    list_what_it_evaluate = relationship("ModelWhatItEvaluate", back_populates="form")
+
 
      # N:N | N form -> N categories
     list_categories = relationship("ModelCategory", secondary=form_category, back_populates="list_forms")

@@ -160,10 +160,12 @@
       "name": "Depresión",
       "description": "Depresión"
   }],
-  "list_what_it_evaluate": [
+  "list_evaluation_topics": [
     {
       "id": 1,
-      "name": "Depresión"
+      "name": "Salud Mental",
+      "description": "Evaluación de aspectos psicológicos y emocionales",
+      "key_industry": "health"
     }
   ],
   "list_references": [
