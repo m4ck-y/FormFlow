@@ -137,7 +137,7 @@
         {"text": "Bastante difícil", "value": 2, "id": 39, "url":null},
         {"text": "Muy difícil", "value": 3, "id": 40, "url":null}
       ],
-      "conditional": {
+      "condition": {
         "type": "any",
         "rules": [
           {"id_question": 1, "operator": ">", "value": 0},

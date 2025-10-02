@@ -72,3 +72,7 @@
 sqlalchemy with tables update fields, updated at, by, etc like basemodel
 
 herencia?: Table, 
+
+
+CHANGE
+conditional >> condition

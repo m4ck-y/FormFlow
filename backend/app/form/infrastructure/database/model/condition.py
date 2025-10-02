@@ -1,4 +1,4 @@
-""" from enum import Enum
+from enum import Enum
 from sqlalchemy import Column, Integer, String, ForeignKey, Text, Enum as SQLAlchemyEnum
 from sqlalchemy.orm import relationship
 from app.base.infrastructure.database.model import BaseModel
@@ -16,4 +16,4 @@ class ModelFormCondition(BaseModel):
     form = relationship("ModelForm", back_populates="condition")
 
     expression = Column(String(255), nullable=False) # Expresión DSL
-    description = Column(Text) """
+    description = Column(Text)

@@ -71,6 +71,20 @@ class SchemaItemQuestion(SchemaBaseQuestion):
 class SchemaDetailQuestion(SchemaItemQuestion):
     list_options: List[SchemaDetailOption]
 
+    @field_validator('condition', mode='before')
+    @classmethod
+    def parse_condition_json(cls, v):
+        """Convierte automáticamente JSON string a objeto Conditional"""
+        if isinstance(v, str):
+            try:
+                data = json.loads(v)
+                return Conditional(**data)
+            except json.JSONDecodeError:
+                return None
+        elif isinstance(v, dict):
+            return Conditional(**v)
+        return v
+
 class SchemaUpdateQuestion(SchemaBaseQuestion):
     id: int
 

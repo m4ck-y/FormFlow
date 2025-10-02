@@ -3,6 +3,16 @@
   "name": "Programa ISSET en tu casa - Calidad de Vida SF-12",
   "description": "Formulario para evaluar el estado de salud y calidad de vida del paciente.",
   "list_sections": [],
+  "list_categories": [{
+    "key_industry": 1,
+    "name": "Bienestar Fisico",
+    "id": 1
+  }, {
+    "key_industry": 1,
+    "name": "Bienestar Mental",
+    "id": 2
+  }],
+  "list_cie11codes": [],
   "list_questions": [
     {
       "id": 1,

@@ -8,7 +8,10 @@ from app.config.env import settings
 from fastapi.exceptions import RequestValidationError
 import uvicorn
 
-app = FastAPI(root_path=settings.ROOT_PATH)
+from app.utils.log import log_info_cyan
+
+#app = FastAPI(root_path=settings.ROOT_PATH)
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
