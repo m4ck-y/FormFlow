@@ -1,0 +1,731 @@
+{
+  "key": "IA_DEVELOPMENT",
+  "name": "Certificación en Desarrollo con Inteligencia Artificial",
+  "description": "Evaluación integral de conocimientos en herramientas de IA para desarrollo, incluyendo NotebookLM, prompting avanzado, herramientas de desarrollo web con IA, metodologías TDD con IA, configuración de agentes, y automatización con n8n.",
+  "estimated_duration": {
+    "min_minutes": 40,
+    "max_minutes": 50,
+    "description": "Duración estimada para completar el examen de certificación"
+  },
+  "list_categories": [
+    {
+      "key_industry": 1,
+      "name": "Tecnología"
+    }
+  ],
+  "list_cie11_codes": [],
+  "list_evaluation_topics": [
+    {
+      "name": "NotebookLM",
+      "description": "Comprensión de capacidades y limitaciones de NotebookLM",
+      "key_industry": "technology"
+    },
+    {
+      "name": "Prompting Avanzado",
+      "description": "Técnicas de refinamiento y debugging con IA",
+      "key_industry": "technology"
+    },
+    {
+      "name": "Desarrollo Web con IA",
+      "description": "Integración de herramientas como Gemini, V0, Firebase Studio",
+      "key_industry": "technology"
+    },
+    {
+      "name": "TDD con IA",
+      "description": "Metodologías de desarrollo dirigido por tests",
+      "key_industry": "technology"
+    },
+    {
+      "name": "Configuración de Agentes",
+      "description": "Gestión de contexto y documentación de agentes IA",
+      "key_industry": "technology"
+    },
+    {
+      "name": "Ciberseguridad",
+      "description": "Principios de Security by Design y Security by Default",
+      "key_industry": "technology"
+    },
+    {
+      "name": "Automatización",
+      "description": "Workflows con n8n y scraping inteligente",
+      "key_industry": "technology"
+    }
+  ],
+  "target_age_group": {
+    "name": "Desarrolladores y profesionales de tecnología",
+    "min_age": 18,
+    "max_age": 99
+  },
+  "target_sex": null,
+  "list_references": [
+    {
+      "id": 1,
+      "url_reference": "https://notebooklm.google.com/",
+      "name": "NotebookLM - Google",
+      "notes": "Plataforma oficial de NotebookLM para análisis de documentos con IA",
+      "url_thumbnail": "",
+      "type": "LINK"
+    },
+    {
+      "id": 2,
+      "url_reference": "https://n8n.io/",
+      "name": "n8n - Workflow Automation",
+      "notes": "Documentación oficial de n8n para automatización de workflows",
+      "url_thumbnail": "",
+      "type": "LINK"
+    }
+  ],
+  "list_sections": [],
+  "list_questions": [
+    {
+      "id": 1,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Cuál es la principal diferencia entre NotebookLM y un chatbot de IA genérico (como Gemini o ChatGPT)?",
+      "order": 1,
+      "list_options": [
+        {
+          "id": 1,
+          "text": "NotebookLM puede ejecutar código directamente en un sandbox",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 2,
+          "text": "NotebookLM basa sus respuestas principalmente en las fuentes que tú has cargado ✅",
+          "value": 1,
+          "url": null
+        },
+        {
+          "id": 3,
+          "text": "NotebookLM busca información en Google en tiempo real",
+          "value": 0,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "SINGLE_CHOICE",
+      "text": "Si cargas un archivo de código (por ejemplo, app.py) en NotebookLM y le pides \"Ejecuta este script y dame el output\", ¿qué ocurriría?",
+      "order": 2,
+      "list_options": [
+        {
+          "id": 4,
+          "text": "NotebookLM ejecutaría el script en un sandbox seguro",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 5,
+          "text": "NotebookLM analizará el código, pero te indicará que no tiene la capacidad de ejecutarlo ✅",
+          "value": 1,
+          "url": null
+        },
+        {
+          "id": 6,
+          "text": "NotebookLM rechazaría el archivo automáticamente porque solo acepta PDFs y Docs",
+          "value": 0,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Qué función utiliza NotebookLM para demostrar la veracidad y trazabilidad de sus respuestas?",
+      "order": 3,
+      "list_options": [
+        {
+          "id": 7,
+          "text": "Proporciona porcentajes de confianza para cada afirmación",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 8,
+          "text": "Usa marcas de verificación verdes como Wikipedia",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 9,
+          "text": "Genera citas numéricas que enlazan al fragmento exacto de la fuente original ✅",
+          "value": 1,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Cuál de los siguientes escenarios es un caso de uso ideal para NotebookLM?",
+      "order": 4,
+      "list_options": [
+        {
+          "id": 10,
+          "text": "Analizar archivos de logs, código fuente y capturas de pantalla para identificar la causa raíz de un incidente ✅",
+          "value": 1,
+          "url": null
+        },
+        {
+          "id": 11,
+          "text": "Realizar análisis estadísticos complejos y generar gráficos interactivos",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 12,
+          "text": "Compilar y desplegar software en entornos CI/CD",
+          "value": 0,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Cuál de las siguientes opciones describe mejor un prompt refinado para debugging con IA?",
+      "order": 5,
+      "list_options": [
+        {
+          "id": 13,
+          "text": "\"Ayúdame con este error\"",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 14,
+          "text": "\"¿Qué está mal aquí?\"",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 15,
+          "text": "\"Analiza el error como un experto developer. Dame una hipótesis de causa raíz, un test mínimo reproducible y una checklist de riesgos\" ✅",
+          "value": 1,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "SINGLE_CHOICE",
+      "text": "Cuando pedimos a la IA que \"se tome su tiempo para responder\", ¿qué conseguimos principalmente?",
+      "order": 6,
+      "list_options": [
+        {
+          "id": 16,
+          "text": "Que la respuesta sea más larga",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 17,
+          "text": "Que la respuesta sea más rápida",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 18,
+          "text": "Que el modelo active modos de razonamiento y entregue una respuesta más estructurada y precisa ✅",
+          "value": 1,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Cuál es un uso ideal de Deep Research en librerías grandes de código?",
+      "order": 7,
+      "list_options": [
+        {
+          "id": 19,
+          "text": "Identificar funciones clave, estructura principal, dependencias y ejemplos de ejecución ✅",
+          "value": 1,
+          "url": null
+        },
+        {
+          "id": 20,
+          "text": "Reducir automáticamente el tamaño de los archivos",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 21,
+          "text": "Instalar dependencias automáticamente",
+          "value": 0,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Cuál es la función principal de Gemini en el proceso de creación de una página web?",
+      "order": 8,
+      "list_options": [
+        {
+          "id": 22,
+          "text": "Redactar textos, titulares y copywriting del sitio web ✅",
+          "value": 1,
+          "url": null
+        },
+        {
+          "id": 23,
+          "text": "Desplegar automáticamente el sitio en producción",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 24,
+          "text": "Diseñar la interfaz de usuario y experiencia",
+          "value": 0,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Qué característica hace de Firebase Studio una opción \"más completa\" comparado con V0?",
+      "order": 9,
+      "list_options": [
+        {
+          "id": 25,
+          "text": "Es software libre que se instala localmente",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 26,
+          "text": "Integra en una sola plataforma la creación del proyecto, gestión de BD y despliegue ✅",
+          "value": 1,
+          "url": null
+        },
+        {
+          "id": 27,
+          "text": "Es solo un editor de código mejorado",
+          "value": 0,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Cuál es el principal beneficio de integrar herramientas de IA en desarrollo web?",
+      "order": 10,
+      "list_options": [
+        {
+          "id": 28,
+          "text": "Garantizar seguridad absoluta del código",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 29,
+          "text": "Reducir significativamente el tiempo de desarrollo desde la idea hasta el producto final ✅",
+          "value": 1,
+          "url": null
+        },
+        {
+          "id": 30,
+          "text": "Eliminar completamente la necesidad de programadores",
+          "value": 0,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Por qué usamos criterios de aceptación?",
+      "order": 11,
+      "list_options": [
+        {
+          "id": 31,
+          "text": "Para que los usuarios puedan ejecutar tests sin escribir código",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 32,
+          "text": "Para definir comportamientos claros y convertirlos en tests automáticos ✅",
+          "value": 1,
+          "url": null
+        },
+        {
+          "id": 33,
+          "text": "Para reemplazar la documentación técnica",
+          "value": 0,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Por qué hacemos los tests al principio en TDD?",
+      "order": 12,
+      "list_options": [
+        {
+          "id": 34,
+          "text": "Para mostrar que la API está rota desde el inicio",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 35,
+          "text": "Para seguir el ciclo TDD y usar los tests como definición del comportamiento ✅",
+          "value": 1,
+          "url": null
+        },
+        {
+          "id": 36,
+          "text": "Para bloquear el desarrollo hasta tener documentación completa",
+          "value": 0,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Cuál es el principal valor de pasar de requisitos a historias de usuario antes de generar código?",
+      "order": 13,
+      "list_options": [
+        {
+          "id": 37,
+          "text": "Permite saltarse la fase de diseño",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 38,
+          "text": "Garantiza trazabilidad entre lo que quiere el usuario y lo que se implementa ✅",
+          "value": 1,
+          "url": null
+        },
+        {
+          "id": 39,
+          "text": "Hace que los tests sean opcionales",
+          "value": 0,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Para qué sirve el archivo Agents.md?",
+      "order": 14,
+      "list_options": [
+        {
+          "id": 40,
+          "text": "Para instalar dependencias automáticamente",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 41,
+          "text": "Para darle instrucciones claras y estándares a los agentes ✅",
+          "value": 1,
+          "url": null
+        },
+        {
+          "id": 42,
+          "text": "Para ejecutar consultas SQL",
+          "value": 0,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "type": "SINGLE_CHOICE",
+      "text": "Si quieres separar documentación general de instrucciones operativas para IA, ¿qué carpeta conviene usar?",
+      "order": 15,
+      "list_options": [
+        {
+          "id": 43,
+          "text": "functions/",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 44,
+          "text": "context/ ✅",
+          "value": 1,
+          "url": null
+        },
+        {
+          "id": 45,
+          "text": "docs/",
+          "value": 0,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Qué ventaja tiene darle contexto de base de datos a la IA?",
+      "order": 16,
+      "list_options": [
+        {
+          "id": 46,
+          "text": "Genera consultas más precisas y reales ✅",
+          "value": 1,
+          "url": null
+        },
+        {
+          "id": 47,
+          "text": "Acelera la instalación de dependencias",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 48,
+          "text": "Sustituye completamente a GitHub",
+          "value": 0,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Qué es un sub-agente en Claude?",
+      "order": 17,
+      "list_options": [
+        {
+          "id": 49,
+          "text": "Un asistente secundario que ejecuta tareas específicas independientemente dentro de una conversación ✅",
+          "value": 1,
+          "url": null
+        },
+        {
+          "id": 50,
+          "text": "Una versión más barata del modelo principal",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 51,
+          "text": "Un plugin externo que se instala por separado",
+          "value": 0,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Qué es el contexto en un modelo de IA?",
+      "order": 18,
+      "list_options": [
+        {
+          "id": 52,
+          "text": "La velocidad de procesamiento del modelo",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 53,
+          "text": "La ventana de información que el modelo puede \"recordar\" y procesar en una conversación ✅",
+          "value": 1,
+          "url": null
+        },
+        {
+          "id": 54,
+          "text": "El idioma en que está entrenado el modelo",
+          "value": 0,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Qué sucede cuando un modelo de IA es más potente?",
+      "order": 19,
+      "list_options": [
+        {
+          "id": 55,
+          "text": "Siempre es más rápido y consume menos tokens",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 56,
+          "text": "Siempre es más barato e instantáneo",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 57,
+          "text": "Puede manejar tareas más complejas pero consume más tokens y puede tardar más ✅",
+          "value": 1,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Cuál práctica refleja mejor el principio de Security by Design?",
+      "order": 20,
+      "list_options": [
+        {
+          "id": 58,
+          "text": "Agregar medidas de seguridad solo antes de ir a producción",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 59,
+          "text": "Incluir requisitos de seguridad desde la fase de análisis y diseño ✅",
+          "value": 1,
+          "url": null
+        },
+        {
+          "id": 60,
+          "text": "Usar contraseñas fáciles por defecto para facilitar el acceso inicial",
+          "value": 0,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Cuál ejemplo aplica el principio de Security by Default?",
+      "order": 21,
+      "list_options": [
+        {
+          "id": 61,
+          "text": "Un software que habilita todos los servicios por defecto para máxima funcionalidad",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 62,
+          "text": "Un sistema que requiere que el usuario configure manualmente todas las opciones de seguridad",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 63,
+          "text": "Un software que por defecto solo habilita servicios necesarios con configuraciones seguras ✅",
+          "value": 1,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Cuál es el nombre del diccionario empleado en clase de ciberseguridad?",
+      "order": 22,
+      "list_options": [
+        {
+          "id": 64,
+          "text": "wordlist.txt",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 65,
+          "text": "passwords.txt",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 66,
+          "text": "rockyou.txt ✅",
+          "value": 1,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Qué es n8n y para qué sirve?",
+      "order": 23,
+      "list_options": [
+        {
+          "id": 67,
+          "text": "Es un sistema operativo especializado en IA",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 68,
+          "text": "Es una herramienta de automatización de workflows que conecta apps, APIs e IA ✅",
+          "value": 1,
+          "url": null
+        },
+        {
+          "id": 69,
+          "text": "Es un editor de video con funciones de IA",
+          "value": 0,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Qué se entiende por scraping en un flujo de n8n?",
+      "order": 24,
+      "list_options": [
+        {
+          "id": 70,
+          "text": "Proceso para obtener datos de páginas web de forma automatizada ✅",
+          "value": 1,
+          "url": null
+        },
+        {
+          "id": 71,
+          "text": "Compresión de archivos para optimizar almacenamiento",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 72,
+          "text": "Un plugin de IA para análisis de texto",
+          "value": 0,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "type": "SINGLE_CHOICE",
+      "text": "¿Cómo puede ayudar la IA dentro de un workflow de scraping?",
+      "order": 25,
+      "list_options": [
+        {
+          "id": 73,
+          "text": "Analizando, limpiando y estructurando los datos extraídos para generar información útil ✅",
+          "value": 1,
+          "url": null
+        },
+        {
+          "id": 74,
+          "text": "Solo traduciendo el contenido a diferentes idiomas",
+          "value": 0,
+          "url": null
+        },
+        {
+          "id": 75,
+          "text": "Únicamente enviando correos electrónicos con los resultados",
+          "value": 0,
+          "url": null
+        }
+      ]
+    }
+  ]
+}
