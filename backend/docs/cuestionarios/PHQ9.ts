@@ -510,49 +510,49 @@ const my_new_schema_expression: OperandExpression = {
 // nueva propuesta
 
 const condition_phq9_with_selector: OperandExpression = {
-    expression: {
-        type: "collection",  // Operador de colección
-        operator: "all",  // `all` significa que todas las condiciones deben ser verdaderas
-    },
+  expression: {
+    type: "collection",  // Operador de colección para evaluar múltiples elementos
+    operator: "any",  // `any` = al menos UNA pregunta debe tener valor > 0 (lógica médica PHQ-9)
+  },
 
-    args: [
+  args: [
+    {
+      expression: {
+        type: "comparison",  // Comparación: verificar si el valor de las preguntas es mayor que 0
+        operator: ">",  // Operador "mayor que" - busca síntomas reportados (value > 0)
+      },
+      args: [
         {
-            expression: {
-                type: "comparison",  // Operación de comparación
-                operator: ">",  // Operador "mayor que" para la propiedad "value"
+          subject: {
+            entity: "question",  // Entidad: preguntas del formulario PHQ-9
+            property: "value",  // Propiedad: valor de respuesta de cada pregunta (0-3 en PHQ-9)
+            selector: {
+              property: "id",  // Selector: filtrar preguntas por su ID
+              expression: {
+                type: "comparison",  // Comparación dentro del selector
+                operator: "in",  // Operador "in" - verificar si el ID está en la lista
+              },
+              args: [
+                {
+                  const: {
+                    value: [1, 2, 3, 4, 5, 6, 7, 8, 9],  // IDs de las 9 preguntas principales del PHQ-9
+                    data_type: "array_number",  // Tipo: array de números (IDs de preguntas)
+                  },
+                },
+              ],
+              output_data_type: "array_number",  // Resultado del selector: array de valores numéricos
             },
-            args: [
-                {
-                    subject: {
-                        entity: "question",
-                        property: "value",  // Queremos la propiedad "value"
-                        selector: {
-                            property: "id",  // Selección basada en "id"
-                            expression: {
-                                type: "comparison",  // Operación de comparación dentro del selector
-                                operator: "in",  // Operador "in"
-                            },
-                            args: [
-                                {
-                                    const: {
-                                        value: [1, 2, 3, 4, 5, 6, 7, 8, 9],  // Los ids que estamos comparando
-                                        data_type: "array_number",  // Especificamos que es un array de números
-                                    },
-                                },
-                            ],
-                            output_data_type: "array_number",  // El resultado del selector es un array de números
-                        },
-                    },
-                },
-                {
-                    const: {
-                        value: 0,  // Comparamos si "value" es mayor que 0
-                        data_type: "number",  // El valor constante es un número
-                    },
-                },
-            ],
-            output_data_type: "boolean",  // El resultado de la comparación es un valor booleano
+          },
         },
-    ],
-    output_data_type: "boolean",  // El resultado total es un valor booleano
+        {
+          const: {
+            value: 0,  // Umbral: comparar contra 0 (sin síntomas vs con síntomas)
+            data_type: "number",  // Tipo: número entero
+          },
+        },
+      ],
+      output_data_type: "boolean",  // Resultado: true si alguna pregunta tiene síntomas (value > 0)
+    },
+  ],
+  output_data_type: "boolean",  // Resultado final: true = mostrar pregunta 10, false = ocultarla
 };
