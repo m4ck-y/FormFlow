@@ -188,3 +188,8 @@ const avg_weight_person: Calculation = {
   ],
   output_data_type: "number",
 };
+
+const constant = {
+  value: 10,
+  data_type: "number",
+};
