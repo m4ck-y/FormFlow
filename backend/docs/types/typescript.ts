@@ -49,6 +49,8 @@ type SelectorOutputType = "array_string" | "array_number" | "array_object";
 interface BaseOperator {
   type: string;
   operator: string;
+  args: CalculationOperand[];     // Argumentos específicos del operador
+  output_data_type: DataType;     // Tipo de dato que produce este operador
 }
 
 // ===== OPERADORES ESPECÍFICOS (EXTIENDEN BASE) =====
@@ -57,36 +59,48 @@ interface BaseOperator {
 interface MathOperator extends BaseOperator {
   type: "math";
   operator: "+" | "-" | "*" | "/" | "%" | "^";  // suma, resta, multiplicación, división, módulo, potencia
+  args: CalculationOperand[];     // Operandos para la operación matemática (ej: [a, b] para a + b)
+  output_data_type: "number";     // Las operaciones matemáticas siempre producen números
 }
 
 // Operadores de comparación soportados
 interface ComparisonOperator extends BaseOperator {
   type: "comparison";
   operator: "==" | "!=" | ">" | "<" | ">=" | "<=" | "in"; // igual, distinto, mayor, menor, mayor o igual, menor o igual, *IN* agregado
+  args: CalculationOperand[];     // Operandos para comparar (ej: [left, right] para left > right)
+  output_data_type: "boolean";    // Las comparaciones siempre producen booleanos
 }
 
 // Operadores lógicos para combinar expresiones booleanas
 interface LogicOperator extends BaseOperator {
   type: "logic";
   operator: "and" | "or" | "not";  // conjunción, disyunción, negación
+  args: CalculationOperand[];     // Expresiones booleanas a combinar (ej: [expr1, expr2] para expr1 AND expr2)
+  output_data_type: "boolean";    // Las operaciones lógicas siempre producen booleanos
 }
 
 // Operadores de agregación que operan sobre conjuntos de datos o colecciones
 interface AggregateOperator extends BaseOperator {
   type: "aggregate";
   operator: "sum" | "avg" | "min" | "max" | "count";  // suma, promedio, mínimo, máximo, conteo
+  args: CalculationOperand[];     // Colección de valores a agregar
+  output_data_type: "number";     // Las agregaciones numéricas siempre producen números
 }
 
 // Operadores para evaluar condiciones sobre colecciones o listas de elementos
 interface CollectionOperator extends BaseOperator {
   type: "collection";
   operator: "all" | "any" | "none";  // todos cumplen, alguno cumple, ninguno cumple
+  args: CalculationOperand[];     // Condiciones a evaluar sobre la colección
+  output_data_type: "boolean";    // Las evaluaciones de colección siempre producen booleanos
 }
 
 // Operadores específicos para manejo de datos temporales o series de tiempo
 interface TimeOperator extends BaseOperator {
   type: "time";
   operator: "range" | "movingavg" | "delta";  // rango temporal, promedio móvil, diferencia/variación
+  args: CalculationOperand[];     // Datos temporales y parámetros de tiempo
+  output_data_type: "number" | "array_number"; // Puede producir un número o array según la operación
 }
 
 // Unión de todos los operadores posibles para una expresión
@@ -209,9 +223,7 @@ type CalculationOperand =
 
 // Operando que representa una expresión compuesta con operador y argumentos
 export interface OperandExpression extends BaseOperand {
-  expression: Operator;            // Operador que se aplica (math, logic, aggregate, etc.)
-  args: CalculationOperand[];     // Argumentos o sub-operandos de la expresión
-  output_data_type: DataType;     // Tipo de dato que produce la expresión (requerido para expresiones)
+  expression: Operator;            // Operador que se aplica (contiene args y output_data_type internamente)
 }
 
 // ===== EJEMPLOS USANDO LAS NUEVAS ESTRUCTURAS =====
@@ -222,54 +234,54 @@ const imcCalculation: OperandExpression = {
   expression: {
     type: "math",
     operator: "/",
-  } as MathOperator,
-  args: [
-    {
-      subject: {
-        entity: "person",
-        property: "weight"
-      }
-    } as OperandSubject,
-    {
-      expression: {
-        type: "math",
-        operator: "^",
-      } as MathOperator,
-      args: [
-        {
-          subject: {
-            entity: "person",
-            property: "height"
-          }
-        } as OperandSubject,
-        {
-          const: {
-            value: 2,
-            data_type: "number"
-          }
-        } as NumericConstant
-      ],
-      output_data_type: "number"
-    } as OperandExpression
-  ],
-  output_data_type: "number"
+    args: [
+      {
+        subject: {
+          entity: "person",
+          property: "weight"
+        }
+      } as OperandSubject,
+      {
+        expression: {
+          type: "math",
+          operator: "^",
+          args: [
+            {
+              subject: {
+                entity: "person",
+                property: "height"
+              }
+            } as OperandSubject,
+            {
+              const: {
+                value: 2,
+                data_type: "number"
+              }
+            } as NumericConstant
+          ],
+          output_data_type: "number"
+        } as MathOperator
+      } as OperandExpression
+    ],
+    output_data_type: "number"
+  } as MathOperator
 }
 
 const totalScoreCalculation: OperandExpression = {
   expression: {
     type: "aggregate",
     operator: "sum",
-  } as AggregateOperator,
-  args: [
-    {
-      subject: {
-        entity: "question",
-        property: "value",
-        selector: "all", // todas las preguntas
-      },
-    } as QuestionReference,
-  ],
-  output_data_type: "number",
+    args: [
+      {
+        subject: {
+          entity: "question",
+          property: "value",
+          selector: "all", // todas las preguntas
+        },
+      } as QuestionReference,
+    ],
+    output_data_type: "number"
+  } as AggregateOperator
 };
 
 
@@ -282,29 +294,100 @@ const avg_weight_person: OperandExpression = {
   expression: {
     type: "aggregate",
     operator: "avg",
-  } as AggregateOperator,
-  args: [
-    {
-      expression: {
-        type: "time",
-        operator: "range",
-      } as TimeOperator,
-      args: [
-        {
-          subject: {
-            entity: "person",
-            property: "weight",
-          },
-        } as OperandSubject,
-        {
-          time_range: {
-            start: { relative: "-10Y" },
-            end: { relative: "NOW" },
-          } as BaseTimeRange
-        } as OperandTimeRange,
-      ],
-      output_data_type: "number",
-    } as OperandExpression,
-  ],
-  output_data_type: "number",
+    args: [
+      {
+        expression: {
+          type: "time",
+          operator: "range",
+          args: [
+            {
+              subject: {
+                entity: "person",
+                property: "weight",
+              },
+            } as OperandSubject,
+            {
+              time_range: {
+                start: { relative: "-10Y" },
+                end: { relative: "NOW" },
+              } as BaseTimeRange
+            } as OperandTimeRange,
+          ],
+          output_data_type: "array_number"
+        } as TimeOperator
+      } as OperandExpression,
+    ],
+    output_data_type: "number"
+  } as AggregateOperator
+};
+
+// ===== FACTORY FUNCTIONS PARA CASOS COMUNES =====
+
+// Factory para crear comparaciones simples
+const createComparison = (
+  left: CalculationOperand, 
+  operator: ComparisonOperator["operator"], 
+  right: CalculationOperand
+): OperandExpression => ({
+  expression: { 
+    type: "comparison", 
+    operator,
+    args: [left, right],
+    output_data_type: "boolean"
+  } as ComparisonOperator
+});
+
+// Factory para crear operaciones de colección
+const createCollectionOperation = (
+  operator: CollectionOperator["operator"],
+  ...args: CalculationOperand[]
+): OperandExpression => ({
+  expression: {
+    type: "collection",
+    operator,
+    args,
+    output_data_type: "boolean"
+  } as CollectionOperator
+});
+
+// ===== EJEMPLO MEJORADO CON NUEVA ESTRUCTURA =====
+
+// Ejemplo: Condición PHQ-9 usando la nueva estructura más limpia
+const phq9ConditionImproved: OperandExpression = {
+  expression: {
+    type: "collection",
+    operator: "any",
+    args: [
+      {
+        expression: {
+          type: "comparison",
+          operator: ">",
+          args: [
+            {
+              subject: {
+                entity: "question",
+                property: "value",
+                selector: {
+                  property: "id",
+                  expression: {
+                    type: "comparison",
+                    operator: "in",
+                    args: [
+                      { subject: { entity: "question", property: "id" } } as OperandSubject,
+                      { const: { value: [1, 2, 3, 4, 5, 6, 7, 8, 9], data_type: "array_number" } } as NumericArrayConstant
+                    ],
+                    output_data_type: "boolean"
+                  } as ComparisonOperator,
+                  output_data_type: "array_number"
+                } as SubjectSelectorCondition
+              }
+            } as OperandSubject,
+            { const: { value: 0, data_type: "number" } } as NumericConstant
+          ],
+          output_data_type: "boolean"
+        } as ComparisonOperator
+      } as OperandExpression
+    ],
+    output_data_type: "boolean"
+  } as CollectionOperator
 };
