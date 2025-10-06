@@ -12,3 +12,32 @@ class SchemaCondition(BaseModel):
     """Objeto conditional para lógica de mostrar/ocultar preguntas"""
     type: EConditionalType = Field(..., description="Tipo de evaluación lógica", example=EConditionalType.ALL)
     rules: List[Union[SchemaConditionRule, "SchemaCondition"]] = Field(..., description="Lista de reglas a evaluar (permite anidación)", examples=[SchemaConditionRule(id_question=8, operator=EConditionalOperator.GREATER_EQUAL, value=2),{"id_question": 8, "operator": ">", "value": 2}])
+
+
+"""
+{
+  "type": "all",
+  "rules": [
+    {
+      "id_question": 8,
+      "operator": ">=",
+      "value": 2
+    },
+    {
+      "type": "any",
+      "rules": [
+        {
+          "id_question": 5,
+          "operator": "==",
+          "value": "yes"
+        },
+        {
+          "id_question": 6,
+          "operator": "<",
+          "value": 10
+        }
+      ]
+    }
+  ]
+}
+"""

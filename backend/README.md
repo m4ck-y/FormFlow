@@ -1,4 +1,4 @@
-# FormFlow - Sistema Empresarial de Gestión de Formularios
+# FormFlow - Plataforma de Evaluación Clínica Digital
 
 ![Python](https://img.shields.io/badge/python-3.13+-blue.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.116+-green.svg)
@@ -7,40 +7,82 @@
 ![uv](https://img.shields.io/badge/uv-package_manager-purple.svg)
 ![Docker](https://img.shields.io/badge/Docker-containerized-blue.svg)
 ![Clean Architecture](https://img.shields.io/badge/Architecture-Clean_Architecture-brightgreen.svg)
+![CIE-11](https://img.shields.io/badge/CIE--11-Medical_Standards-red.svg)
+![Clinical](https://img.shields.io/badge/Clinical-80+_Instruments-blue.svg)
 
-**API de alto rendimiento para la creación y gestión dinámica de formularios con arquitectura de nivel empresarial**
+**Plataforma especializada en evaluaciones clínicas y psicológicas con motor de reglas condicionales dinámicas**
 
 ## Descripción del Proyecto
 
-**FormFlow** es una API backend de alto rendimiento diseñada para crear y gestionar formularios y encuestas dinámicas a escala empresarial. Construida siguiendo los principios de **Arquitectura Limpia**, ofrece excepcional mantenibilidad, capacidad de prueba y escalabilidad para entornos empresariales.
+**FormFlow** es una plataforma especializada en **evaluaciones clínicas y psicológicas digitales** que revoluciona la forma en que las instituciones de salud recopilan y procesan datos médicos. Con más de **80 instrumentos clínicos validados** y un **motor de reglas condicionales avanzado**, transforma evaluaciones estáticas en experiencias dinámicas e inteligentes.
 
-### Características Diferenciadoras
+### 🏥 **Especialización Médica Real**
+- **80+ Instrumentos Validados:** PHQ-9, GAD-7, C-SSRS, CRAFFT, AUDIT, SF-12, WOMAC
+- **Estándares Internacionales:** Integración completa con códigos CIE-11
+- **Referencias Científicas:** Enlaces directos a estudios de validación en PubMed
+- **Demografía Específica:** Grupos etarios, poblaciones objetivo y tiempo de aplicación
+
+### 🧠 **Motor de Reglas Condicionales Inteligente**
+- **Lógica Dinámica:** Preguntas que aparecen/desaparecen según respuestas previas
+- **Cálculos Automáticos:** Puntuaciones, IMC, escalas de evaluación en tiempo real
+- **Flujos Adaptativos:** Experiencia personalizada para cada usuario
+- **Condiciones Complejas:** Operadores ALL, ANY, NONE para lógica médica avanzada
+
+### 🏗️ **Arquitectura Empresarial**
 - **Arquitectura Limpia:** Diseño orientado al dominio con clara separación de responsabilidades
 - **Alto Rendimiento:** FastAPI asíncrono con SQLAlchemy 2.0 para rendimiento óptimo
-- **Multi-Base de Datos:** PostgreSQL para producción, SQLite para desarrollo
-- **Estándares Médicos:** Integración de códigos CIE-11 para aplicaciones de salud
-- **Diseño Flexible:** Soporte para formularios simples y encuestas complejas con secciones
+- **Multi-Base de Datos:** PostgreSQL para producción, SQLite para desarrollo/investigación
+- **Type Safety Completo:** Pydantic v2 con validación robusta para datos médicos
 
-## Características Empresariales
+## 🚀 **Características Revolucionarias**
 
-### Capacidades Principales
-- **Constructor de Formularios Dinámicos:** Creación de formularios con preguntas directas o secciones anidadas
-- **Validación Type-Safe:** Pydantic v2 para validación y serialización de datos robusta
-- **Arquitectura Limpia:** Capas Dominio-Aplicación-Infraestructura para máxima mantenibilidad
-- **Base de Datos Agnóstica:** SQLAlchemy 2.0 con soporte PostgreSQL/SQLite
-- **Rendimiento Asíncrono:** FastAPI con async/await nativo para alta concurrencia
+### **Motor de Reglas Condicionales Avanzado**
+```json
+{
+  "condition": {
+    "type": "any",
+    "rules": [
+      {"id_question": 1, "operator": ">", "value": 0},
+      {"id_question": 2, "operator": "==", "value": "Sí"}
+    ]
+  }
+}
+```
+- **Visibilidad Dinámica:** Preguntas que aparecen solo cuando son relevantes
+- **Lógica Médica Compleja:** Condiciones ALL/ANY/NONE para flujos clínicos
+- **Cálculos en Tiempo Real:** Puntuaciones automáticas (PHQ-9, GAD-7, etc.)
+- **Validaciones Inteligentes:** Reglas que se adaptan al contexto del paciente
 
-### Integración Sanitaria
-- **Cumplimiento CIE-11:** Códigos de clasificación médica internacional
-- **Evaluaciones Psicológicas:** PHQ-9, GAD-7 y formularios de evaluación personalizados
-- **Algoritmos de Puntuación:** Cálculo e interpretación automatizada de resultados
-- **Demografía Objetivo:** Grupos de edad, formularios específicos por género y categorización industrial
+### **Catálogo Clínico Extenso (80+ Instrumentos)**
 
-### Experiencia del Desarrollador
-- **Herramientas Modernas:** Gestor de paquetes UV para gestión ultrarrápida de dependencias
-- **Containerizado:** Listo para Docker con builds multi-etapa
-- **Preparado para Pruebas:** Arquitectura diseñada para testing integral
-- **Auto-documentado:** OpenAPI/Swagger con documentación detallada de endpoints
+#### **Salud Mental:**
+- **PHQ-9:** Depresión (implementado completamente)
+- **GAD-7:** Ansiedad generalizada
+- **C-SSRS:** Evaluación de riesgo suicida
+- **HADS:** Ansiedad y depresión hospitalaria
+
+#### **Adicciones y Sustancias:**
+- **CRAFFT:** Screening de adicciones en adolescentes
+- **AUDIT:** Trastornos por uso de alcohol
+- **CAGE:** Detección rápida de alcoholismo
+
+#### **Evaluaciones Médicas:**
+- **SF-12:** Calidad de vida relacionada con salud
+- **WOMAC:** Evaluación de osteoartritis
+- **FINDRISC:** Riesgo de diabetes tipo 2
+- **FRAIL/SARC-F:** Fragilidad y sarcopenia
+
+### **Integración con Estándares Médicos Internacionales**
+- **Códigos CIE-11:** Clasificación internacional de enfermedades
+- **Referencias Científicas:** Enlaces directos a PubMed y estudios de validación
+- **Demografía Específica:** Grupos etarios, poblaciones objetivo definidas
+- **Tiempo de Aplicación:** Estimaciones precisas por instrumento
+
+### **Arquitectura Técnica de Nivel Empresarial**
+- **Clean Architecture:** Separación estricta Dominio-Aplicación-Infraestructura
+- **Multi-Base de Datos:** PostgreSQL (producción) / SQLite (investigación)
+- **Type Safety Médico:** Validación robusta para datos clínicos sensibles
+- **Rendimiento Asíncrono:** FastAPI optimizado para alta concurrencia hospitalaria
 
 ## Arquitectura del Proyecto
 
@@ -310,33 +352,56 @@ app/
 - [ ] **Arquitectura Orientada a Eventos:** Procesamiento asíncrono de mensajes
 - [ ] **Capa de Caché:** Integración Redis para rendimiento
 
-## Aplicaciones del Mundo Real
+## 🏥 **Aplicaciones Clínicas del Mundo Real**
 
-### Salud e Investigación Médica
-```python
-# Ejemplo: Evaluación de Depresión PHQ-9
+### **Hospitales y Centros de Salud**
+```json
 {
   "name": "PHQ-9 Depression Screening",
-  "description": "Patient Health Questionnaire for depression assessment",
-  "list_cie11codes": [{"code": "6A70", "description": "Single episode depressive disorder"}],
-  "scoring_formula": "sum(questions.*.value)",
-  "interpretation_ranges": [
-    {"range": "0-4", "level": "Minimal depression"},
-    {"range": "5-9", "level": "Mild depression"},
-    {"range": "10-14", "level": "Moderate depression"}
-  ]
+  "description": "Evaluación de depresión con lógica condicional avanzada",
+  "list_cie11_codes": [{"code": "6A7", "description": "Trastornos depresivos"}],
+  "condition": {
+    "type": "any",
+    "rules": [
+      {"id_question": 1, "operator": ">", "value": 0},
+      {"id_question": 2, "operator": ">", "value": 0}
+    ]
+  },
+  "scoring": {
+    "formula": "sum(questions.*.value)",
+    "interpretation": [
+      {"range": "0-4", "level": "Depresión mínima", "action": "Seguimiento rutinario"},
+      {"range": "5-9", "level": "Depresión leve", "action": "Evaluación clínica"},
+      {"range": "10-14", "level": "Depresión moderada", "action": "Tratamiento recomendado"},
+      {"range": "15-19", "level": "Depresión moderada-severa", "action": "Tratamiento activo"},
+      {"range": "20-27", "level": "Depresión severa", "action": "Tratamiento inmediato"}
+    ]
+  }
 }
 ```
 
-### Evaluaciones Educativas
-- **Testing Adaptativo:** Selección dinámica de preguntas basada en respuestas
-- **Soporte Multi-idioma:** Listo para internacionalización
-- **Cumplimiento de Accesibilidad:** Estándares WCAG 2.1 AA
+### **Casos de Uso Específicos:**
 
-### Encuestas Empresariales
-- **Satisfacción del Empleado:** Analíticas y reportes de RRHH
-- **Retroalimentación del Cliente:** Mediciones NPS y CSAT
-- **Investigación de Mercado:** Integración de análisis estadístico
+#### **🧠 Salud Mental:**
+- **Screening Primario:** PHQ-9, GAD-7 para detección temprana
+- **Evaluación de Riesgo:** C-SSRS para prevención de suicidio
+- **Seguimiento Longitudinal:** Aplicación periódica para monitoreo de tratamiento
+
+#### **🏥 Medicina Interna:**
+- **Evaluación Funcional:** SF-12 para calidad de vida post-tratamiento
+- **Screening Metabólico:** FINDRISC para riesgo de diabetes
+- **Evaluación Geriátrica:** FRAIL, SARC-F para fragilidad y sarcopenia
+
+#### **🔬 Investigación Clínica:**
+- **Estudios Longitudinales:** Seguimiento de cohortes con instrumentos estandarizados
+- **Validación de Instrumentos:** Plataforma para nuevas escalas psicométricas
+- **Análisis Epidemiológico:** Datos estructurados para investigación poblacional
+
+### **Ventajas Competitivas:**
+- **Reducción de Errores:** Eliminación de transcripción manual
+- **Estandarización:** Instrumentos validados internacionalmente
+- **Eficiencia:** Lógica condicional reduce tiempo de aplicación
+- **Interoperabilidad:** Integración con sistemas hospitalarios (HL7/FHIR ready)
 
 ## Métricas de Calidad de Código
 
@@ -380,30 +445,90 @@ uv run uvicorn app.main:app --reload
 - **mypy:** Verificación estática de tipos
 - **Conventional Commits:** Mensajes de commit semánticos
 
-## Estado del Proyecto
+## 📊 **Estado del Proyecto**
 
 ![Development Status](https://img.shields.io/badge/Status-Active_Development-brightgreen.svg)
 ![Code Quality](https://img.shields.io/badge/Code_Quality-Production_Ready-blue.svg)
 ![Architecture](https://img.shields.io/badge/Architecture-Clean_Architecture-success.svg)
-![Test Coverage](https://img.shields.io/badge/Test_Coverage-In_Progress-yellow.svg)
+![Clinical Instruments](https://img.shields.io/badge/Clinical_Instruments-80+_Cataloged-blue.svg)
+![Conditional Logic](https://img.shields.io/badge/Conditional_Logic-Implemented-green.svg)
 
-### Hitos Actuales
-- ✅ **Arquitectura Principal:** Implementación de Arquitectura Limpia
-- ✅ **Capa de Base de Datos:** Soporte multi-base de datos con SQLAlchemy 2.0
-- ✅ **Capa API:** FastAPI con documentación OpenAPI integral
-- ✅ **Containerización:** Configuración Docker lista para producción
-- 🔄 **Autenticación:** Integración JWT/OAuth2 (en progreso)
-- 🔄 **Suite de Pruebas:** Cobertura de pruebas integral (en progreso)
-- � **Sistema de Respuestas:** Envío de formularios y analíticas (planificado)
+### **🎯 Hitos Completados**
+- ✅ **Motor de Reglas Condicionales:** Lógica ALL/ANY/NONE implementada
+- ✅ **Catálogo Clínico:** 80+ instrumentos médicos catalogados con metadatos
+- ✅ **Integración CIE-11:** Códigos médicos internacionales
+- ✅ **Arquitectura Multi-BD:** PostgreSQL/SQLite con conversión automática
+- ✅ **Instrumentos Implementados:** PHQ-9, CRAFFT con lógica condicional completa
+- ✅ **Sistema de Cálculos:** Framework para puntuaciones automáticas
+- ✅ **Referencias Científicas:** Enlaces a PubMed y estudios de validación
 
-## Acerca del Desarrollador
+### **🔄 En Desarrollo Activo**
+- 🔄 **Sistema de Respuestas:** Captura y análisis de datos de pacientes
+- 🔄 **Dashboard Clínico:** Visualización de resultados y tendencias
+- 🔄 **Autenticación Médica:** JWT/OAuth2 con roles hospitalarios
+- 🔄 **Suite de Pruebas:** Testing específico para lógica médica
 
-Este proyecto demuestra experiencia en:
-- **Arquitectura de Software:** Arquitectura Limpia, DDD, principios SOLID
-- **APIs de Alto Rendimiento:** FastAPI, async/await, optimización de base de datos
-- **Python Moderno:** Type hints, Pydantic v2, SQLAlchemy 2.0
-- **DevOps:** Docker, containerización, despliegue en producción
-- **Tecnología Sanitaria:** Integración de estándares médicos (CIE-11)
+### **📋 Roadmap Próximo**
+- 📋 **Integración HL7/FHIR:** Interoperabilidad con sistemas hospitalarios
+- 📋 **Algoritmos de IA:** Detección de patrones en respuestas
+- 📋 **Reportes Clínicos:** Generación automática de informes médicos
+- 📋 **Validación Regulatoria:** Cumplimiento FDA/CE para dispositivos médicos
+
+## 🧠 **Motor de Reglas Condicionales - Innovación Técnica**
+
+### **Teoría y Fundamentos**
+FormFlow implementa un **motor de reglas condicionales avanzado** que transforma formularios estáticos en experiencias dinámicas e inteligentes, similar a plataformas como Google Forms o Typeform, pero especializado para el ámbito médico.
+
+### **Componentes Clave del Sistema**
+
+#### **1. Sujetos y Entidades**
+```typescript
+interface SubjectReference {
+  entity: "question" | "person" | "form";
+  property: "value" | "age" | "score";
+  selector?: "id" | "group" | "all";
+}
+```
+
+#### **2. Operadores y Comparaciones**
+- **Comparación:** `==`, `!=`, `>`, `<`, `>=`, `<=`
+- **Lógicos:** `and`, `or`, `not`
+- **Agregados:** `sum`, `avg`, `min`, `max`, `count`
+- **Colección:** `all`, `any`, `none`
+
+#### **3. Composición de Condiciones**
+```json
+{
+  "condition": {
+    "type": "any",
+    "rules": [
+      {"id_question": 1, "operator": ">", "value": 0},
+      {"id_question": 2, "operator": "==", "value": "Sí"}
+    ]
+  }
+}
+```
+
+### **Beneficios del Sistema**
+- **Reducción de Dependencia del Código:** Configuración declarativa sin programación
+- **Personalización Total:** Flujos adaptativos para cada paciente
+- **Escalabilidad:** Manejo eficiente de formularios complejos
+- **Integración Fácil:** Formato JSON estándar para interoperabilidad
+
+### **Aplicación en Contexto Médico**
+- **Screening Inteligente:** Preguntas que aparecen según síntomas reportados
+- **Validaciones Clínicas:** Reglas que aseguran coherencia en respuestas médicas
+- **Cálculos Automáticos:** Puntuaciones de escalas (PHQ-9, GAD-7) en tiempo real
+- **Flujos Adaptativos:** Rutas diferentes según perfil demográfico del paciente
+
+## 👨‍💻 **Acerca del Desarrollador**
+
+Este proyecto demuestra experiencia especializada en:
+- **Arquitectura de Software Médico:** Clean Architecture, DDD aplicado a salud digital
+- **APIs de Alto Rendimiento:** FastAPI asíncrono optimizado para datos clínicos
+- **Sistemas de Reglas Complejas:** Motores de decisión para lógica médica
+- **Estándares Médicos Internacionales:** CIE-11, instrumentos psicométricos validados
+- **Tecnología Sanitaria:** Cumplimiento regulatorio y validación clínica
 
 ### Conectemos
 - **LinkedIn:** [Tu Perfil de LinkedIn]
