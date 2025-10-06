@@ -35,47 +35,59 @@
  */
 
 
+// ===== TIPOS BASE Y PRIMITIVOS =====
+
 // Tipo de dato que puede tener el resultado de una expresión calculada
 type DataType = "number" | "string" | "boolean" | "date" | "array_string" | "array_number" | "array_object";
 
-// Tipo de datos de salida para el selector 🎯
-type SelectorOutputType = "array_string" | "array_number" | "array_object"; // 📢 *Nuevo tipo agregado* 🎯
+// Tipo de datos de salida para el selector
+type SelectorOutputType = "array_string" | "array_number" | "array_object";
+
+// ===== ESTRUCTURA BASE PARA OPERADORES =====
+
+// Interfaz base que comparten todos los operadores
+interface BaseOperator {
+  type: string;
+  operator: string;
+}
+
+// ===== OPERADORES ESPECÍFICOS (EXTIENDEN BASE) =====
 
 // Operadores matemáticos soportados en expresiones
-type MathOperator = { 
-  type: "math", 
-  operator: "+" | "-" | "*" | "/" | "%" | "^"  // suma, resta, multiplicación, división, módulo, potencia
-};
+interface MathOperator extends BaseOperator {
+  type: "math";
+  operator: "+" | "-" | "*" | "/" | "%" | "^";  // suma, resta, multiplicación, división, módulo, potencia
+}
 
 // Operadores de comparación soportados
-type ComparisonOperator = { 
-  type: "comparison", 
-  operator: "==" | "!=" | ">" | "<" | ">=" | "<=" | "in" // igual, distinto, mayor, menor, mayor o igual, menor o igual , *IN* agregado
-};
+interface ComparisonOperator extends BaseOperator {
+  type: "comparison";
+  operator: "==" | "!=" | ">" | "<" | ">=" | "<=" | "in"; // igual, distinto, mayor, menor, mayor o igual, menor o igual, *IN* agregado
+}
 
 // Operadores lógicos para combinar expresiones booleanas
-type LogicOperator = { 
-  type: "logic", 
-  operator: "and" | "or" | "not"  // conjunción, disyunción, negación
-};
+interface LogicOperator extends BaseOperator {
+  type: "logic";
+  operator: "and" | "or" | "not";  // conjunción, disyunción, negación
+}
 
 // Operadores de agregación que operan sobre conjuntos de datos o colecciones
-type AggregateOperator = { 
-  type: "aggregate", 
-  operator: "sum" | "avg" | "min" | "max" | "count"  // suma, promedio, mínimo, máximo, conteo
-};
+interface AggregateOperator extends BaseOperator {
+  type: "aggregate";
+  operator: "sum" | "avg" | "min" | "max" | "count";  // suma, promedio, mínimo, máximo, conteo
+}
 
 // Operadores para evaluar condiciones sobre colecciones o listas de elementos
-type CollectionOperator = { 
-  type: "collection", 
-  operator: "all" | "any" | "none"  // todos cumplen, alguno cumple, ninguno cumple
-};
+interface CollectionOperator extends BaseOperator {
+  type: "collection";
+  operator: "all" | "any" | "none";  // todos cumplen, alguno cumple, ninguno cumple
+}
 
 // Operadores específicos para manejo de datos temporales o series de tiempo
-type TimeOperator = { 
-  type: "time", 
-  operator: "range" | "movingavg" | "delta"  // rango temporal, promedio móvil, diferencia/variación
-};
+interface TimeOperator extends BaseOperator {
+  type: "time";
+  operator: "range" | "movingavg" | "delta";  // rango temporal, promedio móvil, diferencia/variación
+}
 
 // Unión de todos los operadores posibles para una expresión
 type Operator =
@@ -87,51 +99,101 @@ type Operator =
   | TimeOperator;
 
 
-interface SubjectSelectorCondition extends OperandExpression{
-  property: string; //propiedad a comparar
+// ===== SELECTORES Y CONDICIONES =====
+
+// Condición de selector que extiende expresión con propiedad específica
+interface SubjectSelectorCondition extends OperandExpression {
+  property: string; // Propiedad a comparar en el selector
 }
-// Selector para sujetos
-type SubjectSelector = "group" | "all" | SubjectSelectorCondition;  // 📢 *Nuevo tipo de selector agregado* 🎯
 
+// Selector para sujetos (tipos predefinidos o condición personalizada)
+type SubjectSelector = "group" | "all" | SubjectSelectorCondition;
 
-// Representa un operando que es un valor constante literal
-interface OperandConst {
+// ===== HELPERS Y TIPOS DE UTILIDAD =====
+
+// Helper para crear constantes numéricas de forma más concisa
+interface NumericConstant extends OperandConst {
   const: {
-    value: number | string | boolean | Date | number[] | string[]; // Valor constante (numérico, texto, booleano o fecha)
-    data_type: DataType;                    // Tipo de dato del valor constante
+    value: number;
+    data_type: "number";
   };
 }
 
-// Representa un rango de tiempo con inicio y fin, que pueden ser fechas relativas o absolutas
-interface TimeRangeValue {
-  start: RelativeOrAbsoluteDate;       // Fecha de inicio (relativa o absoluta)
-  end: RelativeOrAbsoluteDate | null;  // Fecha de fin (relativa, absoluta o indefinida)
+// Helper para crear constantes de array de números
+interface NumericArrayConstant extends OperandConst {
+  const: {
+    value: number[];
+    data_type: "array_number";
+  };
 }
+
+// Helper para referencias simples a preguntas (caso común)
+interface QuestionReference extends OperandSubject {
+  subject: {
+    entity: "question";
+    property: "value" | "id";
+    selector?: SubjectSelector;
+  };
+}
+
+
+// ===== ESTRUCTURAS BASE PARA OPERANDOS =====
+
+// Interfaz base para todos los operandos que tienen tipo de salida
+interface BaseOperand {
+  output_data_type?: DataType;  // Tipo de dato que produce el operando (opcional para algunos casos)
+}
+
+// ===== TIPOS PARA FECHAS Y TIEMPO =====
 
 // Tipo para representar una fecha que puede ser relativa o absoluta
 type RelativeOrAbsoluteDate =
   | { relative: string } // Fecha relativa, ej: "-10Y" (hace 10 años), "NOW", "-6M" (hace 6 meses)
   | { absolute: string }; // Fecha absoluta en formato ISO 8601, ej: "2015-10-05T00:00:00Z"
 
-// Operando que representa un rango de tiempo con fechas de inicio y fin
-interface OperandTimeRange {
-  time_range: {
-    start: RelativeOrAbsoluteDate;       // Fecha de inicio del rango (relativa o absoluta)
-    end: RelativeOrAbsoluteDate | null;  // Fecha de fin del rango (relativa, absoluta o indefinida)
+// Estructura base para rangos de tiempo (reutilizable)
+interface BaseTimeRange {
+  start: RelativeOrAbsoluteDate;       // Fecha de inicio (relativa o absoluta)
+  end: RelativeOrAbsoluteDate | null;  // Fecha de fin (relativa, absoluta o indefinida)
+}
+
+// ===== OPERANDOS ESPECÍFICOS =====
+
+// Representa un operando que es un valor constante literal
+interface OperandConst extends BaseOperand {
+  const: {
+    value: number | string | boolean | Date | number[] | string[]; // Valor constante (numérico, texto, booleano o fecha)
+    data_type: DataType;                    // Tipo de dato del valor constante
   };
 }
 
-// Referencia a un sujeto del que se extrae un valor, como "persona" o "pregunta"
-interface SubjectReference {
-  entity: string;             // Nombre de la entidad, ej: "person", "question"
-  property: string;           // Propiedad específica del sujeto, ej: "weight", "value"
-  selector?: SubjectSelector; // Selector para filtrar sujeto(s), ej: "all", "custom [cuando se ocupe el subjectSelector]"
-  group?: string;             // Grupo al que pertenece (opcional)
+// Representa un rango de tiempo con inicio y fin (usando la estructura base)
+interface TimeRangeValue extends BaseTimeRange {
+  // Hereda start y end de BaseTimeRange
+}
+
+// Operando que representa un rango de tiempo con fechas de inicio y fin
+interface OperandTimeRange extends BaseOperand {
+  time_range: BaseTimeRange;  // Usa la estructura base de tiempo
+}
+
+// ===== REFERENCIAS A SUJETOS =====
+
+// Estructura base para referencias de entidades
+interface BaseEntityReference {
+  entity: string;   // Nombre de la entidad, ej: "person", "question"
+  property: string; // Propiedad específica del sujeto, ej: "weight", "value"
+}
+
+// Referencia completa a un sujeto del que se extrae un valor
+interface SubjectReference extends BaseEntityReference {
+  selector?: SubjectSelector;            // Selector para filtrar sujeto(s), ej: "all", "custom"
+  group?: string;                        // Grupo al que pertenece (opcional)
   output_data_type?: SelectorOutputType; // Tipo de dato que produce el sujeto
 }
 
 // Operando que refiere a un sujeto específico para obtener su valor
-interface OperandSubject {
+interface OperandSubject extends BaseOperand {
   subject: SubjectReference;
 }
 
@@ -143,57 +205,61 @@ type CalculationOperand =
   | OperandExpression    // Expresión anidada
   | OperandTimeRange;    // Rango de tiempo para datos temporales
 
+// ===== EXPRESIÓN PRINCIPAL =====
+
 // Operando que representa una expresión compuesta con operador y argumentos
-export interface OperandExpression {
+export interface OperandExpression extends BaseOperand {
   expression: Operator;            // Operador que se aplica (math, logic, aggregate, etc.)
   args: CalculationOperand[];     // Argumentos o sub-operandos de la expresión
-  output_data_type: DataType;     // Tipo de dato que produce la expresión
+  output_data_type: DataType;     // Tipo de dato que produce la expresión (requerido para expresiones)
 }
+
+// ===== EJEMPLOS USANDO LAS NUEVAS ESTRUCTURAS =====
 
 const imcFormulaString = "person.weight / (person.height ^ 2)";
 
 const imcCalculation: OperandExpression = {
-  "expression": {
-    "type": "math",
-    "operator": "/",
-  },
-  "args": [
+  expression: {
+    type: "math",
+    operator: "/",
+  } as MathOperator,
+  args: [
     {
-      "subject": {
-        "entity": "person",
-        "property": "weight"
+      subject: {
+        entity: "person",
+        property: "weight"
       }
-    },
+    } as OperandSubject,
     {
-      "output_data_type": "number",
-      "expression": {
-        "type": "math",
-        "operator": "^",
-      },
-      "args": [
+      expression: {
+        type: "math",
+        operator: "^",
+      } as MathOperator,
+      args: [
         {
-          "subject": {
-            "entity": "person",
-            "property": "height"
+          subject: {
+            entity: "person",
+            property: "height"
           }
-        },
+        } as OperandSubject,
         {
-          "const": {
-            "value": 2,
-            "data_type": "number"
+          const: {
+            value: 2,
+            data_type: "number"
           }
-        }
-      ]
-    }
+        } as NumericConstant
+      ],
+      output_data_type: "number"
+    } as OperandExpression
   ],
-  "output_data_type": "number"
+  output_data_type: "number"
 }
 
 const totalScoreCalculation: OperandExpression = {
   expression: {
     type: "aggregate",
     operator: "sum",
-  },
+  } as AggregateOperator,
   args: [
     {
       subject: {
@@ -201,10 +267,13 @@ const totalScoreCalculation: OperandExpression = {
         property: "value",
         selector: "all", // todas las preguntas
       },
-    },
+    } as QuestionReference,
   ],
   output_data_type: "number",
 };
+
+
+
 
 const avg_weight_person_str =
   'avg(timeRange(person.weight, { start: "-10Y", end: "NOW" }))';
@@ -213,33 +282,29 @@ const avg_weight_person: OperandExpression = {
   expression: {
     type: "aggregate",
     operator: "avg",
-  },
+  } as AggregateOperator,
   args: [
     {
       expression: {
         type: "time",
         operator: "range",
-      },
+      } as TimeOperator,
       args: [
         {
           subject: {
             entity: "person",
             property: "weight",
           },
-        },
+        } as OperandSubject,
         {
           time_range: {
-            start: {
-              relative: "-10Y",
-            },
-            end: {
-              relative: "NOW",
-            },
-          }
-        },
+            start: { relative: "-10Y" },
+            end: { relative: "NOW" },
+          } as BaseTimeRange
+        } as OperandTimeRange,
       ],
       output_data_type: "number",
-    },
+    } as OperandExpression,
   ],
   output_data_type: "number",
 };

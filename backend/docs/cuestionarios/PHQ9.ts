@@ -1,5 +1,5 @@
 import { OperandExpression } from "../types/typescript";
-df_
+
 var puntuacion = "sum(answers.values)";
 
 var interpretacion = `switch(
