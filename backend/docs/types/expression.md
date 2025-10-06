@@ -268,7 +268,86 @@ const phq9HasSymptoms: OperandExpression = {
 }
 ```
 
-### **6. Operadores Temporales (`TimeOperator`)**
+### **6. Operadores Condicionales (`ConditionalOperator`)**
+```typescript
+interface ConditionalOperator {
+  type: "conditional";
+  operator: "switch" | "ternary";  // switch-case o operador ternario
+  subject: CalculationOperand;     // El sujeto a evaluar
+  cases: Array<{
+    condition: OperandExpression;  // Condición a evaluar
+    result: CalculationOperand;    // Resultado si es verdadera
+  }>;
+  default?: CalculationOperand;    // Valor por defecto
+  output_data_type: DataType;      // Tipo de salida (string, number, etc.)
+}
+```
+
+**Casos de Uso:**
+- Interpretaciones clínicas: `PHQ-9 score → "Depresión leve"`
+- Clasificaciones: `IMC → "Peso normal", "Sobrepeso", "Obesidad"`
+- Recomendaciones: `Riesgo → "Seguimiento rutinario", "Evaluación urgente"`
+
+**Ejemplo - Interpretación PHQ-9:**
+```typescript
+// Interpretación de puntuación PHQ-9
+const phq9Interpretation: OperandExpression = {
+  expression: {
+    type: "conditional",
+    operator: "switch",
+    subject: { subject: { entity: "form", property: "total_score" }},
+    cases: [
+      {
+        condition: {
+          expression: {
+            type: "comparison",
+            operator: "<",
+            args: [
+              { subject: { entity: "form", property: "total_score" }},
+              { const: { value: 5, data_type: "number" }}
+            ],
+            output_data_type: "boolean"
+          }
+        },
+        result: { const: { value: "Depresión mínima", data_type: "string" }}
+      },
+      {
+        condition: {
+          expression: {
+            type: "comparison",
+            operator: "<",
+            args: [
+              { subject: { entity: "form", property: "total_score" }},
+              { const: { value: 10, data_type: "number" }}
+            ],
+            output_data_type: "boolean"
+          }
+        },
+        result: { const: { value: "Depresión leve", data_type: "string" }}
+      },
+      // ... más casos
+    ],
+    default: { const: { value: "Puntuación fuera de rango", data_type: "string" }},
+    output_data_type: "string"
+  }
+}
+```
+
+**Ejemplo - Operador Ternario:**
+```typescript
+// Ejemplo: ¿Es adulto? → "Adulto" : "Menor"
+const ageClassification = createTernaryOperation(
+  createComparison(
+    { subject: { entity: "person", property: "age" }},
+    ">=",
+    { const: { value: 18, data_type: "number" }}
+  ),
+  { const: { value: "Adulto", data_type: "string" }},
+  { const: { value: "Menor", data_type: "string" }}
+);
+```
+
+### **7. Operadores Temporales (`TimeOperator`)**
 ```typescript
 interface TimeOperator extends BaseOperator {
   type: "time";
@@ -443,6 +522,51 @@ const highRiskAlert: OperandExpression = {
 }
 ```
 
+### **5. Interpretación Automática de Resultados**
+
+```typescript
+// Interpretación automática basada en puntuación PHQ-9
+const phq9AutoInterpretation: OperandExpression = {
+  expression: {
+    type: "conditional",
+    operator: "switch",
+    subject: { subject: { entity: "form", property: "total_score" }},
+    cases: [
+      {
+        condition: {
+          expression: {
+            type: "comparison",
+            operator: "<",
+            args: [
+              { subject: { entity: "form", property: "total_score" }},
+              { const: { value: 5, data_type: "number" }}
+            ],
+            output_data_type: "boolean"
+          }
+        },
+        result: { const: { value: "Depresión mínima - Seguimiento rutinario", data_type: "string" }}
+      },
+      {
+        condition: {
+          expression: {
+            type: "comparison",
+            operator: "<",
+            args: [
+              { subject: { entity: "form", property: "total_score" }},
+              { const: { value: 15, data_type: "number" }}
+            ],
+            output_data_type: "boolean"
+          }
+        },
+        result: { const: { value: "Depresión leve-moderada - Evaluación clínica recomendada", data_type: "string" }}
+      }
+    ],
+    default: { const: { value: "Depresión severa - Tratamiento inmediato requerido", data_type: "string" }},
+    output_data_type: "string"
+  }
+}
+```
+
 ---
 
 ## 🛠️ **Factory Functions (Helpers)**
@@ -488,6 +612,58 @@ const createCollectionOperation = (
 
 // Uso
 const anySymptoms = createCollectionOperation("any", ...symptomChecks);
+```
+
+### **Operaciones Condicionales**
+```typescript
+const createSwitchOperation = (
+  subject: CalculationOperand,
+  cases: Array<{
+    condition: OperandExpression;
+    result: CalculationOperand;
+  }>,
+  defaultValue?: CalculationOperand,
+  outputType: DataType = "string"
+): OperandExpression => ({ ... });
+
+// Uso - Interpretación PHQ-9
+const phq9Interpretation = createSwitchOperation(
+  { subject: { entity: "form", property: "total_score" }},
+  [
+    {
+      condition: createComparison(
+        { subject: { entity: "form", property: "total_score" }},
+        "<",
+        { const: { value: 5, data_type: "number" }}
+      ),
+      result: { const: { value: "Depresión mínima", data_type: "string" }}
+    },
+    // ... más casos
+  ],
+  { const: { value: "Puntuación fuera de rango", data_type: "string" }},
+  "string"
+);
+```
+
+### **Operador Ternario**
+```typescript
+const createTernaryOperation = (
+  condition: OperandExpression,
+  trueResult: CalculationOperand,
+  falseResult: CalculationOperand,
+  outputType: DataType = "string"
+): OperandExpression => ({ ... });
+
+// Uso
+const adultClassification = createTernaryOperation(
+  createComparison(
+    { subject: { entity: "person", property: "age" }},
+    ">=",
+    { const: { value: 18, data_type: "number" }}
+  ),
+  { const: { value: "Adulto", data_type: "string" }},
+  { const: { value: "Menor", data_type: "string" }}
+);
 ```
 
 ---

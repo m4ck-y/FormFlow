@@ -95,6 +95,19 @@ interface CollectionOperator extends BaseOperator {
   output_data_type: "boolean";    // Las evaluaciones de colección siempre producen booleanos
 }
 
+// Operadores condicionales para lógica switch/case y operador ternario
+interface ConditionalOperator {
+  type: "conditional";
+  operator: "switch" | "ternary";  // switch-case o operador ternario (condition ? true : false)
+  subject: CalculationOperand;     // El sujeto a evaluar (ej: puntuación total)
+  cases: Array<{
+    condition: OperandExpression;  // Expresión que evalúa una condición (ej: puntuacion < 5)
+    result: CalculationOperand;    // Resultado si la condición es verdadera (ej: "Depresión mínima")
+  }>;
+  default?: CalculationOperand;    // Valor por defecto si no se cumple ninguna condición
+  output_data_type: DataType;      // Tipo de salida (string para interpretaciones, number para cálculos)
+}
+
 // Operadores específicos para manejo de datos temporales o series de tiempo
 interface TimeOperator extends BaseOperator {
   type: "time";
@@ -110,6 +123,7 @@ type Operator =
   | LogicOperator
   | AggregateOperator
   | CollectionOperator
+  | ConditionalOperator
   | TimeOperator;
 
 
@@ -213,7 +227,7 @@ interface OperandSubject extends BaseOperand {
 
 
 // Unión de todos los posibles operandos que puede tener una expresión/calculación
-type CalculationOperand = 
+type CalculationOperand =
   | OperandSubject       // Referencia a un sujeto
   | OperandConst         // Valor constante literal
   | OperandExpression    // Expresión anidada
@@ -325,12 +339,12 @@ const avg_weight_person: OperandExpression = {
 
 // Factory para crear comparaciones simples
 const createComparison = (
-  left: CalculationOperand, 
-  operator: ComparisonOperator["operator"], 
+  left: CalculationOperand,
+  operator: ComparisonOperator["operator"],
   right: CalculationOperand
 ): OperandExpression => ({
-  expression: { 
-    type: "comparison", 
+  expression: {
+    type: "comparison",
     operator,
     args: [left, right],
     output_data_type: "boolean"
@@ -348,6 +362,55 @@ const createCollectionOperation = (
     args,
     output_data_type: "boolean"
   } as CollectionOperator
+});
+
+// Factory para crear operaciones condicionales (switch/case)
+const createSwitchOperation = (
+  subject: CalculationOperand,
+  cases: Array<{
+    condition: OperandExpression;
+    result: CalculationOperand;
+  }>,
+  defaultValue?: CalculationOperand,
+  outputType: DataType = "string"
+): OperandExpression => ({
+  expression: {
+    type: "conditional",
+    operator: "switch",
+    subject,
+    cases,
+    default: defaultValue,
+    output_data_type: outputType
+  } as ConditionalOperator
+});
+
+// Factory para crear operador ternario (condition ? true : false)
+const createTernaryOperation = (
+  condition: OperandExpression,
+  trueResult: CalculationOperand,
+  falseResult: CalculationOperand,
+  outputType: DataType = "string"
+): OperandExpression => ({
+  expression: {
+    type: "conditional",
+    operator: "ternary",
+    subject: condition, // La condición a evaluar
+    cases: [
+      {
+        condition: {
+          expression: {
+            type: "comparison",
+            operator: "==",
+            args: [condition, { const: { value: true, data_type: "boolean" } }],
+            output_data_type: "boolean"
+          } as ComparisonOperator
+        },
+        result: trueResult
+      }
+    ],
+    default: falseResult,
+    output_data_type: outputType
+  } as ConditionalOperator
 });
 
 // ===== EJEMPLO MEJORADO CON NUEVA ESTRUCTURA =====

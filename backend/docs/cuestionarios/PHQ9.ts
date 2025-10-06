@@ -1,14 +1,201 @@
 import { OperandExpression } from "../types/typescript";
 
-var puntuacion = "sum(answers.values)";
+var puntuacion_str = "sum(answers.values)";
 
-var interpretacion = `switch(
+var puntuacion_sql = `SELECT SUM(value) AS puntuacion FROM answers;`
+
+const puntiacion_expression: OperandExpression = {
+  expression: {
+    type: "aggregate",
+    operator: "avg",  // Promedio en lugar de suma
+    args: [
+      {
+        subject: {
+          entity: "answer",
+          property: "value",
+          selector: "all"
+        }
+      }
+    ],
+    output_data_type: "number"
+  }
+};
+
+
+// ===== INTERPRETACIÓN PHQ-9 CON OPERADOR CONDICIONAL =====
+
+var interpretacion_str = `switch(
   (puntuacion < 5, 'Depresion minima'),
   (puntuacion < 10, 'Deprecion leve'),
   (puntuacion < 15, 'Depresion moderada'),
   (puntuacion < 20, 'Depresion moderadamente severa'),
   (puntuacion <= 27, 'Depresion severa')
   )`;
+
+
+var interpretacion_sql = `SELECT 
+  CASE 
+    WHEN puntuacion < 5 THEN 'Depresion minima'
+    WHEN puntuacion < 10 THEN 'Depresion leve'
+    WHEN puntuacion < 15 THEN 'Depresion moderada'
+    WHEN puntuacion < 20 THEN 'Depresion moderadamente severa'
+    WHEN puntuacion <= 27 THEN 'Depresion severa'
+    ELSE 'Valor fuera de rango'
+  END AS interpretacion
+FROM form_response;`
+
+// Interpretación de puntuación PHQ-9 usando ConditionalOperator
+const phq9Interpretation: OperandExpression = {
+  expression: {
+    type: "conditional",
+    operator: "switch",
+    subject: {
+      // Sujeto: puntuación total del PHQ-9
+      expression: {
+        type: "aggregate",
+        operator: "sum",
+        args: [
+          {
+            subject: {
+              entity: "question",
+              property: "value",
+              selector: "all"  // Suma de todas las respuestas
+            }
+          }
+        ],
+        output_data_type: "number"
+      }
+    },
+    cases: [
+      {
+        // Caso 1: puntuacion < 5 → "Depresión mínima"
+        condition: {
+          expression: {
+            type: "comparison",
+            operator: "<",
+            args: [
+              { subject: { entity: "form", property: "total_score" } },
+              { const: { value: 5, data_type: "number" } }
+            ],
+            output_data_type: "boolean"
+          }
+        },
+        result: { const: { value: "Depresión mínima", data_type: "string" } }
+      },
+      {
+        // Caso 2: puntuacion < 10 → "Depresión leve"
+        condition: {
+          expression: {
+            type: "comparison",
+            operator: "<",
+            args: [
+              { subject: { entity: "form", property: "total_score" } },
+              { const: { value: 10, data_type: "number" } }
+            ],
+            output_data_type: "boolean"
+          }
+        },
+        result: { const: { value: "Depresión leve", data_type: "string" } }
+      },
+      {
+        // Caso 3: puntuacion < 15 → "Depresión moderada"
+        condition: {
+          expression: {
+            type: "comparison",
+            operator: "<",
+            args: [
+              { subject: { entity: "form", property: "total_score" } },
+              { const: { value: 15, data_type: "number" } }
+            ],
+            output_data_type: "boolean"
+          }
+        },
+        result: { const: { value: "Depresión moderada", data_type: "string" } }
+      },
+      {
+        // Caso 4: puntuacion < 20 → "Depresión moderadamente severa"
+        condition: {
+          expression: {
+            type: "comparison",
+            operator: "<",
+            args: [
+              { subject: { entity: "form", property: "total_score" } },
+              { const: { value: 20, data_type: "number" } }
+            ],
+            output_data_type: "boolean"
+          }
+        },
+        result: { const: { value: "Depresión moderadamente severa", data_type: "string" } }
+      },
+      {
+        // Caso 5: puntuacion <= 27 → "Depresión severa"
+        condition: {
+          expression: {
+            type: "comparison",
+            operator: "<=",
+            args: [
+              { subject: { entity: "form", property: "total_score" } },
+              { const: { value: 27, data_type: "number" } }
+            ],
+            output_data_type: "boolean"
+          }
+        },
+        result: { const: { value: "Depresión severa", data_type: "string" } }
+      }
+    ],
+    default: { const: { value: "Puntuación fuera de rango", data_type: "string" } },
+    output_data_type: "string"  // La interpretación es un string
+  }
+};
+
+// Versión simplificada usando factory function
+const phq9InterpretationSimplified = createSwitchOperation(
+  { subject: { entity: "form", property: "total_score" } }, // Sujeto: puntuación total
+  [
+    {
+      condition: createComparison(
+        { subject: { entity: "form", property: "total_score" } },
+        "<",
+        { const: { value: 5, data_type: "number" } }
+      ),
+      result: { const: { value: "Depresión mínima", data_type: "string" } }
+    },
+    {
+      condition: createComparison(
+        { subject: { entity: "form", property: "total_score" } },
+        "<",
+        { const: { value: 10, data_type: "number" } }
+      ),
+      result: { const: { value: "Depresión leve", data_type: "string" } }
+    },
+    {
+      condition: createComparison(
+        { subject: { entity: "form", property: "total_score" } },
+        "<",
+        { const: { value: 15, data_type: "number" } }
+      ),
+      result: { const: { value: "Depresión moderada", data_type: "string" } }
+    },
+    {
+      condition: createComparison(
+        { subject: { entity: "form", property: "total_score" } },
+        "<",
+        { const: { value: 20, data_type: "number" } }
+      ),
+      result: { const: { value: "Depresión moderadamente severa", data_type: "string" } }
+    },
+    {
+      condition: createComparison(
+        { subject: { entity: "form", property: "total_score" } },
+        "<=",
+        { const: { value: 27, data_type: "number" } }
+      ),
+      result: { const: { value: "Depresión severa", data_type: "string" } }
+    }
+  ],
+  { const: { value: "Puntuación fuera de rango", data_type: "string" } }, // Default
+  "string" // Output type
+);
 
 
 //CRAFFT
