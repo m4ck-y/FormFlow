@@ -1,24 +1,45 @@
 /**
- * El objetivo de este esquema es definir una estructura tipada y flexible para representar expresiones y cálculos complejos sobre datos de distintas entidades (como personas, preguntas, etc.), incluyendo soporte para operadores matemáticos, lógicos, comparativos, agregados, colecciones y temporales. Esto permite modelar fórmulas y consultas dinámicas que pueden involucrar valores constantes, referencias a sujetos específicos, expresiones anidadas y rangos de tiempo con fechas relativas o absolutas.
- * Este esquema de tipos está diseñado para representar expresiones calculadas en un sistema de análisis o motor de reglas, facilitando la construcción de cálculos complejos sobre datos estructurados. Cada expresión está compuesta por operadores específicos (como sumas, promedios, comparaciones o rangos temporales) y operandos que pueden ser constantes, referencias a propiedades de sujetos o incluso sub-expresiones anidadas.
+ * El objetivo de este esquema es definir una estructura tipada y flexible para representar expresiones y cálculos complejos
+ * sobre datos de distintas entidades (como personas, preguntas, etc.), incluyendo soporte para operadores matemáticos,
+ * lógicos, comparativos, agregados, colecciones y temporales.
+ *
+ * Esto permite modelar fórmulas y consultas dinámicas que pueden involucrar valores constantes, referencias a sujetos específicos,
+ * expresiones anidadas y rangos de tiempo con fechas relativas (ejemplo: "-10Y") o absolutas (fechas ISO 8601).
+ *
+ * Este esquema de tipos está diseñado para representar expresiones calculadas en un sistema de análisis o motor de reglas,
+ * facilitando la construcción de cálculos complejos sobre datos estructurados.
+ * Cada expresión está compuesta por operadores específicos (como sumas, promedios, comparaciones o rangos temporales) y operandos
+ * que pueden ser constantes, referencias a propiedades de sujetos o incluso sub-expresiones anidadas.
+ *
+ * Además, se incluye soporte explícito para operaciones temporales mediante rangos de tiempo, lo cual es crucial para analizar
+ * datos históricos o realizar cálculos dinámicos basados en ventanas temporales.
+ *
+ * Este esquema permite, por ejemplo, calcular índices biométricos, sumar valores de colecciones o promediar pesos en un rango
+ * temporal determinado, de forma tipada y estructurada, lo que facilita la validación y ejecución confiable de las expresiones definidas.
+ */
 
-Además, se incluye soporte explícito para operaciones temporales mediante rangos de tiempo que pueden definirse con fechas relativas (ejemplo: "-10Y" para hace 10 años) o absolutas (fechas ISO 8601). Esta capacidad es crucial para analizar datos históricos o realizar cálculos dinámicos basados en ventanas temporales.
-
-Este esquema permite, por ejemplo, calcular índices biométricos, sumar valores de colecciones, o promediar pesos en un rango temporal determinado, de forma tipada y estructurada, lo que facilita la validación y ejecución confiable de las expresiones definidas.
+/**
+ * Estructura del esquema para formularios y preguntas:
+ * 
+ * - `form`: Representa un formulario que contiene una lista de preguntas.
+ *   - `id`: Identificador único del formulario.
+ *   - `list_questions`: Lista de preguntas que forman parte del formulario.
+ * 
+ * - `question`: Representa una pregunta dentro de un formulario.
+ *   - `id`: Identificador único de la pregunta.
+ *   - `type`: Tipo de la pregunta (puede ser de selección múltiple, abierta, etc.).
+ *   - `text`: El texto o enunciado de la pregunta.
+ *   - `order`: El orden en el que aparece la pregunta en el formulario.
+ *   - `list_options`: Opciones posibles (si aplica) para la respuesta de la pregunta.
+ *   - `conditions`: Condiciones adicionales para la pregunta, representadas por una expresión matemática o lógica (usando `OperandExpression`).
  */
 
 
 // Tipo de dato que puede tener el resultado de una expresión calculada
-type DataType = "number" | "string" | "boolean" | "date";
+type DataType = "number" | "string" | "boolean" | "date" | "array_string" | "array_number" | "array_object";
 
-// Clasificación de los diferentes tipos de expresiones que pueden existir
-type ExpressionType =
-  | "math"       // Expresiones matemáticas (ej: suma, resta)
-  | "logic"      // Expresiones lógicas (ej: and, or, not)
-  | "comparison" // Expresiones de comparación (ej: ==, >, <=)
-  | "aggregate"  // Expresiones de agregación (ej: sum, avg)
-  | "collection" // Expresiones sobre colecciones (ej: all, any, none)
-  | "time";      // Expresiones temporales (ej: rangos de tiempo, delta)
+// Tipo de datos de salida para el selector 🎯
+type SelectorOutputType = "array_string" | "array_number" | "array_object"; // 📢 *Nuevo tipo agregado* 🎯
 
 // Operadores matemáticos soportados en expresiones
 type MathOperator = { 
@@ -29,7 +50,7 @@ type MathOperator = {
 // Operadores de comparación soportados
 type ComparisonOperator = { 
   type: "comparison", 
-  operator: "==" | "!=" | ">" | "<" | ">=" | "<="  // igual, distinto, mayor, menor, mayor o igual, menor o igual
+  operator: "==" | "!=" | ">" | "<" | ">=" | "<=" | "in" // igual, distinto, mayor, menor, mayor o igual, menor o igual , *IN* agregado
 };
 
 // Operadores lógicos para combinar expresiones booleanas
@@ -65,14 +86,18 @@ type Operator =
   | CollectionOperator
   | TimeOperator;
 
+
+interface SubjectSelectorCondition extends OperandExpression{
+  property: string; //propiedad a comparar
+}
 // Selector para sujetos
-type SubjectSelector = "id" | "group" | "all" | "custom";
+type SubjectSelector = "group" | "all" | SubjectSelectorCondition;  // 📢 *Nuevo tipo de selector agregado* 🎯
 
 
 // Representa un operando que es un valor constante literal
 interface OperandConst {
   const: {
-    value: number | string | boolean | Date; // Valor constante (numérico, texto, booleano o fecha)
+    value: number | string | boolean | Date | number[] | string[]; // Valor constante (numérico, texto, booleano o fecha)
     data_type: DataType;                    // Tipo de dato del valor constante
   };
 }
@@ -100,9 +125,9 @@ interface OperandTimeRange {
 interface SubjectReference {
   entity: string;             // Nombre de la entidad, ej: "person", "question"
   property: string;           // Propiedad específica del sujeto, ej: "weight", "value"
-  selector?: SubjectSelector; // Selector para filtrar sujeto(s), ej: "all", "id"
-  id?: number | string;       // Identificador específico (opcional)
+  selector?: SubjectSelector; // Selector para filtrar sujeto(s), ej: "all", "custom [cuando se ocupe el subjectSelector]"
   group?: string;             // Grupo al que pertenece (opcional)
+  output_data_type?: SelectorOutputType; // Tipo de dato que produce el sujeto
 }
 
 // Operando que refiere a un sujeto específico para obtener su valor
@@ -110,12 +135,6 @@ interface OperandSubject {
   subject: SubjectReference;
 }
 
-// Operando que representa una expresión compuesta con operador y argumentos
-interface OperandExpression {
-  expression: Operator;            // Operador que se aplica (math, logic, aggregate, etc.)
-  args: CalculationOperand[];     // Argumentos o sub-operandos de la expresión
-  output_data_type: DataType;     // Tipo de dato que produce la expresión
-}
 
 // Unión de todos los posibles operandos que puede tener una expresión/calculación
 type CalculationOperand = 
@@ -123,6 +142,13 @@ type CalculationOperand =
   | OperandConst         // Valor constante literal
   | OperandExpression    // Expresión anidada
   | OperandTimeRange;    // Rango de tiempo para datos temporales
+
+// Operando que representa una expresión compuesta con operador y argumentos
+export interface OperandExpression {
+  expression: Operator;            // Operador que se aplica (math, logic, aggregate, etc.)
+  args: CalculationOperand[];     // Argumentos o sub-operandos de la expresión
+  output_data_type: DataType;     // Tipo de dato que produce la expresión
+}
 
 const imcFormulaString = "person.weight / (person.height ^ 2)";
 
