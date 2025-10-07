@@ -95,17 +95,20 @@ interface CollectionOperator extends BaseOperator {
   output_data_type: "boolean";    // Las evaluaciones de colección siempre producen booleanos
 }
 
-// Operadores condicionales para lógica switch/case y operador ternario
-interface ConditionalOperator {
-  type: "conditional";
-  operator: "switch" | "ternary";  // switch-case o operador ternario (condition ? true : false)
-  subject: CalculationOperand;     // El sujeto a evaluar (ej: puntuación total)
+// Operador CASE para lógica condicional optimizada para SQL
+interface CaseOperator extends BaseOperator {
+  type: "case";
+  operator: "when";                // Operador fijo para CASE WHEN
+  subject: CalculationOperand;     // El sujeto a evaluar una sola vez (ej: puntuación total)
   cases: Array<{
-    condition: OperandExpression;  // Expresión que evalúa una condición (ej: puntuacion < 5)
-    result: CalculationOperand;    // Resultado si la condición es verdadera (ej: "Depresión mínima")
+    when: {
+      operator: ComparisonOperator["operator"];  // Operador de comparación tipado
+      operand: CalculationOperand;               // Solo un operando (el otro es el subject)
+    };
+    then: CalculationOperand;      // Resultado si la condición when es verdadera
   }>;
-  default?: CalculationOperand;    // Valor por defecto si no se cumple ninguna condición
-  output_data_type: DataType;      // Tipo de salida (string para interpretaciones, number para cálculos)
+  default?: CalculationOperand;    // Valor por defecto si ningún WHEN se cumple
+  output_data_type: DataType;      // Tipo de dato resultante
 }
 
 // Operadores específicos para manejo de datos temporales o series de tiempo
@@ -123,7 +126,7 @@ type Operator =
   | LogicOperator
   | AggregateOperator
   | CollectionOperator
-  | ConditionalOperator
+  | CaseOperator
   | TimeOperator;
 
 
@@ -364,27 +367,31 @@ const createCollectionOperation = (
   } as CollectionOperator
 });
 
-// Factory para crear operaciones condicionales (switch/case)
-const createSwitchOperation = (
+// Factory para crear operaciones CASE WHEN
+const createCaseOperation = (
   subject: CalculationOperand,
   cases: Array<{
-    condition: OperandExpression;
-    result: CalculationOperand;
+    when: {
+      operator: ComparisonOperator["operator"];
+      operand: CalculationOperand;
+    };
+    then: CalculationOperand;
   }>,
   defaultValue?: CalculationOperand,
   outputType: DataType = "string"
 ): OperandExpression => ({
   expression: {
-    type: "conditional",
-    operator: "switch",
+    type: "case",
+    operator: "when",
     subject,
     cases,
     default: defaultValue,
-    output_data_type: outputType
-  } as ConditionalOperator
+    output_data_type: outputType,
+    args: [] // Requerido por BaseOperator pero no usado en CaseOperator
+  } as CaseOperator
 });
 
-// Factory para crear operador ternario (condition ? true : false)
+// Factory para crear operador ternario usando CASE WHEN
 const createTernaryOperation = (
   condition: OperandExpression,
   trueResult: CalculationOperand,
@@ -392,25 +399,22 @@ const createTernaryOperation = (
   outputType: DataType = "string"
 ): OperandExpression => ({
   expression: {
-    type: "conditional",
-    operator: "ternary",
-    subject: condition, // La condición a evaluar
+    type: "case",
+    operator: "when",
+    subject: condition,
     cases: [
       {
-        condition: {
-          expression: {
-            type: "comparison",
-            operator: "==",
-            args: [condition, { const: { value: true, data_type: "boolean" } }],
-            output_data_type: "boolean"
-          } as ComparisonOperator
+        when: {
+          operator: "==",
+          operand: { const: { value: true, data_type: "boolean" } }
         },
-        result: trueResult
+        then: trueResult
       }
     ],
     default: falseResult,
-    output_data_type: outputType
-  } as ConditionalOperator
+    output_data_type: outputType,
+    args: [] // Requerido por BaseOperator pero no usado en CaseOperator
+  } as CaseOperator
 });
 
 // ===== EJEMPLO MEJORADO CON NUEVA ESTRUCTURA =====
