@@ -18,12 +18,31 @@
  * temporal determinado, de forma tipada y estructurada, lo que facilita la validación y ejecución confiable de las expresiones definidas.
  */
 
-/**
- * Estructura del esquema para formularios y preguntas:
+/*
+ * Estructura del esquema para formularios, preguntas y respuestas:
  * 
- * - `form`: Representa un formulario que contiene una lista de preguntas.
+ * - `form`: Representa un formulario que puede ser respondido múltiples veces.
  *   - `id`: Identificador único del formulario.
- *   - `list_questions`: Lista de preguntas que forman parte del formulario.
+ *   - `name`: Nombre del formulario.
+ *   - `description`: Descripción del formulario.
+ *   - `scoring_expression`: Expresión en JSON que define cómo calcular la puntuación.
+ *   - `evaluation_expression`: Expresión en JSON que define cómo evaluar o clasificar el resultado.
+ * 
+ * - `assignment`: Representa una instancia única de un formulario asignado a un usuario.
+ *   - `id`: Identificador único de la asignación.
+ *   - `id_form`: ID del formulario asignado.
+ *   - `id_user`: ID del usuario que responde.
+ *   - `assigned_at`: Fecha y hora en que se asignó el formulario.
+ *   - `status`: Estado del assignment (pending, in_progress, completed, etc.).
+ *   - `scoring_result`: Puntaje calculado después de evaluar la expresión de scoring_expression.
+ *   - `evaluation_result`: Resultado de la evaluación procesada (aprobado, no_aprobado, etc.).
+ *   - `processed_at`: Fecha/hora en que se procesaron las expresiones y se guardaron los resultados.
+ * 
+ * - `answer`: Representa las respuestas individuales de un usuario a las preguntas de una asignación específica.
+ *   - `id`: Identificador único de la respuesta.
+ *   - `id_assignment`: ID de la asignación a la que pertenece esta respuesta.
+ *   - `id_question`: ID de la pregunta respondida.
+ *   - `answer`: Respuesta del usuario en formato JSON, puede incluir tipo y valor.
  * 
  * - `question`: Representa una pregunta dentro de un formulario.
  *   - `id`: Identificador único de la pregunta.
@@ -31,7 +50,7 @@
  *   - `text`: El texto o enunciado de la pregunta.
  *   - `order`: El orden en el que aparece la pregunta en el formulario.
  *   - `list_options`: Opciones posibles (si aplica) para la respuesta de la pregunta.
- *   - `conditions`: Condiciones adicionales para la pregunta, representadas por una expresión matemática o lógica (usando `OperandExpression`).
+ *   - `condition`: Condiciones adicionales para la pregunta, representadas por una expresión matemática o lógica (usando `OperandExpression`).
  */
 
 

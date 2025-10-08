@@ -1,4 +1,9 @@
-ipaq = [
+import { OperandExpression } from "../types/typescript";
+
+
+
+
+let ipaq = [
   { id: 1, label: "cuantos dias", value: 0 },
   {
     id: 2,
@@ -14,6 +19,10 @@ ipaq = [
     condition: "all([question.id == 1 AND question.value > 0 ])",
   },
 ];
+
+
+
+
 
 //mets : unidades del indice metabolico
 // 7 preguntas
