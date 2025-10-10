@@ -1,0 +1,192 @@
+@startuml FormFlow_ERD
+
+title FormFlow Entity Relationship Diagram
+
+class BaseModel {
+  + id : Integer
+  + created_at : DateTime
+  + updated_at : DateTime
+  + deleted_at : DateTime
+}
+
+class ModelForm {
+  + id : Integer
+  + key : String
+  + name : String
+  + description : Text
+}
+
+class ModelSection {
+  + id : Integer
+  + id_form : Integer
+  + name : String
+  + description : Text
+  + order : Integer
+}
+
+class ModelQuestion {
+  + id : Integer
+  + type : EQuestionType
+  + text : String
+  + order : Integer
+  + condition : JSON
+}
+
+class ModelOption {
+  + id : Integer
+  + id_question : Integer
+  + text : Text
+  + value : Integer
+}
+
+class ModelURL {
+  + id : Integer
+  + id_option : Integer
+  + href : String
+  + type : EUrlType
+}
+
+class ModelCategory {
+  + id : Integer
+  + key_industry : Integer
+  + name : String
+}
+
+class ModelEvaluationTopic {
+  + id : Integer
+  + name : String
+  + description : Text
+  + key_industry : String
+}
+
+class ModelCIE11Code {
+  + id : Integer
+  + code : String
+}
+
+class ModelReference {
+  + id : Integer
+  + id_form : Integer
+  + url_reference : String
+  + name : String
+  + notes : Text
+  + url_thumbnail : String
+  + type : EReferenceType
+}
+
+class ModelEstimatedDuration {
+  + id : Integer
+  + id_form : Integer
+  + min_minutes : Integer
+  + max_minutes : Integer
+  + description : String
+}
+
+class ModelAgeGroup {
+  + id : Integer
+  + name : String
+  + min_age : Integer
+  + max_age : Integer
+}
+
+class ModelTargetSex {
+  + id : Integer
+  + id_form : Integer
+  + biological_sex : EBiologicalSex
+}
+
+class ModelFormCondition {
+  + id : Integer
+  + id_form : Integer
+  + expression : String
+  + description : Text
+}
+
+class DSLFieldMetadata {
+  + id : Integer
+  + alias : String
+  + description : Text
+  + table_schema : String
+  + table_name : String
+  + column_name : String
+  + data_type : DataType
+  + is_available : Boolean
+  + form_id : Integer
+}
+
+enum EQuestionType {
+  SINGLE_CHOICE
+  MULTIPLE_CHOICE
+  TEXT
+  NUMBER
+  DATE
+  BOOLEAN
+}
+
+enum EReferenceType {
+  FILE
+  LINK
+}
+
+enum EUrlType {
+  LINK
+  IMAGE
+}
+
+enum EBiologicalSex {
+  HOMBRE
+  MUJER
+  INTERSEXUAL
+}
+
+enum DataType {
+  INTEGER
+  FLOAT
+  STRING
+  BOOLEAN
+  DATE
+  DATETIME
+  TIME
+  JSON
+}
+
+BaseModel <|-- ModelForm
+BaseModel <|-- ModelSection
+BaseModel <|-- ModelQuestion
+BaseModel <|-- ModelOption
+BaseModel <|-- ModelURL
+BaseModel <|-- ModelCategory
+BaseModel <|-- ModelEvaluationTopic
+BaseModel <|-- ModelCIE11Code
+BaseModel <|-- ModelReference
+BaseModel <|-- ModelEstimatedDuration
+BaseModel <|-- ModelAgeGroup
+BaseModel <|-- ModelTargetSex
+BaseModel <|-- ModelFormCondition
+BaseModel <|-- DSLFieldMetadata
+
+ModelForm ||--o{ ModelSection
+ModelForm ||--o{ ModelReference
+ModelQuestion ||--o{ ModelOption
+ModelOption ||--|| ModelURL
+ModelForm ||--o| ModelEstimatedDuration
+ModelForm ||--|| ModelTargetSex
+ModelForm ||--o| ModelFormCondition
+ModelForm ||--o{ DSLFieldMetadata
+
+ModelForm }o--o{ ModelCategory
+ModelForm }o--o{ ModelCIE11Code
+ModelForm }o--o{ ModelEvaluationTopic
+ModelForm }o--o{ ModelQuestion
+ModelSection }o--o{ ModelQuestion
+ModelForm }o--o{ ModelAgeGroup
+
+ModelForm #lightblue
+ModelQuestion #lightgreen
+ModelSection #lightyellow
+ModelCategory #lightcoral
+ModelEvaluationTopic #lightpink
+ModelCIE11Code #lightgray
+DSLFieldMetadata #lavender
+
+@enduml

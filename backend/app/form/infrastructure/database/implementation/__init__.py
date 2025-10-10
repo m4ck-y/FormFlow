@@ -29,6 +29,9 @@ from app.form.domain.schemas.form_evaluation_topics import SCreateDBFormEvaluati
 from app.form.domain.schemas.reference import SchemaCreateItemAPIReference, SchemaCreateDBReference
 from app.form.infrastructure.database.implementation.reference.create import CreateReference
 
+from app.form.domain.schemas.estimated_duration import SchemaCreateItemAPIEstimatedDuration, SchemaCreateDBEstimatedDuration
+from app.form.infrastructure.database.implementation.estimated_duration.create import CreateEstimatedDuration
+
 from app.form.infrastructure.database.implementation.cie11_code.create import CreateCIE11Code
 from app.form.domain.schemas.cie11_code import SRequestCie11Code
 from app.form.domain.schemas.form_cie11_codes import SInsertFormCie11Codes
@@ -114,9 +117,19 @@ class FormRepository(BaseRepository[Table, C, I, E, U]):
                 name=reference.name,
                 notes=reference.notes,
                 url_thumbnail=reference.url_thumbnail,
-                type=reference.type
+                type=reference.type.value  # Usar .value para compatibilidad SQLite
             )
             CreateReference(reference_db_schema, db, False)
+
+        # Procesar estimated_duration (relación 1:1 - opcional)
+        if entity.estimated_duration is not None:
+            estimated_duration_db_schema = SchemaCreateDBEstimatedDuration(
+                id_form=id_form,  # Asignar automáticamente
+                min_minutes=entity.estimated_duration.min_minutes,
+                max_minutes=entity.estimated_duration.max_minutes,
+                description=entity.estimated_duration.description
+            )
+            CreateEstimatedDuration(estimated_duration_db_schema, db, False)
 
         db.commit()
 

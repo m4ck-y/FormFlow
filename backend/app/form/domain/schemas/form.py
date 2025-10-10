@@ -5,7 +5,10 @@ from app.form.domain.schemas.category import (
     SchemaDetailCategory,
     SchemaCreateAPICategory,
 )
-from app.form.domain.schemas.estimated_duration import SchemaDetailEstimatedDuration
+from app.form.domain.schemas.estimated_duration import (
+    SchemaDetailEstimatedDuration,
+    SchemaCreateItemAPIEstimatedDuration,
+)
 from app.form.domain.schemas.reference import (
     SchemaDetailReference,
     SchemaCreateItemAPIReference,
@@ -89,6 +92,16 @@ class SchemaCreateAPIForm(BaseCreateAPISchema, SchemaBaseForm):
             "url_thumbnail": "",
             "type": "LINK"
         }]]
+    )
+
+    estimated_duration: Optional[SchemaCreateItemAPIEstimatedDuration] = Field(
+        None,
+        description="Duración estimada para completar el formulario.",
+        examples=[{
+            "min_minutes": 5,
+            "max_minutes": 10,
+            "description": "Duración estimada para completar el cuestionario"
+        }]
     )
 
     def to_db_schema(self) -> SchemaCreateDB:

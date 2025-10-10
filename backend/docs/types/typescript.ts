@@ -1,4 +1,5 @@
 /**
+ * https://en.wikipedia.org/wiki/Abstract_syntax_tree
  * El objetivo de este esquema es definir una estructura tipada y flexible para representar expresiones y cálculos complejos
  * sobre datos de distintas entidades (como personas, preguntas, etc.), incluyendo soporte para operadores matemáticos,
  * lógicos, comparativos, agregados, colecciones y temporales.
