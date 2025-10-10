@@ -37,6 +37,9 @@ from app.form.infrastructure.database.implementation.age_group.create import Cre
 from app.form.infrastructure.database.implementation.form.target_age_groups import CreateTargetAgeGroups
 from app.form.domain.schemas.target_age_groups import SCreateDBTargetAgeGroups
 
+from app.form.domain.schemas.target_sex import SchemaCreateItemAPITargetSex, SchemaCreateDBTargetSex
+from app.form.infrastructure.database.implementation.target_sex.create import CreateTargetSex
+
 from app.form.infrastructure.database.implementation.cie11_code.create import CreateCIE11Code
 from app.form.domain.schemas.cie11_code import SRequestCie11Code
 from app.form.domain.schemas.form_cie11_codes import SInsertFormCie11Codes
@@ -158,6 +161,14 @@ class FormRepository(BaseRepository[Table, C, I, E, U]):
                 id_age_group=id_age_group
             )
             CreateTargetAgeGroups(db, target_age_group_db_schema, False)
+
+        # Procesar target_sex (relación 1:1 - opcional)
+        if entity.target_sex is not None:
+            target_sex_db_schema = SchemaCreateDBTargetSex(
+                id_form=id_form,  # Asignar automáticamente
+                biological_sex=entity.target_sex.biological_sex.value  # Usar .value para compatibilidad SQLite
+            )
+            CreateTargetSex(target_sex_db_schema, db, False)
 
         db.commit()
 

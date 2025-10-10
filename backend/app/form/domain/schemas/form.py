@@ -13,6 +13,10 @@ from app.form.domain.schemas.age_group import (
     SchemaDetailAgeGroup,
     SchemaCreateItemAPIAgeGroup,
 )
+from app.form.domain.schemas.target_sex import (
+    SchemaDetailTargetSex,
+    SchemaCreateItemAPITargetSex,
+)
 from app.form.domain.schemas.reference import (
     SchemaDetailReference,
     SchemaCreateItemAPIReference,
@@ -119,6 +123,14 @@ class SchemaCreateAPIForm(BaseCreateAPISchema, SchemaBaseForm):
                 "max_age": 99
             }
         ]
+    )
+
+    target_sex: Optional[SchemaCreateItemAPITargetSex] = Field(
+        None,
+        description="Sexo biológico objetivo para el formulario.",
+        examples=[{
+            "biological_sex": 1  # 1=HOMBRE, 2=MUJER, 3=INTERSEXUAL
+        }]
     )
 
     def to_db_schema(self) -> SchemaCreateDB:

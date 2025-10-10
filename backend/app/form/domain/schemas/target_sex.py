@@ -3,7 +3,7 @@ from app.base.domain.schemas.base import BaseORMModel
 from enum import Enum
 
 
-class EBiologicalSex(Enum):
+class EBiologicalSex(int, Enum):
     """
     sexoBiologico
 
@@ -34,7 +34,12 @@ class SchemaCreateDBTargetSex(SchemaBaseTargetSex):
 
 
 class SchemaCreateAPITargetSex(SchemaBaseTargetSex):
+    # Schema para ser usado cuando se sube un target_sex individual para un form
     id_form: int
+
+class SchemaCreateItemAPITargetSex(SchemaBaseTargetSex):
+    # Schema para ser usado sobre un schema padre (form), form{target_sex}
+    pass  # El id del form se obtiene durante la transacción de creación del form
 
 class SchemaItemTargetSex(SchemaBaseTargetSex):
     id: int
