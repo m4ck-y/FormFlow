@@ -1,5 +1,6 @@
 from typing import Optional
 from app.base.domain.schemas.base import BaseORMModel
+from pydantic import Field
 from enum import Enum
 
 
@@ -26,7 +27,7 @@ class EBiologicalSex(int, Enum):
     "INTERSEXUAL"
 
 class SchemaBaseTargetSex(BaseORMModel):
-    biological_sex: EBiologicalSex
+    biological_sex: EBiologicalSex = Field(..., examples=[1])
 
 
 class SchemaCreateDBTargetSex(SchemaBaseTargetSex):

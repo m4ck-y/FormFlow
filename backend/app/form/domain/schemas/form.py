@@ -68,69 +68,37 @@ class SchemaCreateAPIForm(BaseCreateAPISchema, SchemaBaseForm):
 
     list_categories: List[SchemaCreateAPICategory | int] = Field(
         ...,
-        description="Lista de categorías asociadas al formulario. Cada categoría puede ser representada por su ID (entero) o por un objeto completo de categoría.",
-        examples=[
-            [1, {"key_industry": 1, "name": "Salud"}]
-        ],
+        description="Lista de categorías asociadas al formulario. Cada categoría puede ser representada por su ID (entero) o por un objeto completo de categoría."
     )
 
     list_cie11_codes: List[SRequestCie11Code | int] = Field(
         ...,
-        description="Lista de códigos CIE-11 asociados al formulario. Cada código CIE-11 puede ser representado por su ID (entero) o por un objeto completo de código CIE-11.",
-        examples=[
-            [1, {"code": "1A00", "description": "Cólera"}]
-        ],
+        description="Lista de códigos CIE-11 asociados al formulario. Cada código CIE-11 puede ser representado por su ID (entero) o por un objeto completo de código CIE-11."
     )
 
     list_evaluation_topics: List[SchemaCreateAPIEvaluationTopic | int] = Field(
         ...,
-        description="Lista de temas de evaluación asociados al formulario. Cada tema puede ser representado por su ID (entero) o por un objeto completo de tema de evaluación.",
-        examples=[
-            [1, {"name": "Salud Mental", "description": "Evaluación de aspectos psicológicos", "key_industry": "health"}]
-        ],
+        description="Lista de temas de evaluación asociados al formulario. Cada tema puede ser representado por su ID (entero) o por un objeto completo de tema de evaluación."
     )
 
     list_references: List[SchemaCreateItemAPIReference] = Field(
         default=[],
-        description="Lista de referencias bibliográficas específicas de este formulario.",
-        examples=[[{
-            "url_reference": "https://pubmed.ncbi.nlm.nih.gov/11485122/",
-            "name": "Validation of a Brief Depression Severity Measure",
-            "notes": "Artículo que valida el PHQ-9",
-            "url_thumbnail": "",
-            "type": "LINK"
-        }]]
+        description="Lista de referencias bibliográficas específicas de este formulario."
     )
 
     estimated_duration: Optional[SchemaCreateItemAPIEstimatedDuration] = Field(
         None,
-        description="Duración estimada para completar el formulario.",
-        examples=[{
-            "min_minutes": 5,
-            "max_minutes": 10,
-            "description": "Duración estimada para completar el cuestionario"
-        }]
+        description="Duración estimada para completar el formulario."
     )
 
     target_age_group: Optional[SchemaCreateItemAPIAgeGroup | int] = Field(
         None,
-        description="Grupo etario objetivo para el formulario. Puede ser un ID existente (entero) o un objeto completo de grupo etario.",
-        examples=[
-            1,  # ID existente
-            {
-                "name": "Adultos",
-                "min_age": 18,
-                "max_age": 99
-            }
-        ]
+        description="Grupo etario objetivo para el formulario. Puede ser un ID existente (entero) o un objeto completo de grupo etario."
     )
 
     target_sex: Optional[SchemaCreateItemAPITargetSex] = Field(
         None,
-        description="Sexo biológico objetivo para el formulario.",
-        examples=[{
-            "biological_sex": 1  # 1=HOMBRE, 2=MUJER, 3=INTERSEXUAL
-        }]
+        description="Sexo biológico objetivo para el formulario."
     )
 
     def to_db_schema(self) -> SchemaCreateDB:

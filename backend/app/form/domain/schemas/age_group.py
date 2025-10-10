@@ -1,11 +1,12 @@
 from typing import Optional
 from app.base.domain.schemas.base import BaseORMModel
+from pydantic import Field
 
 
 class SchemaBaseAgeGroup(BaseORMModel):
-    name: str
-    min_age: Optional[int]
-    max_age: Optional[int]
+    name: str = Field(..., examples=["Adultos"])
+    min_age: Optional[int] = Field(None, examples=[18])
+    max_age: Optional[int] = Field(None, examples=[99])
 
 class SchemaCreateDBAgeGroup(SchemaBaseAgeGroup):
     pass

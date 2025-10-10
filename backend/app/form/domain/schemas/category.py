@@ -1,8 +1,9 @@
 from app.base.domain.schemas.base import BaseORMModel
+from pydantic import Field
 
 class SchemaBaseCategory(BaseORMModel):
-    key_industry: int
-    name: str
+    key_industry: int = Field(..., examples=[1])
+    name: str = Field(..., examples=["Salud Mental"])
 
 
 class SchemaCreateDBCategory(SchemaBaseCategory):
