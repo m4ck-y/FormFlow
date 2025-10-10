@@ -13,6 +13,10 @@ class SchemaCreateDBAgeGroup(SchemaBaseAgeGroup):
 class SchemaCreateAPIAgeGroup(SchemaBaseAgeGroup):
     pass
 
+class SchemaCreateItemAPIAgeGroup(SchemaBaseAgeGroup):
+    # Schema para ser usado sobre un schema padre (form), form{target_age_group}
+    pass  # El id del form se obtiene durante la transacción de creación del form
+
 class SchemaItemAgeGroup(SchemaBaseAgeGroup):
     id: int
 

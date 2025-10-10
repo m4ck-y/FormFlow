@@ -45,8 +45,8 @@ class ModelForm(BaseModel):
     # 1:1 | 1 form -> 1 estimated duration
     estimated_duration = relationship("ModelEstimatedDuration", back_populates="form", uselist=False)
 
-    # 1:1 | 1 form -> 1 target age group
-    target_age_group = relationship("ModelAgeGroup", secondary=target_age_groups,back_populates="form", uselist=False)
+    # 1:1 | 1 form -> 1 target age group (usando tabla intermedia para evolución futura)
+    target_age_group = relationship("ModelAgeGroup", secondary=target_age_groups, back_populates="form", uselist=False)
 
     # 1:1 | 1 form -> 1 target sex
     target_sex = relationship("ModelTargetSex", back_populates="form", uselist=False)

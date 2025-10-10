@@ -9,6 +9,10 @@ from app.form.domain.schemas.estimated_duration import (
     SchemaDetailEstimatedDuration,
     SchemaCreateItemAPIEstimatedDuration,
 )
+from app.form.domain.schemas.age_group import (
+    SchemaDetailAgeGroup,
+    SchemaCreateItemAPIAgeGroup,
+)
 from app.form.domain.schemas.reference import (
     SchemaDetailReference,
     SchemaCreateItemAPIReference,
@@ -102,6 +106,19 @@ class SchemaCreateAPIForm(BaseCreateAPISchema, SchemaBaseForm):
             "max_minutes": 10,
             "description": "Duración estimada para completar el cuestionario"
         }]
+    )
+
+    target_age_group: Optional[SchemaCreateItemAPIAgeGroup | int] = Field(
+        None,
+        description="Grupo etario objetivo para el formulario. Puede ser un ID existente (entero) o un objeto completo de grupo etario.",
+        examples=[
+            1,  # ID existente
+            {
+                "name": "Adultos",
+                "min_age": 18,
+                "max_age": 99
+            }
+        ]
     )
 
     def to_db_schema(self) -> SchemaCreateDB:

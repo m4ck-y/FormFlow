@@ -32,6 +32,11 @@ from app.form.infrastructure.database.implementation.reference.create import Cre
 from app.form.domain.schemas.estimated_duration import SchemaCreateItemAPIEstimatedDuration, SchemaCreateDBEstimatedDuration
 from app.form.infrastructure.database.implementation.estimated_duration.create import CreateEstimatedDuration
 
+from app.form.domain.schemas.age_group import SchemaCreateItemAPIAgeGroup, SchemaCreateDBAgeGroup
+from app.form.infrastructure.database.implementation.age_group.create import CreateAgeGroup
+from app.form.infrastructure.database.implementation.form.target_age_groups import CreateTargetAgeGroups
+from app.form.domain.schemas.target_age_groups import SCreateDBTargetAgeGroups
+
 from app.form.infrastructure.database.implementation.cie11_code.create import CreateCIE11Code
 from app.form.domain.schemas.cie11_code import SRequestCie11Code
 from app.form.domain.schemas.form_cie11_codes import SInsertFormCie11Codes
@@ -130,6 +135,29 @@ class FormRepository(BaseRepository[Table, C, I, E, U]):
                 description=entity.estimated_duration.description
             )
             CreateEstimatedDuration(estimated_duration_db_schema, db, False)
+
+        # Procesar target_age_group (relación 1:1 con tabla intermedia - opcional, preparado para N:N)
+        if entity.target_age_group is not None:
+            id_age_group = None
+
+            if isinstance(entity.target_age_group, SchemaCreateItemAPIAgeGroup):
+                # Crear nuevo age_group
+                age_group_db_schema = SchemaCreateDBAgeGroup(
+                    name=entity.target_age_group.name,
+                    min_age=entity.target_age_group.min_age,
+                    max_age=entity.target_age_group.max_age
+                )
+                id_age_group = CreateAgeGroup(age_group_db_schema, db, False)
+            else:
+                # Usar age_group existente
+                id_age_group = entity.target_age_group
+            
+            # Crear relación en tabla intermedia
+            target_age_group_db_schema = SCreateDBTargetAgeGroups(
+                id_form=id_form,
+                id_age_group=id_age_group
+            )
+            CreateTargetAgeGroups(db, target_age_group_db_schema, False)
 
         db.commit()
 
