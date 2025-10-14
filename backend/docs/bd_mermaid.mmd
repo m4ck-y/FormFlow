@@ -1,0 +1,69 @@
+erDiagram
+
+    form ||--o{ question : "1:N"
+    form ||--o{ assignment : "1:N"
+    assignment ||--|| scheduled : "1:1"
+    scheduled ||--o{ response : "1:N"
+    response ||--o{ answer : "1:N"
+    question }o--o{ answer : "1:N"
+
+    %% Tabla: form
+    form {
+        int id PK
+        string key "Identificador semántico único"
+        string name
+        text description
+        jsonb scoring_expression "Fórmula de puntaje"
+        jsonb evaluation_expression "Regla de evaluación"
+    }
+
+    %% Tabla: question
+    question {
+        int id PK
+        int id_form FK
+        string key "Identificador dentro del formulario"
+        text text
+        string question_type
+        jsonb config
+        int position
+    }
+
+    %% Tabla: assignment
+    assignment {
+        int id PK
+        int id_form FK
+        int id_person "Destinatario lógico (puede ≠ responder)"
+        string status
+        timestamp created_at
+    }
+
+    %% Tabla: scheduled
+    scheduled {
+        int id PK
+        int id_assignment FK
+        int id_admin "Quién programó"
+        timestamp available_from
+        timestamp available_until
+        int time_limit_minutes
+        timestamp created_at
+    }
+
+    %% Tabla: response
+    response {
+        int id PK
+        int id_scheduled FK
+        int id_responder_user "Usuario que respondió"
+        timestamp started_at
+        timestamp completed_at
+        timestamp submitted_at
+        numeric score
+        string evaluation
+    }
+
+    %% Tabla: answer
+    answer {
+        int id PK
+        int id_response FK
+        int id_question FK
+        jsonb value "Ej: {type: number, value: 85}"
+    }
