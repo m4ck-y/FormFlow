@@ -37,8 +37,10 @@ erDiagram
         int id_form FK "Formulario asignado"
         int id_person "Usuario/persona destinatario"
         string status "Estado (active, cancelled, completed)"
-        jsonb scoring_result "Resultado de puntaje final"
-        jsonb evaluation_result "Resultado de evaluación final"
+        int n_questions_total "Total de preguntas del formulario"
+        int n_questions_answered "Preguntas respondidas en intento activo"
+        jsonb scoring_result "Resultado definitivo del cálculo de puntaje"
+        jsonb evaluation_result "Resultado definitivo de la evaluación cualitativa"
         timestamp created_at "Fecha de creación"
     }
     
@@ -59,9 +61,6 @@ erDiagram
         timestamp started_at "Inicio del intento"
         timestamp completed_at "Completado (guardado)"
         timestamp submitted_at "Enviado (definitivo)"
-        numeric score "Puntaje calculado"
-        string evaluation "Evaluación cualitativa"
-        string status "Estado del intento"
         int attempt_number "Número de intento"
     }
     

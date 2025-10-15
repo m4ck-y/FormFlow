@@ -61,28 +61,43 @@ COMMENT ON COLUMN question.config IS 'Configuración específica por tipo. Ejemp
 -- en diferentes momentos. Cada nueva asignación crea un registro independiente en esta tabla.
 -- Ejemplo: Juan puede tener asignación 1 (enero 2024), asignación 2 (febrero 2024) para el mismo formulario.
 -- 
--- RESULTADOS POR ASIGNACIÓN: Almacena el puntaje y evaluación final de la asignación,
--- basados en la respuesta más reciente o definitiva para esta asignación específica.
+-- RESULTADOS POR ASIGNACIÓN: Almacena los resultados definitivos de la asignación,
+-- basados en la mejor respuesta o la última respuesta enviada para esta asignación específica.
+-- 
+-- PROGRESO POR ASIGNACIÓN: También puede almacenar el progreso actual de la asignación
+-- para mostrar en interfaces de usuario sin necesidad de cálculos complejos.
+-- 
+-- CÁLCULO DE RESULTADOS: Los campos scoring_result y evaluation_result se calculan
+-- automáticamente cuando answered_questions = total_questions (formulario completado)
+-- y el estado del intento activo es 'completed' o 'submitted'.
 -- ===================================================================
 CREATE TABLE assignment (
     id SERIAL PRIMARY KEY,
     id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
     id_person INTEGER NOT NULL,
     status VARCHAR(50) NOT NULL DEFAULT 'active',
-    scoring_result JSONB,          -- Resultado del cálculo de puntaje para esta asignación
-    evaluation_result JSONB,       -- Resultado de la evaluación cualitativa para esta asignación
+    -- Progreso actual de la asignación
+    n_questions_total INTEGER,                    -- Total de preguntas del formulario
+    n_questions_answered INTEGER DEFAULT 0,       -- Preguntas respondidas en intento activo actual
+    -- Resultados definitivos de la asignación
+    scoring_result JSONB,                       -- Resultado definitivo del cálculo de puntaje
+    evaluation_result JSONB,                    -- Resultado definitivo de la evaluación cualitativa
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-COMMENT ON TABLE assignment IS 'Asignación lógica de un formulario a una persona o entidad (id_person). NO implica que esa persona responda directamente. Sirve para control de acceso, notificaciones y trazabilidad organizacional. GESTIÓN DE REASIGNACIONES: Esta tabla permite que un usuario tenga múltiples asignaciones del mismo formulario en diferentes momentos. Cada asignación es independiente y puede tener su propio historial de respuestas. RESULTADOS POR ASIGNACIÓN: Almacena los resultados finales (puntaje y evaluación) asociados a esta asignación específica, permitiendo comparar rendimiento entre diferentes asignaciones del mismo formulario a la misma persona.';
+COMMENT ON TABLE assignment IS 'Asignación lógica de un formulario a una persona o entidad (id_person). NO implica que esa persona responda directamente. Sirve para control de acceso, notificaciones y trazabilidad organizacional. GESTIÓN DE REASIGNACIONES: Esta tabla permite que un usuario tenga múltiples asignaciones del mismo formulario en diferentes momentos. Cada asignación es independiente y puede tener su propio historial de respuestas. RESULTADOS POR ASIGNACIÓN: Almacena los resultados definitivos (puntaje y evaluación) asociados a esta asignación específica, permitiendo comparar rendimiento entre diferentes asignaciones del mismo formulario a la misma persona. PROGRESO: También almacena el progreso actual para optimizar consultas de interfaces de usuario.';
 
 COMMENT ON COLUMN assignment.id_person IS 'ID de la persona, estudiante, empleado o entidad a quien se le "asigna" el formulario. Puede ser distinto del usuario que responde (ver response.id_responder_user). Ej: un alumno (id_person=123) recibe una evaluación, pero su tutor (id_responder_user=456) la completa.';
 
 COMMENT ON COLUMN assignment.status IS 'Estado de la asignación: "active", "cancelled", "completed", etc. Útil para gestionar flujos sin eliminar registros. En caso de reasignaciones, las asignaciones anteriores pueden mantenerse con status "completed" o "cancelled" para mantener historial.';
 
-COMMENT ON COLUMN assignment.scoring_result IS 'Resultado del cálculo de puntaje para esta asignación específica. Almacena el resultado final del scoring_expression aplicado a la respuesta definitiva de esta asignación. Ejemplo: {"raw_score": 85, "weighted_score": 87.5, "calculation_details": {...}}.';
+COMMENT ON COLUMN assignment.n_questions_total IS 'Total de preguntas del formulario asignado. Se calcula al crear la asignación y se usa para calcular progreso.';
 
-COMMENT ON COLUMN assignment.evaluation_result IS 'Resultado de la evaluación cualitativa para esta asignación específica. Almacena la clasificación final basada en evaluation_expression. Ejemplo: {"category": "aprobado", "level": "alto", "description": "Excelente desempeño", "thresholds": {...}}.';
+COMMENT ON COLUMN assignment.n_questions_answered IS 'Cantidad de preguntas respondidas en el intento activo actual. Se actualiza en tiempo real a medida que el usuario responde preguntas. Permite mostrar progreso sin cálculos complejos.';
+
+COMMENT ON COLUMN assignment.scoring_result IS 'Resultado definitivo del cálculo de puntaje para esta asignación. Se calcula automáticamente cuando n_questions_answered = n_questions_total (formulario completado) y el estado del intento activo es "completed" o "submitted". Contiene el puntaje final y detalles de cálculo basados en la mejor respuesta o la última respuesta enviada. Ejemplo: {"final_score": 85, "calculation_method": "best_score", "details": {"best_score": 85, "last_score": 70, "attempts": 3}, "calculation_timestamp": "2024-01-15T10:30:00Z"}';
+
+COMMENT ON COLUMN assignment.evaluation_result IS 'Resultado definitivo de la evaluación cualitativa para esta asignación. Se calcula automáticamente cuando n_questions_answered = n_questions_total (formulario completado) y el estado del intento activo es "completed" o "submitted". Contiene la clasificación final y detalles basados en scoring_result. Ejemplo: {"category": "aprobado", "level": "alto", "description": "Excelente desempeño", "based_on": "best_score", "thresholds": {"min": 70, "max": 100}, "evaluation_timestamp": "2024-01-15T10:30:00Z"}';
 
 -- ===================================================================
 -- TABLA: scheduled
@@ -132,9 +147,6 @@ CREATE TABLE response (
     started_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     completed_at TIMESTAMP,
     submitted_at TIMESTAMP,
-    score NUMERIC,
-    evaluation TEXT,
-    status VARCHAR(20) DEFAULT 'active',  -- Nuevo campo para manejar reintentos
     attempt_number INTEGER DEFAULT 1,    -- Número de intento para el mismo scheduled
     CHECK (completed_at IS NULL OR started_at <= completed_at),
     CHECK (submitted_at IS NULL OR (completed_at IS NOT NULL AND completed_at <= submitted_at))
@@ -149,10 +161,6 @@ COMMENT ON COLUMN response.started_at IS 'Momento en que el usuario abrió el fo
 COMMENT ON COLUMN response.completed_at IS 'Momento en que el usuario marcó el formulario como "completo" (puede guardar progreso sin enviar).';
 
 COMMENT ON COLUMN response.submitted_at IS 'Momento en que el usuario envió oficialmente el formulario. Solo entonces se considera válido para cálculo de resultados.';
-
-COMMENT ON COLUMN response.score IS 'Puntaje numérico calculado tras procesar las respuestas usando form.scoring_expression. Se almacena para evitar recálculos y garantizar consistencia histórica.';
-
-COMMENT ON COLUMN response.evaluation IS 'Clasificación cualitativa derivada del puntaje, usando form.evaluation_expression (ej. "aprobado", "nivel_básico").';
 
 COMMENT ON COLUMN response.status IS 'Estado del intento: "active" (en progreso), "completed" (completado pero no enviado), "submitted" (enviado), "abandoned" (abandonado). Permite distinguir entre intentos activos e intentos anteriores.';
 
