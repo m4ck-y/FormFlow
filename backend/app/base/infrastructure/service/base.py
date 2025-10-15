@@ -105,7 +105,7 @@ class BaseLayerService(Generic[TCreateAPISchema, TItemSchema, TDetailSchema, TUp
             return self.Update(data, db)
 
         self.api_router.post("", response_model=int)(Create)
-        self.api_router.get("/list", response_model=List[self.schema_item])(self.List)
+        self.api_router.get("", response_model=List[self.schema_item])(self.List)
         self.api_router.get("/{id}", response_model=self.schema_detail)(self.Get)
         self.api_router.put("", response_model=bool)(Update)
         self.api_router.delete("/{id}", response_model=bool)(self.Delete)

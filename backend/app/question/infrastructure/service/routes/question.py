@@ -8,7 +8,7 @@ from app.question.domain.schemas.question import (
 from app.base.application.base import BaseLayerApplication
 from app.base.infrastructure.service.base import BaseLayerService
 
-ROUTE_NAME = "question"
+ROUTE_NAME = "questions"
 
 class ServiceQuestion(BaseLayerService[C, I, E, U]):
     def __init__(self, router: APIRouter, app_layer: BaseLayerApplication, route_parent: str = None):

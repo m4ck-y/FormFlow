@@ -8,7 +8,7 @@ from app.form.domain.schemas.category import (
 from app.base.application.base import BaseLayerApplication
 from app.base.infrastructure.service.base import BaseLayerService
 
-ROUTE_NAME = "category"
+ROUTE_NAME = "categories"
 
 class ServiceCategory(BaseLayerService[C, I, E, U]):
     def __init__(self, router: APIRouter, app_layer: BaseLayerApplication, route_parent: str = None):

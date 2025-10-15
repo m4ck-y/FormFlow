@@ -8,7 +8,7 @@ from app.section.domain.schemas.section import (
 from app.base.application.base import BaseLayerApplication
 from app.base.infrastructure.service.base import BaseLayerService
 
-ROUTE_NAME = "section"
+ROUTE_NAME = "sections"
 
 class ServiceSection(BaseLayerService[C, I, E, U]):
     def __init__(self, router: APIRouter, app_layer: BaseLayerApplication, route_parent: str = None):
