@@ -1,0 +1,1 @@
+# Service infrastructure for Assignment module

@@ -1,7 +1,9 @@
 from app.utils.database.table_name import TableName
 from app.form.infrastructure.database.schema import SchemaForm
+
 class SchemaAssignment:
-    NAME = SchemaForm.NAME
+    """Esquemas de base de datos para el módulo Assignment."""
+    NAME = SchemaForm.NAME  # Reutiliza el nombre del esquema del formulario
 
     #1
     TBL_RESPONSE = TableName(NAME, "response")
@@ -14,4 +16,3 @@ class SchemaAssignment:
 
     #3
     TBL_RESPONSES_SCHEDULED = TableName(NAME, "responses_scheduled")
-

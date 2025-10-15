@@ -9,7 +9,7 @@ from app.question.domain.schemas.question import (
 )
 from app.question.domain.schemas.questions_form import SchemaCreateDBQuestionsForm
 
-class IRepositoryQuestion(IBaseRepository[C,I,E,C,U], ABC):
+class IRepositoryQuestion(IBaseRepository[C,I,E,U], ABC):
     
     @abstractmethod
     def CreateWithForm(self, entity: SchemaCreateDBQuestionsForm, db: TSession) -> int:

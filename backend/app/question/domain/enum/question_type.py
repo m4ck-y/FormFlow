@@ -1,5 +1,5 @@
 from enum import Enum
-class EQuestionType(Enum):
+class EQuestionType(str, Enum):
     TEXT = "TEXT" # input text
     NUMBER = "NUMBER" # input number
     TEXT_LONG = "TEXT_LONG" # textarea
