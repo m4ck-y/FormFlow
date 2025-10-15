@@ -56,25 +56,41 @@ COMMENT ON COLUMN question.config IS 'Configuración específica por tipo. Ejemp
 --   • Un tutor responde por un estudiante.
 --   • Un gerente asigna una autoevaluación a su equipo (pero cada uno responde por sí mismo).
 --   • Un sistema asigna a un grupo, y luego un representante responde.
+-- 
+-- GESTIÓN DE REASIGNACIONES: Un usuario puede tener múltiples asignaciones al mismo formulario
+-- en diferentes momentos. Cada nueva asignación crea un registro independiente en esta tabla.
+-- Ejemplo: Juan puede tener asignación 1 (enero 2024), asignación 2 (febrero 2024) para el mismo formulario.
+-- 
+-- RESULTADOS POR ASIGNACIÓN: Almacena el puntaje y evaluación final de la asignación,
+-- basados en la respuesta más reciente o definitiva para esta asignación específica.
 -- ===================================================================
 CREATE TABLE assignment (
     id SERIAL PRIMARY KEY,
     id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
     id_person INTEGER NOT NULL,
     status VARCHAR(50) NOT NULL DEFAULT 'active',
+    scoring_result JSONB,          -- Resultado del cálculo de puntaje para esta asignación
+    evaluation_result JSONB,       -- Resultado de la evaluación cualitativa para esta asignación
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-COMMENT ON TABLE assignment IS 'Asignación lógica de un formulario a una persona o entidad (id_person). NO implica que esa persona responda directamente. Sirve para control de acceso, notificaciones y trazabilidad organizacional.';
+COMMENT ON TABLE assignment IS 'Asignación lógica de un formulario a una persona o entidad (id_person). NO implica que esa persona responda directamente. Sirve para control de acceso, notificaciones y trazabilidad organizacional. GESTIÓN DE REASIGNACIONES: Esta tabla permite que un usuario tenga múltiples asignaciones del mismo formulario en diferentes momentos. Cada asignación es independiente y puede tener su propio historial de respuestas. RESULTADOS POR ASIGNACIÓN: Almacena los resultados finales (puntaje y evaluación) asociados a esta asignación específica, permitiendo comparar rendimiento entre diferentes asignaciones del mismo formulario a la misma persona.';
 
 COMMENT ON COLUMN assignment.id_person IS 'ID de la persona, estudiante, empleado o entidad a quien se le "asigna" el formulario. Puede ser distinto del usuario que responde (ver response.id_responder_user). Ej: un alumno (id_person=123) recibe una evaluación, pero su tutor (id_responder_user=456) la completa.';
 
-COMMENT ON COLUMN assignment.status IS 'Estado de la asignación: "active", "cancelled", "completed", etc. Útil para gestionar flujos sin eliminar registros.';
+COMMENT ON COLUMN assignment.status IS 'Estado de la asignación: "active", "cancelled", "completed", etc. Útil para gestionar flujos sin eliminar registros. En caso de reasignaciones, las asignaciones anteriores pueden mantenerse con status "completed" o "cancelled" para mantener historial.';
+
+COMMENT ON COLUMN assignment.scoring_result IS 'Resultado del cálculo de puntaje para esta asignación específica. Almacena el resultado final del scoring_expression aplicado a la respuesta definitiva de esta asignación. Ejemplo: {"raw_score": 85, "weighted_score": 87.5, "calculation_details": {...}}.';
+
+COMMENT ON COLUMN assignment.evaluation_result IS 'Resultado de la evaluación cualitativa para esta asignación específica. Almacena la clasificación final basada en evaluation_expression. Ejemplo: {"category": "aprobado", "level": "alto", "description": "Excelente desempeño", "thresholds": {...}}.';
 
 -- ===================================================================
 -- TABLA: scheduled
 -- Define cuándo y por cuánto tiempo está disponible una asignación para ser respondida.
 -- Cada programación permite uno o más intentos (response).
+-- 
+-- RELACIÓN CON REASIGNACIONES: Cada assignment puede tener uno o más scheduled, permitiendo
+-- múltiples ventanas de tiempo para responder el mismo formulario asignado.
 -- ===================================================================
 CREATE TABLE scheduled (
     id SERIAL PRIMARY KEY,
@@ -88,7 +104,7 @@ CREATE TABLE scheduled (
     CHECK (time_limit_minutes IS NULL OR time_limit_minutes > 0)
 );
 
-COMMENT ON TABLE scheduled IS 'Programación de la disponibilidad de una asignación. Define la ventana de tiempo en la que se puede iniciar una respuesta y el límite de duración por intento.';
+COMMENT ON TABLE scheduled IS 'Programación de la disponibilidad de una asignación. Define la ventana de tiempo en la que se puede iniciar una respuesta y el límite de duración por intento. GESTIÓN DE REASIGNACIONES: Un assignment puede tener múltiples scheduled, permitiendo reprogramar la disponibilidad del formulario para la misma persona.';
 
 COMMENT ON COLUMN scheduled.id_admin IS 'ID del administrador o sistema que programó esta disponibilidad. Útil para auditoría.';
 
@@ -98,6 +114,16 @@ COMMENT ON COLUMN scheduled.time_limit_minutes IS 'Tiempo máximo permitido desd
 -- TABLA: response
 -- Representa un intento concreto de responder un formulario programado.
 -- Aquí se almacenan los metadatos del intento y los resultados calculados.
+-- 
+-- GESTIÓN DE REINTENTOS: Cada fila representa un intento independiente de completar
+-- el formulario. Un scheduled puede tener múltiples responses (reintentos).
+-- Ejemplo: Un usuario puede tener intento 1 (abandonado), intento 2 (enviado), intento 3 (en progreso).
+-- 
+-- GESTIÓN DE REASIGNACIONES: Al reasignar el mismo formulario, se crean nuevas responses
+-- asociadas a la nueva asignación (nuevo scheduled), permitiendo historial completo.
+-- 
+-- RELACIÓN CON RESULTADOS: Los resultados de cada intento se almacenan aquí, y el assignment
+-- puede actualizar sus resultados finales basados en la respuesta definitiva de esta asignación.
 -- ===================================================================
 CREATE TABLE response (
     id SERIAL PRIMARY KEY,
@@ -108,11 +134,13 @@ CREATE TABLE response (
     submitted_at TIMESTAMP,
     score NUMERIC,
     evaluation TEXT,
+    status VARCHAR(20) DEFAULT 'active',  -- Nuevo campo para manejar reintentos
+    attempt_number INTEGER DEFAULT 1,    -- Número de intento para el mismo scheduled
     CHECK (completed_at IS NULL OR started_at <= completed_at),
     CHECK (submitted_at IS NULL OR (completed_at IS NOT NULL AND completed_at <= submitted_at))
 );
 
-COMMENT ON TABLE response IS 'Intento individual de completar un formulario programado. Puede haber múltiples intentos por scheduled (ej. reintentos permitidos).';
+COMMENT ON TABLE response IS 'Intento individual de completar un formulario programado. GESTIÓN DE REINTENTOS: Cada fila representa un intento independiente. Pueden existir múltiples intentos por scheduled (reintentos). GESTIÓN DE REASIGNACIONES: Al reasignar el mismo formulario, se crean nuevas responses asociadas a la nueva programación, manteniendo historial completo. RELACIÓN CON RESULTADOS: Los resultados de cada intento se almacenan aquí y pueden usarse para actualizar los resultados finales en la tabla assignment.';
 
 COMMENT ON COLUMN response.id_responder_user IS 'ID del usuario que REALMENTE completó y envió el formulario. Puede ser distinto de assignment.id_person (ej. tutor, representante, delegado).';
 
@@ -126,10 +154,17 @@ COMMENT ON COLUMN response.score IS 'Puntaje numérico calculado tras procesar l
 
 COMMENT ON COLUMN response.evaluation IS 'Clasificación cualitativa derivada del puntaje, usando form.evaluation_expression (ej. "aprobado", "nivel_básico").';
 
+COMMENT ON COLUMN response.status IS 'Estado del intento: "active" (en progreso), "completed" (completado pero no enviado), "submitted" (enviado), "abandoned" (abandonado). Permite distinguir entre intentos activos e intentos anteriores.';
+
+COMMENT ON COLUMN response.attempt_number IS 'Número de intento para el mismo scheduled. Permite identificar si es el primer intento, segundo intento, etc., facilitando el control de reintentos.';
+
 -- ===================================================================
 -- TABLA: answer
 -- Almacena la respuesta a una pregunta específica dentro de un intento (response).
 -- El valor se guarda en JSONB para soportar múltiples tipos de datos.
+-- 
+-- RELACIÓN CON REINTENTOS: Las respuestas están asociadas a responses específicos,
+-- permitiendo que cada intento tenga sus propias respuestas independientes.
 -- ===================================================================
 CREATE TABLE answer (
     id SERIAL PRIMARY KEY,
@@ -139,7 +174,7 @@ CREATE TABLE answer (
     CHECK (value ? 'type' AND value ? 'value')
 );
 
-COMMENT ON TABLE answer IS 'Respuesta individual a una pregunta en un intento específico. El valor se normaliza en JSONB para flexibilidad.';
+COMMENT ON TABLE answer IS 'Respuesta individual a una pregunta en un intento específico. El valor se normaliza en JSONB para flexibilidad. GESTIÓN DE REINTENTOS: Las respuestas están asociadas a responses específicos, lo que permite que cada intento tenga sus propias respuestas independientes, facilitando el historial de respuestas por intento.';
 
 COMMENT ON COLUMN answer.value IS 'Estructura normalizada: {"type": "string|number|boolean|array", "value": ...}. Ejemplos:
   - Texto: {"type": "text", "value": "Muy satisfecho"}

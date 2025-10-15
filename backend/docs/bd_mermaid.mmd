@@ -1,69 +1,73 @@
 erDiagram
 
-    form ||--o{ question : "1:N"
-    form ||--o{ assignment : "1:N"
-    assignment ||--|| scheduled : "1:1"
-    scheduled ||--o{ response : "1:N"
-    response ||--o{ answer : "1:N"
-    question }o--o{ answer : "1:N"
+    %% Grupo: Plantilla
+    form ||--o{ question : "defines_questions"
+    form ||--o{ assignment : "assigned_to_users"
+    
+    %% Grupo: Asignación y Programación
+    assignment ||--|| scheduled : "has_one_scheduled"
+    scheduled ||--o{ response : "allows_multiple_attempts"
+    
+    %% Grupo: Respuesta
+    response ||--o{ answer : "contains_answers"
+    question ||--o{ answer : "answered_questions"
 
-    %% Tabla: form
+    %% Entidades detalladas
     form {
-        int id PK
-        string key "Identificador semántico único"
-        string name
-        text description
-        jsonb scoring_expression "Fórmula de puntaje"
+        int id PK "SERIAL"
+        string key UK "Identificador único semántico"
+        string name "Nombre legible del formulario"
+        text description "Descripción del propósito"
+        jsonb scoring_expression "Fórmula de cálculo de puntaje"
         jsonb evaluation_expression "Regla de evaluación"
     }
-
-    %% Tabla: question
+    
     question {
         int id PK
-        int id_form FK
-        string key "Identificador dentro del formulario"
-        text text
-        string question_type
-        jsonb config
-        int position
+        int id_form FK "Formulario al que pertenece"
+        string key "Identificador único por formulario"
+        text text "Texto de la pregunta"
+        string question_type "Tipo (text, number, single_choice, etc.)"
+        jsonb config "Configuración específica"
+        int position "Orden en el formulario"
     }
-
-    %% Tabla: assignment
+    
     assignment {
         int id PK
-        int id_form FK
-        int id_person "Destinatario lógico (puede ≠ responder)"
-        string status
-        timestamp created_at
+        int id_form FK "Formulario asignado"
+        int id_person "Usuario/persona destinatario"
+        string status "Estado (active, cancelled, completed)"
+        jsonb scoring_result "Resultado de puntaje final"
+        jsonb evaluation_result "Resultado de evaluación final"
+        timestamp created_at "Fecha de creación"
     }
-
-    %% Tabla: scheduled
+    
     scheduled {
         int id PK
-        int id_assignment FK
-        int id_admin "Quién programó"
-        timestamp available_from
-        timestamp available_until
-        int time_limit_minutes
-        timestamp created_at
+        int id_assignment FK "Asignación programada"
+        int id_admin "Administrador que programó"
+        timestamp available_from "Inicio de disponibilidad"
+        timestamp available_until "Fin de disponibilidad"
+        int time_limit_minutes "Límite de tiempo (opcional)"
+        timestamp created_at "Fecha de programación"
     }
-
-    %% Tabla: response
+    
     response {
         int id PK
-        int id_scheduled FK
+        int id_scheduled FK "Programación de respuesta"
         int id_responder_user "Usuario que respondió"
-        timestamp started_at
-        timestamp completed_at
-        timestamp submitted_at
-        numeric score
-        string evaluation
+        timestamp started_at "Inicio del intento"
+        timestamp completed_at "Completado (guardado)"
+        timestamp submitted_at "Enviado (definitivo)"
+        numeric score "Puntaje calculado"
+        string evaluation "Evaluación cualitativa"
+        string status "Estado del intento"
+        int attempt_number "Número de intento"
     }
-
-    %% Tabla: answer
+    
     answer {
         int id PK
-        int id_response FK
-        int id_question FK
-        jsonb value "Ej: {type: number, value: 85}"
+        int id_response FK "Respuesta perteneciente a"
+        int id_question FK "Pregunta respondida"
+        jsonb value "Valor de la respuesta"
     }
