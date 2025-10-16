@@ -13,16 +13,16 @@ class SchemaBaseAssignment(BaseORMModel):
     id_form: int = Field(..., description="ID del formulario asignado", examples=[1])
     id_person: int = Field(..., description="ID de la persona a quien se asigna", examples=[123])
     status: EAssignmentStatus = Field(
-        EAssignmentStatus.ACTIVE, 
+        EAssignmentStatus.ENABLED,
         description="Estado de la asignación",
     )
     n_questions_total: Optional[int] = Field(
-        None, 
+        None,
         description="Total de preguntas del formulario",
         examples=[10]
     )
     n_questions_answered: int = Field(
-        0, 
+        0,
         description="Preguntas respondidas en intento activo",
         examples=[3]
     )
@@ -61,14 +61,14 @@ class SchemaCreateDBAssignment(SchemaBaseAssignment):
     Schema para inserción en BD - se adapta para la inserción en DB ya sea SQLite (text) o PostgreSQL (jsonb).
     Aquí es donde se hace la conversión dinámica según el motor de BD.
     """
-    
+
     @field_validator("scoring_result", "evaluation_result", mode='after')
     @classmethod
     def prepare_json_for_db(cls, v):
         """Convierte campos JSON según el motor de BD"""
         if v and isinstance(v, dict):
             from app.config.db import is_db_postgres
-            
+
             if not is_db_postgres():
                 # SQLite: convertir a JSON string
                 log_info("SQLite: Converting JSON field to string")
@@ -83,21 +83,21 @@ class SchemaCreateAPIAssignment(BaseCreateAPISchema, SchemaBaseAssignment):
     Schema para API - el frontend necesita ver la estructura del JSON.
     Las propiedades scoring_result y evaluation_result siempre serán dict que vienen desde el frontend.
     """
-    
+
     @model_validator(mode="before")
     def validate_assignment_data(cls, values):
         """Valida los datos de la asignación."""
         id_form = values.get("id_form")
         id_person = values.get("id_person")
-        
+
         if not id_form or id_form <= 0:
             raise ValueError("id_form debe ser un entero positivo")
-        
+
         if not id_person or id_person <= 0:
             raise ValueError("id_person debe ser un entero positivo")
-        
+
         return values
-    
+
     def to_db_schema(self) -> SchemaCreateDBAssignment:
         """
         Convierte el schema de API a schema de BD.
@@ -125,14 +125,14 @@ class SchemaDetailAssignment(SchemaItemAssignment):
     # Aquí se pueden agregar relaciones cuando se implementen
     # scheduled_sessions: List[SchemaDetailScheduled] = []
     # responses: List[SchemaDetailResponse] = []
-    
+
     @property
     def progress_percentage(self) -> float:
         """Calcula el porcentaje de progreso de la asignación."""
         if not self.n_questions_total or self.n_questions_total == 0:
             return 0.0
         return (self.n_questions_answered / self.n_questions_total) * 100
-    
+
     @property
     def is_completed(self) -> bool:
         """Verifica si la asignación está completada."""
