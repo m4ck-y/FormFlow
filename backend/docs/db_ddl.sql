@@ -1,4 +1,10 @@
 -- ===================================================================
+-- TIPOS DE ENUMERACIÓN
+-- ===================================================================
+-- Se crean tipos ENUM para los campos status
+CREATE TYPE assignment_status_type AS ENUM ('DISABLED', 'ENABLED', 'IN_PROGRESS', 'COMPLETED');
+
+-- ===================================================================
 -- TABLA: form
 -- Representa la plantilla inmutable de un cuestionario o formulario.
 -- Define su estructura lógica, pero NO almacena respuestas ni instancias.
@@ -66,14 +72,14 @@ COMMENT ON COLUMN question.config IS 'Configuración específica por tipo. Ejemp
 -- Ejemplo: Juan puede tener asignación 1 (enero 2024), asignación 2 (febrero 2024) para el mismo formulario.
 -- 
 -- RESULTADOS POR ASIGNACIÓN: Almacena los resultados definitivos de la asignación,
--- basados en el último intento completado (status = ''completed'').
+-- basados en el último intento completado (status = 'COMPLETED').
 -- 
 -- PROGRESO POR ASIGNACIÓN: También puede almacenar el progreso actual de la asignación
 -- para mostrar en interfaces de usuario sin necesidad de cálculos complejos.
 -- 
 -- CÁLCULO DE RESULTADOS: Los campos scoring_result y evaluation_result se calculan
 -- automáticamente cuando n_questions_answered = n_questions_total y el intento asociado
--- tiene status = ''completed''.
+-- tiene status = 'COMPLETED'.
 --
 -- IMPORTANTE: Esta tabla actúa como REGISTRO MAESTRO de participación usuario-formulario.
 -- Se crea tanto para flujos PROGRAMADOS (con scheduled) como para flujos DIRECTOS (por enlace público).
@@ -83,7 +89,7 @@ CREATE TABLE assignment (
     id SERIAL PRIMARY KEY,
     id_form INTEGER NOT NULL REFERENCES form(id) ON DELETE CASCADE,
     id_person INTEGER NOT NULL,
-    status VARCHAR(50) NOT NULL DEFAULT 'active',
+    status assignment_status_type NOT NULL DEFAULT 'ENABLED',
     -- Progreso actual de la asignación
     n_questions_total INTEGER,                    -- Total de preguntas del formulario
     n_questions_answered INTEGER DEFAULT 0,       -- Preguntas respondidas en intento activo actual
@@ -96,15 +102,15 @@ COMMENT ON TABLE assignment IS 'Asignación lógica de un formulario a una perso
 
 COMMENT ON COLUMN assignment.id_person IS 'ID de la persona, estudiante, empleado o entidad a quien se le "asigna" el formulario. Puede ser distinto del usuario que responde (ver response.id_responder_user). Ej: un alumno (id_person=123) recibe una evaluación, pero su tutor (id_responder_user=456) la completa.';
 
-COMMENT ON COLUMN assignment.status IS 'Estado de la asignación: "active", "cancelled", "completed", etc. Útil para gestionar flujos sin eliminar registros. En caso de reasignaciones, las asignaciones anteriores pueden mantenerse con status "completed" o "cancelled" para mantener historial.';
+COMMENT ON COLUMN assignment.status IS 'Estado de la asignación basado en el enum EAssignmentStatus: "DISABLED", "ENABLED", "IN_PROGRESS", "COMPLETED". Útil para gestionar flujos sin eliminar registros. En caso de reasignaciones, las asignaciones anteriores pueden mantenerse con status "COMPLETED" o "DISABLED" para mantener historial.';
 
 COMMENT ON COLUMN assignment.n_questions_total IS 'Total de preguntas del formulario asignado. Se calcula al crear la asignación y se usa para calcular progreso.';
 
 COMMENT ON COLUMN assignment.n_questions_answered IS 'Cantidad de preguntas respondidas en el intento activo actual. Se actualiza en tiempo real a medida que el usuario responde preguntas. Permite mostrar progreso sin cálculos complejos.';
 
-COMMENT ON COLUMN assignment.scoring_result IS 'Resultado definitivo del cálculo de puntaje para esta asignación. Se calcula automáticamente cuando n_questions_answered = n_questions_total y el intento asociado tiene status = ''completed''. Contiene el puntaje final basado en el último intento completado. Ejemplo: {"final_score": 85, "calculation_method": "last_completed", "calculation_timestamp": "2024-01-15T10:30:00Z"}';
+COMMENT ON COLUMN assignment.scoring_result IS 'Resultado definitivo del cálculo de puntaje para esta asignación. Se calcula automáticamente cuando n_questions_answered = n_questions_total y el intento asociado tiene status = ''COMPLETED''. Contiene el puntaje final basado en el último intento completado. Ejemplo: {"final_score": 85, "calculation_method": "last_completed", "calculation_timestamp": "2024-01-15T10:30:00Z"}';
 
-COMMENT ON COLUMN assignment.evaluation_result IS 'Resultado definitivo de la evaluación cualitativa para esta asignación. Se calcula automáticamente cuando n_questions_answered = n_questions_total y el intento asociado tiene status = ''completed''. Contiene la clasificación final basada en scoring_result del último intento completado. Ejemplo: {"category": "aprobado", "level": "alto", "description": "Excelente desempeño", "evaluation_timestamp": "2024-01-15T10:30:00Z"}';
+COMMENT ON COLUMN assignment.evaluation_result IS 'Resultado definitivo de la evaluación cualitativa para esta asignación. Se calcula automáticamente cuando n_questions_answered = n_questions_total y el intento asociado tiene status = ''COMPLETED''. Contiene la clasificación final basada en scoring_result del último intento completado. Ejemplo: {"category": "aprobado", "level": "alto", "description": "Excelente desempeño", "evaluation_timestamp": "2024-01-15T10:30:00Z"}';
 
 -- ===================================================================
 -- TABLA: scheduled
@@ -264,6 +270,94 @@ CREATE INDEX idx_form_direct_responses_response ON form_direct_responses (id_res
 CREATE INDEX idx_scheduled_responses_scheduled ON scheduled_responses (id_scheduled);
 CREATE INDEX idx_scheduled_responses_response ON scheduled_responses (id_response);
 
+-- Índices adicionales sugeridos
+CREATE INDEX idx_assignment_status_person ON assignment (status, id_person);
+CREATE INDEX idx_scheduled_time_window ON scheduled (available_from, available_until);
+CREATE INDEX idx_response_user_status ON response (id_responder_user, status);
+CREATE INDEX idx_response_submitted_at ON response (submitted_at);
+
+-- ===================================================================
+-- TRIGGERS PARA GARANTIZAR EXCLUSIÓN LÓGICA ENTRE FLOWS
+-- ===================================================================
+
+-- Trigger para evitar insertar en scheduled si la assignment ya está en form_direct_responses
+CREATE OR REPLACE FUNCTION check_assignment_scheduled_exclusivity_insert_scheduled()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM form_direct_responses fdr
+        WHERE fdr.id_assignment = NEW.id_assignment
+    ) THEN
+        RAISE EXCEPTION 'Cannot schedule an assignment (id_assignment=%): it is already linked to a direct response.', NEW.id_assignment;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trig_check_assignment_scheduled_insert
+    BEFORE INSERT ON scheduled
+    FOR EACH ROW EXECUTE FUNCTION check_assignment_scheduled_exclusivity_insert_scheduled();
+
+-- Trigger para evitar actualizar scheduled si la assignment ya está en form_direct_responses
+CREATE OR REPLACE FUNCTION check_assignment_scheduled_exclusivity_update_scheduled()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Solo se chequea si el id_assignment cambia
+    IF OLD.id_assignment IS DISTINCT FROM NEW.id_assignment THEN
+        IF EXISTS (
+            SELECT 1 FROM form_direct_responses fdr
+            WHERE fdr.id_assignment = NEW.id_assignment
+        ) THEN
+            RAISE EXCEPTION 'Cannot update scheduled assignment (id_assignment=%): it is already linked to a direct response.', NEW.id_assignment;
+        END IF;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trig_check_assignment_scheduled_update
+    BEFORE UPDATE ON scheduled
+    FOR EACH ROW EXECUTE FUNCTION check_assignment_scheduled_exclusivity_update_scheduled();
+
+-- Trigger para evitar insertar en form_direct_responses si la assignment ya tiene scheduled
+CREATE OR REPLACE FUNCTION check_assignment_direct_exclusivity_insert_fdr()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM scheduled s
+        WHERE s.id_assignment = NEW.id_assignment
+    ) THEN
+        RAISE EXCEPTION 'Cannot link assignment (id_assignment=%) to a direct response: it already has scheduled availability.', NEW.id_assignment;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trig_check_assignment_direct_insert
+    BEFORE INSERT ON form_direct_responses
+    FOR EACH ROW EXECUTE FUNCTION check_assignment_direct_exclusivity_insert_fdr();
+
+-- Trigger para evitar actualizar form_direct_responses si la assignment ya tiene scheduled
+CREATE OR REPLACE FUNCTION check_assignment_direct_exclusivity_update_fdr()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Solo se chequea si el id_assignment cambia
+    IF OLD.id_assignment IS DISTINCT FROM NEW.id_assignment THEN
+        IF EXISTS (
+            SELECT 1 FROM scheduled s
+            WHERE s.id_assignment = NEW.id_assignment
+        ) THEN
+            RAISE EXCEPTION 'Cannot update direct response link (id_assignment=%): the assignment already has scheduled availability.', NEW.id_assignment;
+        END IF;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trig_check_assignment_direct_update
+    BEFORE UPDATE ON form_direct_responses
+    FOR EACH ROW EXECUTE FUNCTION check_assignment_direct_exclusivity_update_fdr();
+
 -- ===================================================================
 -- NOTA PARA FUTURAS MEJORAS
 -- ===================================================================
@@ -293,8 +387,7 @@ Esto garantizaría inmutabilidad por versión y trazabilidad histórica.
 /*
 VALIDACIÓN DE INTEGRIDAD:
 
-Para garantizar que una assignment no sea usada en ambos flujos (directo y programado),
-se recomienda implementar triggers que verifiquen:
+Los triggers definidos anteriormente garantizan que una assignment no sea usada en ambos flujos (directo y programado):
 
 1. Si una assignment tiene filas en "scheduled", NO puede aparecer en "form_direct_responses".
 2. Si una assignment aparece en "form_direct_responses", NO puede tener filas en "scheduled".
