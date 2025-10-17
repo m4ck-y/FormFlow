@@ -2,6 +2,7 @@
 -- TABLA: form
 -- Representa la plantilla inmutable de un cuestionario o formulario.
 -- Define su estructura lógica, pero NO almacena respuestas ni instancias.
+-- Una vez marcado como "verified", se considera inmutable y no debe modificarse.
 -- ===================================================================
 CREATE TABLE form (
     id SERIAL PRIMARY KEY,
@@ -9,7 +10,8 @@ CREATE TABLE form (
     name VARCHAR(255) NOT NULL,
     description TEXT,
     scoring_expression JSONB,      -- Fórmula para calcular puntaje (ej. {"op": "sum", "fields": ["q1", "q2"]})
-    evaluation_expression JSONB    -- Regla para clasificar resultado (ej. {"if": [{"gte": ["score", 70]}, "aprobado", "reprobado"]})
+    evaluation_expression JSONB,   -- Regla para clasificar resultado (ej. {"if": [{"gte": ["score", 70]}, "aprobado", "reprobado"]})
+    verified BOOLEAN NOT NULL DEFAULT false  -- Indica si el formulario ha sido verificado y, por tanto, debe tratarse como inmutable
 );
 
 COMMENT ON TABLE form IS 'Plantilla inmutable de un formulario. Define preguntas (vía tabla question), y lógica de cálculo mediante expresiones en JSONB.';
@@ -23,6 +25,8 @@ COMMENT ON COLUMN form.description IS 'Descripción explicativa del propósito d
 COMMENT ON COLUMN form.scoring_expression IS 'Expresión en JSONB que define cómo se calcula el puntaje numérico a partir de las respuestas. Ejemplo: {"operation": "weighted_sum", "weights": {"q1": 0.3, "q2": 0.7}}. Se evalúa al procesar una respuesta.';
 
 COMMENT ON COLUMN form.evaluation_expression IS 'Expresión en JSONB que define cómo se interpreta el puntaje para generar una clasificación cualitativa. Ejemplo: {"if": [{"gte": ["score", 80]}, "excelente", {"gte": ["score", 60]}, "suficiente", "insuficiente"]}.';
+
+COMMENT ON COLUMN form.verified IS 'Indica si el formulario ha sido verificado y, por tanto, debe tratarse como inmutable. Una vez en true, no se deben permitir modificaciones en esta fila ni en sus preguntas asociadas (tabla question). La aplicación debe bloquear actualizaciones cuando verified = true.';
 
 -- ===================================================================
 -- TABLA: question
