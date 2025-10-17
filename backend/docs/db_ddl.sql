@@ -70,6 +70,10 @@ COMMENT ON COLUMN question.config IS 'Configuración específica por tipo. Ejemp
 -- CÁLCULO DE RESULTADOS: Los campos scoring_result y evaluation_result se calculan
 -- automáticamente cuando n_questions_answered = n_questions_total y el intento asociado
 -- tiene status = ''completed''.
+--
+-- IMPORTANTE: Esta tabla actúa como REGISTRO MAESTRO de participación usuario-formulario.
+-- Se crea tanto para flujos PROGRAMADOS (con scheduled) como para flujos DIRECTOS (por enlace público).
+-- Esto permite consultar fácilmente: "¿qué formularios ha contestado X?" en un solo lugar.
 -- ===================================================================
 CREATE TABLE assignment (
     id SERIAL PRIMARY KEY,
@@ -105,6 +109,9 @@ COMMENT ON COLUMN assignment.evaluation_result IS 'Resultado definitivo de la ev
 -- 
 -- RELACIÓN CON REASIGNACIONES: Cada assignment puede tener uno o más scheduled, permitiendo
 -- múltiples ventanas de tiempo para responder el mismo formulario asignado.
+--
+-- NOTA: Solo las asignaciones de tipo "programado" tienen filas en esta tabla.
+-- Las asignaciones de tipo "directo" (por enlace) NO tienen scheduled.
 -- ===================================================================
 CREATE TABLE scheduled (
     id SERIAL PRIMARY KEY,
@@ -125,33 +132,32 @@ COMMENT ON COLUMN scheduled.time_limit_minutes IS 'Tiempo máximo permitido desd
 
 -- ===================================================================
 -- TABLA: response
--- Representa un intento concreto de responder un formulario programado.
--- Aquí se almacenan los metadatos del intento y los resultados calculados.
+-- Representa un intento concreto de responder un formulario.
 -- 
--- GESTIÓN DE REINTENTOS: Cada fila representa un intento independiente de completar
--- el formulario. Un scheduled puede tener múltiples responses (reintentos).
--- Ejemplo: Un usuario puede tener intento 1 (abandonado), intento 2 (enviado), intento 3 (en progreso).
+-- DISEÑO ACTUAL:
+--   - Esta tabla es NEUTRA: no sabe si la respuesta es directa o programada.
+--   - La vinculación con el origen (directo o programado) se gestiona mediante:
+--       • form_direct_responses → para respuestas directas
+--       • scheduled_responses   → para respuestas programadas
 -- 
--- GESTIÓN DE REASIGNACIONES: Al reasignar el mismo formulario, se crean nuevas responses
--- asociadas a la nueva asignación (nuevo scheduled), permitiendo historial completo.
--- 
--- RELACIÓN CON RESULTADOS: Los resultados de cada intento se almacenan aquí, y el assignment
--- actualiza sus resultados finales basados en el último intento con status = ''completed''.
+-- Esto permite:
+--   - Reutilizar toda la lógica de respuesta (metadatos, estado, fechas) en ambos flujos.
+--   - Evitar duplicación de estructuras.
+--   - Consultar fácilmente "todas las respuestas de un usuario", sin importar el origen.
 -- ===================================================================
 CREATE TABLE response (
     id SERIAL PRIMARY KEY,
-    id_scheduled INTEGER NOT NULL REFERENCES scheduled(id) ON DELETE CASCADE,
     id_responder_user INTEGER NOT NULL,
     started_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     completed_at TIMESTAMP,
     submitted_at TIMESTAMP,
     status VARCHAR(50) NOT NULL DEFAULT 'active',
-    attempt_number INTEGER DEFAULT 1,    -- Número de intento para el mismo scheduled
+    attempt_number INTEGER DEFAULT 1,    -- Número de intento (por contexto: directo o programado)
     CHECK (completed_at IS NULL OR started_at <= completed_at),
     CHECK (submitted_at IS NULL OR (completed_at IS NOT NULL AND completed_at <= submitted_at))
 );
 
-COMMENT ON TABLE response IS 'Intento individual de completar un formulario programado. GESTIÓN DE REINTENTOS: Cada fila representa un intento independiente. Pueden existir múltiples intentos por scheduled (reintentos). GESTIÓN DE REASIGNACIONES: Al reasignar el mismo formulario, se crean nuevas responses asociadas a la nueva programación, manteniendo historial completo. RELACIÓN CON RESULTADOS: Los resultados de cada intento se almacenan aquí y pueden usarse para actualizar los resultados finales en la tabla assignment.';
+COMMENT ON TABLE response IS 'Intento individual de completar un formulario, sin importar su origen (directo o programado). La vinculación con el contexto (assignment/scheduled) se gestiona mediante las tablas intermedias form_direct_responses y scheduled_responses. Esto permite un modelo unificado y extensible.';
 
 COMMENT ON COLUMN response.id_responder_user IS 'ID del usuario que REALMENTE completó y envió el formulario. Puede ser distinto de assignment.id_person (ej. tutor, representante, delegado).';
 
@@ -161,9 +167,9 @@ COMMENT ON COLUMN response.completed_at IS 'Momento en que el usuario marcó el 
 
 COMMENT ON COLUMN response.submitted_at IS 'Momento en que el usuario envió oficialmente el formulario. Solo entonces se considera válido para cálculo de resultados.';
 
-COMMENT ON COLUMN response.status IS 'Estado del intento: "active" (en progreso), "completed" (completado pero no enviado), "submitted" (enviado), "abandoned" (abandonado). Permite distinguir entre intentos activos e intentos anteriores.';
+COMMENT ON COLUMN response.status IS 'Estado del intento: "active" (en progreso), "completed" (completado pero no enviado), "submitted" (enviado), "abandoned" (abandonado).';
 
-COMMENT ON COLUMN response.attempt_number IS 'Número de intento para el mismo scheduled. Permite identificar si es el primer intento, segundo intento, etc., facilitando el control de reintentos.';
+COMMENT ON COLUMN response.attempt_number IS 'Número de intento dentro de su contexto (directo o programado). En flujos directos, normalmente será 1. En flujos programados, permite reintentos.';
 
 -- ===================================================================
 -- TABLA: answer
@@ -194,13 +200,65 @@ COMMENT ON COLUMN answer.value IS 'Estructura normalizada: {"type": "string|numb
   ⚠️ La coherencia entre el tipo de respuesta y el question_type debe validarse en la capa de aplicación (ej. con Pydantic).';
 
 -- ===================================================================
+-- TABLA: form_direct_responses
+-- Vincula una ASSIGNMENT de tipo "directo" (sin programación) con su respuesta.
+-- Se usa cuando un usuario accede al formulario mediante un enlace público (estilo Google Forms).
+-- 
+-- RESTRICCIÓN CLAVE:
+--   - La assignment referenciada NO debe tener ninguna fila en "scheduled".
+--   - Cada assignment directa tiene exactamente UNA respuesta (1:1).
+-- 
+-- CASO DE USO:
+--   - Usuario entra a /form/abc123 → se crea assignment (id_person = X).
+--   - Al enviar, se crea response Y, y se registra (X, Y) aquí.
+-- ===================================================================
+CREATE TABLE form_direct_responses (
+    id_assignment INTEGER NOT NULL REFERENCES assignment(id) ON DELETE CASCADE,
+    id_response INTEGER NOT NULL REFERENCES response(id) ON DELETE CASCADE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id_assignment, id_response)
+);
+
+COMMENT ON TABLE form_direct_responses IS 'Asociación 1:1 entre una asignación de tipo "directo" (sin programación) y su única respuesta. Permite soportar flujos estilo Google Forms manteniendo assignment como registro maestro de participación.';
+
+COMMENT ON COLUMN form_direct_responses.id_assignment IS 'Asignación creada automáticamente al acceder al formulario por enlace público. Debe NO tener filas en la tabla "scheduled".';
+COMMENT ON COLUMN form_direct_responses.id_response IS 'Respuesta concreta realizada sin programación previa.';
+
+-- ===================================================================
+-- TABLA: scheduled_responses
+-- Vincula explícitamente una programación (scheduled) con una respuesta (response).
+-- Permite múltiples respuestas por scheduled (reintentos).
+-- 
+-- CASO DE USO:
+--   - Un administrador programa un formulario (scheduled S para assignment A).
+--   - El usuario responde 2 veces → se crean responses R1 y R2.
+--   - Se registran (S, R1) y (S, R2) en esta tabla.
+-- ===================================================================
+CREATE TABLE scheduled_responses (
+    id_scheduled INTEGER NOT NULL REFERENCES scheduled(id) ON DELETE CASCADE,
+    id_response INTEGER NOT NULL REFERENCES response(id) ON DELETE CASCADE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id_scheduled, id_response)
+);
+
+COMMENT ON TABLE scheduled_responses IS 'Vinculación entre una programación (scheduled) y un intento de respuesta. Soporta múltiples intentos (reintentos) por programación.';
+
+COMMENT ON COLUMN scheduled_responses.id_scheduled IS 'Programación que habilitó esta respuesta.';
+COMMENT ON COLUMN scheduled_responses.id_response IS 'Intento concreto de respuesta asociado a la programación.';
+
+-- ===================================================================
 -- ÍNDICES PARA RENDIMIENTO
 -- ===================================================================
 CREATE INDEX idx_assignment_form_person ON assignment (id_form, id_person);
-CREATE INDEX idx_response_scheduled ON response (id_scheduled);
 CREATE INDEX idx_answer_response ON answer (id_response);
 CREATE INDEX idx_question_form ON question (id_form);
 CREATE INDEX idx_scheduled_assignment ON scheduled (id_assignment);
+
+-- Índices para las nuevas tablas de relación
+CREATE INDEX idx_form_direct_responses_assignment ON form_direct_responses (id_assignment);
+CREATE INDEX idx_form_direct_responses_response ON form_direct_responses (id_response);
+CREATE INDEX idx_scheduled_responses_scheduled ON scheduled_responses (id_scheduled);
+CREATE INDEX idx_scheduled_responses_response ON scheduled_responses (id_response);
 
 -- ===================================================================
 -- NOTA PARA FUTURAS MEJORAS
@@ -226,4 +284,16 @@ CREATE TABLE form_version (
 --   question.id_form → question.id_form_version
 
 Esto garantizaría inmutabilidad por versión y trazabilidad histórica.
+*/
+
+/*
+VALIDACIÓN DE INTEGRIDAD:
+
+Para garantizar que una assignment no sea usada en ambos flujos (directo y programado),
+se recomienda implementar triggers que verifiquen:
+
+1. Si una assignment tiene filas en "scheduled", NO puede aparecer en "form_direct_responses".
+2. Si una assignment aparece en "form_direct_responses", NO puede tener filas en "scheduled".
+
+Esto evita inconsistencias lógicas en el modelo.
 */
