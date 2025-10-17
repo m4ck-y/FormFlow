@@ -1,18 +1,23 @@
 erDiagram
 
-    %% Grupo: Plantilla
-    form ||--o{ question : "defines_questions"
-    form ||--o{ assignment : "assigned_to_users"
-    
-    %% Grupo: Asignación y Programación
-    assignment ||--|| scheduled : "has_one_scheduled"
-    scheduled ||--o{ response : "allows_multiple_attempts"
-    
-    %% Grupo: Respuesta
-    response ||--o{ answer : "contains_answers"
-    question ||--o{ answer : "answered_questions"
+    %% === Plantilla base ===
+    form ||--o{ assignment : "assigned_to"
 
-    %% Entidades detalladas
+    %% === Asignación → programación o enlace directo ===
+    assignment ||--o{ scheduled : "has_scheduled_windows"
+    assignment ||--o{ form_direct_responses : "has_direct_response"
+
+    %% === Programación → respuestas (vía tabla intermedia) ===
+    scheduled ||--o{ scheduled_responses : "allows"
+    scheduled_responses }o--|| response : "to_response"
+
+    %% === Enlace directo → respuestas (vía tabla intermedia) ===
+    form_direct_responses }o--|| response : "to_response"
+
+    %% === Respuestas contienen respuestas individuales (answer) ===
+    response ||--o{ answer : "contains"
+
+    %% === Entidades detalladas ===
     form {
         int id PK "SERIAL"
         string key UK "Identificador único semántico"
@@ -20,23 +25,14 @@ erDiagram
         text description "Descripción del propósito"
         jsonb scoring_expression "Fórmula de cálculo de puntaje"
         jsonb evaluation_expression "Regla de evaluación"
-    }
-    
-    question {
-        int id PK
-        int id_form FK "Formulario al que pertenece"
-        string key "Identificador único por formulario"
-        text text "Texto de la pregunta"
-        string question_type "Tipo (text, number, single_choice, etc.)"
-        jsonb config "Configuración específica"
-        int position "Orden en el formulario"
+        bool verified "Indica si el formulario es inmutable"
     }
     
     assignment {
         int id PK
         int id_form FK "Formulario asignado"
         int id_person "Usuario/persona destinatario"
-        string status "Estado (active, cancelled, completed)"
+        string status "Estado (DISABLED, ENABLED, IN_PROGRESS, COMPLETED)"
         int n_questions_total "Total de preguntas del formulario"
         int n_questions_answered "Preguntas respondidas en intento activo"
         jsonb scoring_result "Resultado definitivo del cálculo de puntaje"
@@ -54,11 +50,11 @@ erDiagram
     
     response {
         int id PK
-        int id_scheduled FK "Programación de respuesta"
         int id_responder_user "Usuario que respondió"
         timestamp started_at "Inicio del intento"
         timestamp completed_at "Completado (guardado)"
         timestamp submitted_at "Enviado (definitivo)"
+        string status "Estado del intento (active, completed, submitted, abandoned)"
         int attempt_number "Número de intento"
     }
     
@@ -67,4 +63,14 @@ erDiagram
         int id_response FK "Respuesta perteneciente a"
         int id_question FK "Pregunta respondida"
         jsonb value "Valor de la respuesta"
+    }
+
+    form_direct_responses {
+        int id_assignment PK,FK "Asignación de tipo directo"
+        int id_response PK,FK "Respuesta asociada"
+    }
+
+    scheduled_responses {
+        int id_scheduled PK,FK "Programación que habilitó la respuesta"
+        int id_response PK,FK "Intento de respuesta"
     }
