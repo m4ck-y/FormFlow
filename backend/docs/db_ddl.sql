@@ -62,14 +62,14 @@ COMMENT ON COLUMN question.config IS 'Configuración específica por tipo. Ejemp
 -- Ejemplo: Juan puede tener asignación 1 (enero 2024), asignación 2 (febrero 2024) para el mismo formulario.
 -- 
 -- RESULTADOS POR ASIGNACIÓN: Almacena los resultados definitivos de la asignación,
--- basados en la mejor respuesta o la última respuesta enviada para esta asignación específica.
+-- basados en el último intento completado (status = ''completed'').
 -- 
 -- PROGRESO POR ASIGNACIÓN: También puede almacenar el progreso actual de la asignación
 -- para mostrar en interfaces de usuario sin necesidad de cálculos complejos.
 -- 
 -- CÁLCULO DE RESULTADOS: Los campos scoring_result y evaluation_result se calculan
--- automáticamente cuando answered_questions = total_questions (formulario completado)
--- y el estado del intento activo es 'completed' o 'submitted'.
+-- automáticamente cuando n_questions_answered = n_questions_total y el intento asociado
+-- tiene status = ''completed''.
 -- ===================================================================
 CREATE TABLE assignment (
     id SERIAL PRIMARY KEY,
@@ -81,8 +81,7 @@ CREATE TABLE assignment (
     n_questions_answered INTEGER DEFAULT 0,       -- Preguntas respondidas en intento activo actual
     -- Resultados definitivos de la asignación
     scoring_result JSONB,                       -- Resultado definitivo del cálculo de puntaje
-    evaluation_result JSONB,                    -- Resultado definitivo de la evaluación cualitativa
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    evaluation_result JSONB                     -- Resultado definitivo de la evaluación cualitativa
 );
 
 COMMENT ON TABLE assignment IS 'Asignación lógica de un formulario a una persona o entidad (id_person). NO implica que esa persona responda directamente. Sirve para control de acceso, notificaciones y trazabilidad organizacional. GESTIÓN DE REASIGNACIONES: Esta tabla permite que un usuario tenga múltiples asignaciones del mismo formulario en diferentes momentos. Cada asignación es independiente y puede tener su propio historial de respuestas. RESULTADOS POR ASIGNACIÓN: Almacena los resultados definitivos (puntaje y evaluación) asociados a esta asignación específica, permitiendo comparar rendimiento entre diferentes asignaciones del mismo formulario a la misma persona. PROGRESO: También almacena el progreso actual para optimizar consultas de interfaces de usuario.';
@@ -95,9 +94,9 @@ COMMENT ON COLUMN assignment.n_questions_total IS 'Total de preguntas del formul
 
 COMMENT ON COLUMN assignment.n_questions_answered IS 'Cantidad de preguntas respondidas en el intento activo actual. Se actualiza en tiempo real a medida que el usuario responde preguntas. Permite mostrar progreso sin cálculos complejos.';
 
-COMMENT ON COLUMN assignment.scoring_result IS 'Resultado definitivo del cálculo de puntaje para esta asignación. Se calcula automáticamente cuando n_questions_answered = n_questions_total (formulario completado) y el estado del intento activo es "completed" o "submitted". Contiene el puntaje final y detalles de cálculo basados en la mejor respuesta o la última respuesta enviada. Ejemplo: {"final_score": 85, "calculation_method": "best_score", "details": {"best_score": 85, "last_score": 70, "attempts": 3}, "calculation_timestamp": "2024-01-15T10:30:00Z"}';
+COMMENT ON COLUMN assignment.scoring_result IS 'Resultado definitivo del cálculo de puntaje para esta asignación. Se calcula automáticamente cuando n_questions_answered = n_questions_total y el intento asociado tiene status = ''completed''. Contiene el puntaje final basado en el último intento completado. Ejemplo: {"final_score": 85, "calculation_method": "last_completed", "calculation_timestamp": "2024-01-15T10:30:00Z"}';
 
-COMMENT ON COLUMN assignment.evaluation_result IS 'Resultado definitivo de la evaluación cualitativa para esta asignación. Se calcula automáticamente cuando n_questions_answered = n_questions_total (formulario completado) y el estado del intento activo es "completed" o "submitted". Contiene la clasificación final y detalles basados en scoring_result. Ejemplo: {"category": "aprobado", "level": "alto", "description": "Excelente desempeño", "based_on": "best_score", "thresholds": {"min": 70, "max": 100}, "evaluation_timestamp": "2024-01-15T10:30:00Z"}';
+COMMENT ON COLUMN assignment.evaluation_result IS 'Resultado definitivo de la evaluación cualitativa para esta asignación. Se calcula automáticamente cuando n_questions_answered = n_questions_total y el intento asociado tiene status = ''completed''. Contiene la clasificación final basada en scoring_result del último intento completado. Ejemplo: {"category": "aprobado", "level": "alto", "description": "Excelente desempeño", "evaluation_timestamp": "2024-01-15T10:30:00Z"}';
 
 -- ===================================================================
 -- TABLA: scheduled
@@ -114,7 +113,6 @@ CREATE TABLE scheduled (
     available_from TIMESTAMP NOT NULL,
     available_until TIMESTAMP NOT NULL,
     time_limit_minutes INTEGER,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CHECK (available_from <= available_until),
     CHECK (time_limit_minutes IS NULL OR time_limit_minutes > 0)
 );
@@ -138,7 +136,7 @@ COMMENT ON COLUMN scheduled.time_limit_minutes IS 'Tiempo máximo permitido desd
 -- asociadas a la nueva asignación (nuevo scheduled), permitiendo historial completo.
 -- 
 -- RELACIÓN CON RESULTADOS: Los resultados de cada intento se almacenan aquí, y el assignment
--- puede actualizar sus resultados finales basados en la respuesta definitiva de esta asignación.
+-- actualiza sus resultados finales basados en el último intento con status = ''completed''.
 -- ===================================================================
 CREATE TABLE response (
     id SERIAL PRIMARY KEY,
@@ -147,6 +145,7 @@ CREATE TABLE response (
     started_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     completed_at TIMESTAMP,
     submitted_at TIMESTAMP,
+    status VARCHAR(50) NOT NULL DEFAULT 'active',
     attempt_number INTEGER DEFAULT 1,    -- Número de intento para el mismo scheduled
     CHECK (completed_at IS NULL OR started_at <= completed_at),
     CHECK (submitted_at IS NULL OR (completed_at IS NOT NULL AND completed_at <= submitted_at))
@@ -173,6 +172,9 @@ COMMENT ON COLUMN response.attempt_number IS 'Número de intento para el mismo s
 -- 
 -- RELACIÓN CON REINTENTOS: Las respuestas están asociadas a responses específicos,
 -- permitiendo que cada intento tenga sus propias respuestas independientes.
+-- 
+-- NOTA: La validación del tipo de dato en "value" (ej. que coincida con question_type)
+-- debe realizarse a nivel de API (por ejemplo, con Pydantic en Python) antes de insertar.
 -- ===================================================================
 CREATE TABLE answer (
     id SERIAL PRIMARY KEY,
@@ -188,4 +190,40 @@ COMMENT ON COLUMN answer.value IS 'Estructura normalizada: {"type": "string|numb
   - Texto: {"type": "text", "value": "Muy satisfecho"}
   - Número: {"type": "number", "value": 9.5}
   - Opción múltiple: {"type": "array", "value": ["opc1", "opc3"]}
-  Esta estructura permite procesar respuestas de forma genérica y segura.';
+  Esta estructura permite procesar respuestas de forma genérica y segura.
+  ⚠️ La coherencia entre el tipo de respuesta y el question_type debe validarse en la capa de aplicación (ej. con Pydantic).';
+
+-- ===================================================================
+-- ÍNDICES PARA RENDIMIENTO
+-- ===================================================================
+CREATE INDEX idx_assignment_form_person ON assignment (id_form, id_person);
+CREATE INDEX idx_response_scheduled ON response (id_scheduled);
+CREATE INDEX idx_answer_response ON answer (id_response);
+CREATE INDEX idx_question_form ON question (id_form);
+CREATE INDEX idx_scheduled_assignment ON scheduled (id_assignment);
+
+-- ===================================================================
+-- NOTA PARA FUTURAS MEJORAS
+-- ===================================================================
+/*
+Si en el futuro se requiere que los formularios puedan evolucionar sin afectar asignaciones existentes,
+se recomienda implementar un sistema de versionado:
+
+CREATE TABLE form_version (
+    id SERIAL PRIMARY KEY,
+    id_form INTEGER NOT NULL REFERENCES form(id),
+    version_number INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    scoring_expression JSONB,
+    evaluation_expression JSONB,
+    UNIQUE (id_form, version_number)
+);
+
+-- Y modificar:
+--   assignment.id_form → assignment.id_form_version
+--   question.id_form → question.id_form_version
+
+Esto garantizaría inmutabilidad por versión y trazabilidad histórica.
+*/

@@ -41,7 +41,6 @@ erDiagram
         int n_questions_answered "Preguntas respondidas en intento activo"
         jsonb scoring_result "Resultado definitivo del cálculo de puntaje"
         jsonb evaluation_result "Resultado definitivo de la evaluación cualitativa"
-        timestamp created_at "Fecha de creación"
     }
     
     scheduled {
@@ -51,7 +50,6 @@ erDiagram
         timestamp available_from "Inicio de disponibilidad"
         timestamp available_until "Fin de disponibilidad"
         int time_limit_minutes "Límite de tiempo (opcional)"
-        timestamp created_at "Fecha de programación"
     }
     
     response {
