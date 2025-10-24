@@ -21,14 +21,8 @@ def setup_assignment(api_server: FastAPI):
     repository = AssignmentRepository()
     application = AssignmentApplication(repository)
     
-    # Crear router para este módulo
-    router = APIRouter()
-    
     # Crear servicio que registra los endpoints
-    service = ServiceAssignment(router, application)
-    
-    # Registrar el router en la aplicación FastAPI
-    api_server.include_router(router)
+    service = ServiceAssignment(api_server, application)
     
     log_info("Assignment service setup completed successfully")
     log_info(f"  - Repository: {repository.__class__.__name__}")

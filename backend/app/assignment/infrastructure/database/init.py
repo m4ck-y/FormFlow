@@ -1,4 +1,5 @@
 from app.assignment.infrastructure.database.model.assignment import ModelAssignment
+from app.assignment.infrastructure.database.model.scheduled import ModelScheduled
 from app.utils.log import log_info
 
 

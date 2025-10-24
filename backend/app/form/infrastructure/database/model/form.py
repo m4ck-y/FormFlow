@@ -40,6 +40,9 @@ class ModelForm(BaseModel):
     # N:N | N form -> N evaluation_topics
     list_evaluation_topics = relationship("ModelEvaluationTopic", secondary=form_evaluation_topics, back_populates="list_forms")
 
+    # 1:N | 1 form -> N assignments
+    list_assignments = relationship("ModelAssignment", back_populates="form")
+
     # OPTIONALS
 
     # 1:1 | 1 form -> 1 estimated duration

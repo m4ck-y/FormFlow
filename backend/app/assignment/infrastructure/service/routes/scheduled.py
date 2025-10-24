@@ -1,20 +1,20 @@
 from fastapi import FastAPI
-from app.assignment.domain.schemas.assignment import (
-    ItemAssignment as I,
-    DetailAssignment as E,
-    NewAssignment as C,
-    UpdateAssignment as U,
+from app.assignment.domain.schemas.scheduled import (
+    ItemScheduled as I,
+    DetailScheduled as E,
+    NewScheduled as C,
+    UpdateScheduled as U,
 )
 from app.base.application.base import BaseLayerApplication
 from app.base.infrastructure.service.base import BaseLayerService
 
 
-ROUTE_NAME = "assignments"
+ROUTE_NAME = "scheduled"
 
 
-class ServiceAssignment(BaseLayerService[C, I, E, U]):
+class ServiceScheduled(BaseLayerService[C, I, E, U]):
     """
-    Servicio REST para el módulo Assignment.
+    Servicio REST para el módulo Scheduled.
     
     Los endpoints CRUD básicos son heredados de BaseLayerService.
     Aquí solo se definen endpoints específicos del dominio.

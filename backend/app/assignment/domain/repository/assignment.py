@@ -1,10 +1,10 @@
 from abc import ABC
 from app.base.domain.repository.base import IBaseRepository
 from app.assignment.domain.schemas.assignment import (
-    SchemaItemAssignment as I,
-    SchemaDetailAssignment as E,
-    SchemaCreateAPIAssignment as C,
-    SchemaUpdateAssignment as U,
+    ItemAssignment as I,
+    DetailAssignment as E,
+    NewAssignment as C,
+    UpdateAssignment as U,
 )
 
 
