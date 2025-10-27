@@ -26,7 +26,9 @@ class AssignmentRepository(BaseRepository[Table, C, I, E, U]):
     def __init__(self):
         super().__init__(Table, C, I, E, U)
 
-    def create(self, entity: C, db: TSession, auto_commit: bool = True) -> int:
+    def Create(self, entity: C, db: TSession, auto_commit: bool = True) -> int:
+
+        print("creating assignment")
         """
         Crea una asignación con programación opcional anidada.
         
@@ -46,13 +48,16 @@ class AssignmentRepository(BaseRepository[Table, C, I, E, U]):
             
             # 1. Crear la asignación principal
             assignment_db_schema = entity.to_db_schema()
-            id_assignment = super().create(assignment_db_schema, db, False)  # No commit aún
+            id_assignment = super().Create(assignment_db_schema, db, False)  # No commit aún
             
             log_info(f"Assignment created with ID: {id_assignment}")
             
             # 2. Si hay scheduled, crearlo también
             if entity.scheduled is not None:
                 log_info("Creating nested scheduled...")
+
+                print("available_from:", entity.scheduled.available_from)
+                print("tzinfo:", entity.scheduled.available_from.tzinfo)
                 
                 # Crear schema de BD para scheduled (sin campo status)
                 scheduled_db_schema = InsertScheduled(
@@ -66,7 +71,7 @@ class AssignmentRepository(BaseRepository[Table, C, I, E, U]):
                 # Importar y usar el repositorio de scheduled
                 from app.assignment.infrastructure.database.implementation.scheduled import ScheduledRepository
                 scheduled_repo = ScheduledRepository()
-                id_scheduled = scheduled_repo.create(scheduled_db_schema, db, False)  # No commit aún
+                id_scheduled = scheduled_repo.Create(scheduled_db_schema, db, False)  # No commit aún
                 
                 log_info(f"Scheduled created with ID: {id_scheduled}")
             

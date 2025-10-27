@@ -49,6 +49,13 @@ def get_json_column_type():
     else:
         from sqlalchemy import Text
         return Text
+    
+def get_datetime_timezone_column_type():
+    if is_db_postgres():
+        from sqlalchemy import DateTime
+        return DateTime(timezone=True)
+    from sqlalchemy import Text
+    return Text
 
 def CreateSchema(*names):
     with engine.connect() as connection:
