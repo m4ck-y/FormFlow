@@ -141,17 +141,17 @@
         "rules": [
           {
             "id_question": 1,
-            "operator": "=",
+            "operator": "==",
             "value": 1
           },
           {
             "id_question": 2,
-            "operator": "=",
+            "operator": "==",
             "value": 1
           },
           {
             "id_question": 3,
-            "operator": "=",
+            "operator": "==",
             "value": 1
           }
         ]
@@ -181,19 +181,19 @@
         "rules": [
           {
             "id_question": 1,
-            "operator": "=",
+            "operator": "==",
             "value": 1,
           "url": null
           },
           {
             "id_question": 2,
-            "operator": "=",
+            "operator": "==",
             "value": 1,
           "url": null
           },
           {
             "id_question": 3,
-            "operator": "=",
+            "operator": "==",
             "value": 1,
           "url": null
           }
@@ -224,17 +224,17 @@
         "rules": [
           {
             "id_question": 1,
-            "operator": "=",
+            "operator": "==",
             "value": 1
           },
           {
             "id_question": 2,
-            "operator": "=",
+            "operator": "==",
             "value": 1
           },
           {
             "id_question": 3,
-            "operator": "=",
+            "operator": "==",
             "value": 1
           }
         ]
@@ -264,19 +264,19 @@
         "rules": [
           {
             "id_question": 1,
-            "operator": "=",
+            "operator": "==",
             "value": 1,
           "url": null
           },
           {
             "id_question": 2,
-            "operator": "=",
+            "operator": "==",
             "value": 1,
           "url": null
           },
           {
             "id_question": 3,
-            "operator": "=",
+            "operator": "==",
             "value": 1,
           "url": null
           }
@@ -307,21 +307,22 @@
         "rules": [
           {
             "id_question": 1,
-            "operator": "=",
+            "operator": "==",
             "value": 1
           },
           {
             "id_question": 2,
-            "operator": "=",
+            "operator": "==",
             "value": 1
           },
           {
             "id_question": 3,
-            "operator": "=",
+            "operator": "==",
             "value": 1
           }
         ]
       }
     }
-  ]
+  ],
+  "list_sections": []
 }

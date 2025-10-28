@@ -3,7 +3,7 @@
   "name": "Cuestionario Internacional de Actividad Física",
   "description": "Evalúa la actividad física de adultos de 18 a 65 años durante los últimos 7 días.",
   "estimated_duration": {
-    "min_minutes": null,
+    "min_minutes": 0,
     "max_minutes": 7,
     "description": "Tiempo aplicativo 7 minutos"
   },
@@ -11,7 +11,8 @@
   "list_categories": [
     {
       "name": "Bienestar Fisico",
-      "id": 1
+      "id": 1,
+      "key_industry":1
     }
   ],
   "list_evaluation_topics": [
@@ -30,7 +31,8 @@
       "validation": {
         "min_value": 0,
         "max_value": 7
-      }
+      },
+      "list_options":[]
     },
     {
       "id": 2,
@@ -50,7 +52,8 @@
             "value": 0
           }
         ]
-      }
+      },
+      "list_options":[]
     },
     {
       "id": 3,
@@ -60,7 +63,8 @@
       "validation": {
         "min_value": 0,
         "max_value": 7
-      }
+      },
+      "list_options":[]
     },
     {
       "id": 4,
@@ -80,7 +84,8 @@
             "value": 0
           }
         ]
-      }
+      },
+      "list_options":[]
     },
     {
       "id": 5,
@@ -90,7 +95,8 @@
       "validation": {
         "min_value": 0,
         "max_value": 7
-      }
+      },
+      "list_options":[]
     },
     {
       "id": 6,
@@ -110,7 +116,8 @@
             "value": 0
           }
         ]
-      }
+      },
+      "list_options":[]
     },
     {
       "id": 7,
@@ -120,7 +127,8 @@
       "validation": {
         "min_value": "PT0M",
         "max_value": "PT24H"
-      }
+      },
+      "list_options":[]
     }
   ],
   "list_sections": []

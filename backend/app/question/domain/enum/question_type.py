@@ -11,3 +11,5 @@ class EQuestionType(str, Enum):
 
 
     #LIST = "LIST" # select
+    RANGE = "RANGE"
+    TIMER = "TIMER"
