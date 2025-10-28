@@ -29,7 +29,7 @@ def GetSession() -> Generator[TSession, None, None]:
 def datetime_now(t_zone=timezone.utc) -> datetime:
     if "postgresql" in settings.SQLALCHEMY_DB_URL:
         return datetime.now(t_zone)
-    return datetime.now(t_zone).astimezone(pytz.utc)
+    return datetime.now(t_zone)
 
 Base = declarative_base()
 

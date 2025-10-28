@@ -4,6 +4,7 @@
   "description": "El cuestionario CRAFFT ayuda a jóvenes a entender si el consumo de alcohol o drogas está afectando su vida diaria. No es un diagnóstico, sino una forma fácil de identificar si es momento de pedir ayuda o conversar con alguien. Es usado por muchas familias y profesionales para cuidar tu bienestar y prevenir problemas.",
   "estimated_duration": {
     "max_minutes": 10,
+    "min_minutes": 0,
     "description": "Tiempo aplicativo ≤ 10 minutos"
   },
   "list_cie11_codes": [
@@ -14,11 +15,13 @@
   "list_categories": [
     {
       "name": "Bienestar físico",
-      "id": 1
+      "id": 1,
+      "key_industry":1
     },
     {
       "name": "Bienestar social",
-      "id": 2
+      "id": 2,
+      "key_industry":1
     }
   ],
   "list_evaluation_topics": [
@@ -43,12 +46,14 @@
         {
           "id": 1,
           "text": "Sí",
-          "value": 1
+          "value": 1,
+          "url": null
         },
         {
           "id": 2,
           "text": "No",
-          "value": 0
+          "value": 0,
+          "url": null
         }
       ]
     },
@@ -61,12 +66,14 @@
         {
           "id": 1,
           "text": "Sí",
-          "value": 1
+          "value": 1,
+          "url": null
         },
         {
           "id": 2,
           "text": "No",
-          "value": 0
+          "value": 0,
+          "url": null
         }
       ]
     },
@@ -79,12 +86,14 @@
         {
           "id": 1,
           "text": "Sí",
-          "value": 1
+          "value": 1,
+          "url": null
         },
         {
           "id": 2,
           "text": "No",
-          "value": 0
+          "value": 0,
+          "url": null
         }
       ]
     },
@@ -97,12 +106,14 @@
         {
           "id": 1,
           "text": "Sí",
-          "value": 1
+          "value": 1,
+          "url": null
         },
         {
           "id": 2,
           "text": "No",
-          "value": 0
+          "value": 0,
+          "url": null
         }
       ]
     },
@@ -115,12 +126,14 @@
         {
           "id": 1,
           "text": "Sí",
-          "value": 1
+          "value": 1,
+          "url": null
         },
         {
           "id": 2,
           "text": "No",
-          "value": 0
+          "value": 0,
+          "url": null
         }
       ],
       "condition": {
@@ -153,12 +166,14 @@
         {
           "id": 1,
           "text": "Sí",
-          "value": 1
+          "value": 1,
+          "url": null
         },
         {
           "id": 2,
           "text": "No",
-          "value": 0
+          "value": 0,
+          "url": null
         }
       ],
       "condition": {
@@ -167,17 +182,20 @@
           {
             "id_question": 1,
             "operator": "=",
-            "value": 1
+            "value": 1,
+          "url": null
           },
           {
             "id_question": 2,
             "operator": "=",
-            "value": 1
+            "value": 1,
+          "url": null
           },
           {
             "id_question": 3,
             "operator": "=",
-            "value": 1
+            "value": 1,
+          "url": null
           }
         ]
       }
@@ -191,12 +209,14 @@
         {
           "id": 1,
           "text": "Sí",
-          "value": 1
+          "value": 1,
+          "url": null
         },
         {
           "id": 2,
           "text": "No",
-          "value": 0
+          "value": 0,
+          "url": null
         }
       ],
       "condition": {
@@ -229,12 +249,14 @@
         {
           "id": 1,
           "text": "Sí",
-          "value": 1
+          "value": 1,
+          "url": null
         },
         {
           "id": 2,
           "text": "No",
-          "value": 0
+          "value": 0,
+          "url": null
         }
       ],
       "condition": {
@@ -243,17 +265,20 @@
           {
             "id_question": 1,
             "operator": "=",
-            "value": 1
+            "value": 1,
+          "url": null
           },
           {
             "id_question": 2,
             "operator": "=",
-            "value": 1
+            "value": 1,
+          "url": null
           },
           {
             "id_question": 3,
             "operator": "=",
-            "value": 1
+            "value": 1,
+          "url": null
           }
         ]
       }
@@ -267,12 +292,14 @@
         {
           "id": 1,
           "text": "Sí",
-          "value": 1
+          "value": 1,
+          "url": null
         },
         {
           "id": 2,
           "text": "No",
-          "value": 0
+          "value": 0,
+          "url": null
         }
       ],
       "condition": {

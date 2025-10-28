@@ -9,8 +9,6 @@ from app.utils.log import log_info
 
 log_info("[MODEL][SCHEDULED] app/assignment/infrastructure/database/model/scheduled.py:", SchemaAssignment.TBL_SCHEDULED.name)
 
-from datetime import datetime, timezone
-
 class ModelScheduled(BaseModel):
     """
     Modelo de base de datos para programaciones de asignaciones.
@@ -40,8 +38,8 @@ class ModelScheduled(BaseModel):
     id_admin = Column(Integer, nullable=False)  # FK a tabla admin/user (externa)
     
     # Ventana de disponibilidad
-    available_from = Column(get_datetime_timezone_column_type, nullable=False)
-    available_until = Column(get_datetime_timezone_column_type, nullable=False)
+    available_from = Column(get_datetime_timezone_column_type(), nullable=False)
+    available_until = Column(get_datetime_timezone_column_type(), nullable=False)
     
     # Límite de tiempo opcional
     time_limit_minutes = Column(Integer, nullable=True)
