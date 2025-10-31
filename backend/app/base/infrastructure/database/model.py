@@ -70,7 +70,7 @@ class BaseModelTimeSeries(BaseModel):
     
     __abstract__ = True  # Asegura que no se cree una tabla para esta clase base, solo para las clases que hereden de ella.
 
-    event_at = Column(DateTime, default=datetime_now, nullable=False) #TODO: convert to utc
+    event_at = Column(get_datetime_timezone_column_type(), default=datetime_now, nullable=False) #TODO: convert to utc
     """
     Fecha y hora real del evento. Este campo es obligatorio y se establece automáticamente al momento de la creación.
     """

@@ -23,4 +23,4 @@ def init_db():
 log_info_cyan("app/config/init_db.py")
 
 if is_db_postgres():
-    CreateSchema("form")
+    CreateSchema("form", "account")
