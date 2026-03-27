@@ -11,9 +11,9 @@ from app.utils.log import log_info
 
 print("DEBUG: ", settings.DEBUG)
 
-print("SQLALCHEMY_DB_URL: ", type(settings.SQLALCHEMY_DB_URL), settings.SQLALCHEMY_DB_URL)
+print("SQLALCHEMY_DB_URL: ", type(settings.DATABASE_URL), settings.DATABASE_URL)
 
-engine = create_engine(settings.SQLALCHEMY_DB_URL, echo=settings.DEBUG)
+engine = create_engine(settings.DATABASE_URL, echo=settings.DEBUG)
 Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
 def GetSession() -> Generator[TSession, None, None]:
@@ -27,14 +27,14 @@ def GetSession() -> Generator[TSession, None, None]:
         db.close()
 
 def datetime_now(t_zone=timezone.utc) -> datetime:
-    if "postgresql" in settings.SQLALCHEMY_DB_URL:
+    if "postgresql" in settings.DATABASE_URL:
         return datetime.now(t_zone)
     return datetime.now(t_zone)
 
 Base = declarative_base()
 
 def is_db_postgres():
-    return "postgresql" in settings.SQLALCHEMY_DB_URL
+    return "postgresql" in settings.DATABASE_URL
 
 def get_json_column_type():
     """

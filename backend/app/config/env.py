@@ -5,7 +5,7 @@ class Settings(BaseSettings):
     DEBUG: bool = False
 
     # Database Configuration
-    SQLALCHEMY_DB_URL: str = "sqlite:///dev.db"
+    DATABASE_URL: str = "sqlite:///dev.db"
     
     # PostgreSQL Configuration (for when using PostgreSQL)
     DB_POSTGRES_HOST: str = ""
